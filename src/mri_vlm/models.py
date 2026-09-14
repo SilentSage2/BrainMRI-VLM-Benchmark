@@ -14,7 +14,7 @@ class ModelSpec:
     model_id: str
     role: ModelRole
     license_id: str
-    parameter_billions: float
+    parameter_billions_ceiling: float
     supports_3d: bool
     supports_multiple_sequences: bool
     supports_text_generation: bool
@@ -24,15 +24,15 @@ class ModelSpec:
     def __post_init__(self) -> None:
         if not self.model_id.strip() or not self.license_id.strip():
             raise ValueError("model ID and license must be non-empty")
-        if self.parameter_billions <= 0.0:
-            raise ValueError("parameter count must be positive")
+        if self.parameter_billions_ceiling <= 0.0:
+            raise ValueError("parameter ceiling must be positive")
 
 
 M3D_LAMED_PHI3 = ModelSpec(
     model_id="GoodBaiBai88/M3D-LaMed-Phi-3-4B",
     role=ModelRole.EXTERNAL_BASELINE,
     license_id="Apache-2.0",
-    parameter_billions=4.0,
+    parameter_billions_ceiling=4.1,
     supports_3d=True,
     supports_multiple_sequences=False,
     supports_text_generation=True,
@@ -44,7 +44,7 @@ MRI_VLM_SMALL = ModelSpec(
     model_id="mri-vlm-small",
     role=ModelRole.CONTROLLED_MODEL,
     license_id="MIT",
-    parameter_billions=0.3,
+    parameter_billions_ceiling=0.3,
     supports_3d=True,
     supports_multiple_sequences=True,
     supports_text_generation=True,

@@ -2,9 +2,10 @@
 
 **Robust 3D Vision-Language Reasoning over Multi-Sequence Brain MRI**
 
-> **Status: V0 protocol scaffold.** No VLM result is claimed yet. The repository currently
-> defines MRI/QA/evidence contracts, subject-level splits, leakage audits, grounded-QA
-> metrics, and deterministic synthetic fixtures.
+> **Status: V0 protocol plus architecture smoke.** `MRI-VLM-Small` is implemented and
+> tested on synthetic tensors, but it is not trained and no VLM result is claimed. The
+> repository also defines MRI/QA/evidence contracts, subject-level splits, leakage audits,
+> grounded-QA metrics, and deterministic fixtures.
 
 ## Research question
 
@@ -61,7 +62,7 @@ answer-only versus grounded comparison.
 | Question-only prior | none | answer | Planned shortcut control |
 | Slice-based VLM | sampled 2D slices | answer | Planned baseline |
 | 3D MRI-VLM | pooled 3D tokens | answer | Planned baseline |
-| Grounded 3D MRI-VLM | sequence-aware 3D tokens | answer + voxel evidence | Primary treatment |
+| Grounded 3D MRI-VLM | sequence-aware 3D tokens | answer + voxel evidence | Architecture smoke implemented |
 
 Primary metrics are answer accuracy, grounded answer accuracy, evidence Dice, numeric
 tolerance accuracy, counterfactual consistency, calibration, and hallucination on
