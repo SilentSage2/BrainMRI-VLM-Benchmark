@@ -111,6 +111,12 @@ to make the current negative evidence auditable, not to claim generalization.
 Grounded-minus-auxiliary paired answer effect was 0.000 for every subject. Grounded-minus-
 answer-only was +0.167, bootstrap 95% CI [-0.042, 0.375]. Test cases remain sealed.
 
+The larger frozen V3 development run used 64/16 subjects and three seeds. Its
+grounded-minus-auxiliary answer effect was +0.007 with hierarchical 95% CI
+[-0.229, 0.243]; seed effects were -0.208, +0.229, and 0.000. This fails the predefined
+grounding-benefit gate and exposes substantial training variance. The test split remains
+sealed, so this is not a generalization claim.
+
 ## Planned systems
 
 | System | Visual representation | Training target | Status |

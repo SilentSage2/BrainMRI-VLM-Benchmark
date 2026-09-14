@@ -82,13 +82,13 @@ instability. Figures 4–5 require model outputs and must not contain simulated 
   comparison families are algebraically redundant, so both must be redesigned or removed.
 - Cannot support: model performance, test generalization, or clinical utility.
 
-### Figure 4 — empirical, planned
+### Figure 4 — empirical development comparison, complete
 
-- Supports only after locked evaluation: how grounded, answer-only, and modular MR methods
-  behave across all 15 contrast subsets, and whether calibration and abstention respond
-  appropriately to the identity of a removed contrast.
-- Disconfirming result: overconfident unsupported answers, no question-specific contrast
-  sensitivity, or violation of the complete-input non-inferiority margin.
+- Shows the QA V1 language prior, fixed-slice VLM, three matched 3D paths, all 15 contrast
+  subsets, and hierarchical seed/subject intervals from the completed V3 development run.
+- Supports a disconfirming result: no reliable grounded-over-auxiliary answer benefit and
+  little evidence of contrast-sensitive visual reasoning. It does not support test
+  generalization, clinical utility, or superiority to an external foundation model.
 
 ### Figure 5 — qualitative plus empirical, planned
 
@@ -121,4 +121,14 @@ and writes PNG, vector PDF, and source metadata.
 ```bash
 mri-vlm-stability-figure artifacts/results/qa_resolution_stability_v1.json \
   --output-prefix artifacts/figures/figure3_qa_stability
+```
+
+Figure 4 reads only test-sealed V3, question-only, and slice-baseline result files and
+writes 300-dpi PNG, vector PDF, and a panel-level CSV source table.
+
+```bash
+mri-vlm-matched-figure artifacts/results/matched_v3/summary.json \
+  --question-only artifacts/results/qa_v1_control_v3.json \
+  --slice-baseline artifacts/results/slice_vlm_v3.json \
+  --output-prefix artifacts/figures/figure4_matched_v3
 ```

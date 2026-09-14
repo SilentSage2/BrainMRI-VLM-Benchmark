@@ -83,7 +83,13 @@ def render_figure(
     effect_items = [effects[f"grounded_minus_{role}_answer_accuracy"] for role in roles[:2]]
 
     plt.rcParams.update({"font.size": 8, "font.family": "DejaVu Sans"})
-    figure, axes = plt.subplots(1, 3, figsize=(12, 3.8), constrained_layout=True)
+    figure, axes = plt.subplots(
+        1,
+        3,
+        figsize=(13.5, 3.8),
+        constrained_layout=True,
+        gridspec_kw={"width_ratios": (1.15, 2.25, 1.35)},
+    )
     labels = ("Question\nonly", "2D slice", "3D answer", "3D auxiliary", "3D grounded")
     colors = ("#8c8c8c", "#6baed6", "#9ecae1", "#3182bd", "#de2d26")
     axes[0].bar(range(len(labels)), full_balanced, color=colors)
@@ -94,8 +100,13 @@ def render_figure(
 
     image = axes[1].imshow(heatmap, vmin=0.0, vmax=1.0, cmap="viridis", aspect="auto")
     axes[1].set_yticks(range(3), ("Answer", "Auxiliary", "Grounded"))
-    condition_labels = [item.replace("+", "\n") for item in conditions]
-    axes[1].set_xticks(range(len(conditions)), condition_labels, rotation=90)
+    abbreviations = {"flair": "F", "t1": "T1", "t1gd": "G", "t2": "T2"}
+    condition_labels = [
+        "/".join(abbreviations[token] for token in item.split("+")) for item in conditions
+    ]
+    axes[1].set_xticks(
+        range(len(conditions)), condition_labels, rotation=60, ha="right", fontsize=6.5
+    )
     axes[1].set_title("B  Missing-contrast matrix", loc="left", fontweight="bold")
     figure.colorbar(image, ax=axes[1], label="Balanced accuracy", fraction=0.05)
 

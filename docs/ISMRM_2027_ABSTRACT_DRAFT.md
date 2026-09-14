@@ -77,6 +77,16 @@ dataset auditing and descriptive cohort analysis; no test predictions inform sel
 
 ### Results
 
+[DEVELOPMENT EVIDENCE — not yet eligible for the submitted abstract] On a frozen
+64-training/16-validation-subject cohort over three seeds, question-conditioned grounding
+did not improve full-input raw answer accuracy over matched unconditional spatial auxiliary
+supervision (mean paired effect +0.007; hierarchical seed/subject bootstrap 95% CI
+[-0.229, 0.243]). The seed effects (-0.208, +0.229, and 0.000) showed material training
+variance. Mean balanced accuracy was 0.417 for answer-only, 0.422 for auxiliary, and 0.426
+for grounded models; the QA V1 question-only prior and fixed-slice 2D VLM both achieved
+0.417. Grounding had worse calibration (ECE 0.124 versus 0.093) and lower grounded answer
+accuracy (0.174 versus 0.222) than the auxiliary model. Test cases remained unread.
+
 [PLANNED — lead with all 15 contrast conditions and the segmentation-to-symbolic MR
 baseline; then report the matched grounded effect with 95% CI, calibration and abstention,
 evidence Dice, complete-input non-inferiority, question-only and 2D diagnostics, ablation

@@ -1,7 +1,7 @@
 # Working Figure Captions
 
-These captions describe only generated evidence. Figures 4–5 remain planned and must not
-be written as observed results before their locked source tables exist.
+These captions describe only generated evidence. Figure 5 remains planned and must not be
+written as an observed result before its locked source table exists.
 
 ## Figure 1 — provisional overall framework
 
@@ -40,11 +40,22 @@ only from unstable training cases retained 76/81, 81/81, and 73/81 validation ca
 100% stability; enhancing presence became single-class. The two comparison targets were
 algebraically redundant. No model performance is shown.
 
-## Figures 4–5 — planned
+## Figure 4 — complete development matched comparison
+
+**Three-seed development comparison of MRI-VLM supervision under missing contrasts.**
+(A) Full-input balanced answer accuracy for the QA V1 question-only prior, fixed three-slice
+2D VLM, and matched 3D answer-only, unconditional spatial-auxiliary, and
+question-conditioned grounded models on 16 validation subjects. Bars for trained 3D models
+are means over three seeds. (B) Mean balanced accuracy across all 15 non-empty subsets of
+FLAIR (F), T1, post-contrast T1 (G), and T2. (C) Full-input grounded-minus-comparator raw
+answer effects with hierarchical 95% intervals resampling training seeds and subjects
+within seed; the dotted line marks the predefined +0.05 development threshold. The
+grounded-minus-auxiliary effect was +0.007 [-0.229, 0.243], failing the positive grounding
+gate. All results are development-only; test cases were unread.
+
+## Figure 5 — planned
 
 Captions will be generated only from frozen real-data result tables. Each will state the
 model versions, evaluation split, subject and question counts, missing-contrast conditions,
 baseline or ablation, seed count, interval construction, and the result-supported claim.
-Figure 4 prioritizes the 15-condition comparison with the modular MR baseline, calibration,
-abstention, and question-specific contrast sensitivity. Figure 5 uses the same frozen
-success, boundary, and failure cases for learned and modular methods.
+Figure 5 uses frozen success, boundary, and failure cases for learned and modular methods.
