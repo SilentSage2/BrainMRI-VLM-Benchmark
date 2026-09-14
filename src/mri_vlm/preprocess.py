@@ -17,6 +17,8 @@ class PreprocessSpec:
     spatial_size: int = 24
     clip_standard_deviations: float = 5.0
     version: str = "whole-volume-zscore-resample-v1"
+    preserve_background_zero: bool = False
+    crop_to_foreground: bool = False
 
     def __post_init__(self) -> None:
         if self.spatial_size <= 0 or self.spatial_size % 2:
@@ -86,32 +88,61 @@ def preprocess_nifti(
     channels = []
     for index in range(4):
         channel = image[..., index]
-        foreground = channel[channel != 0]
+        foreground_mask = channel != 0
+        foreground = channel[foreground_mask]
         if foreground.size == 0:
             raise ValueError(f"empty MRI contrast in {image_path}")
         mean = float(foreground.mean())
         deviation = max(float(foreground.std()), 1e-6)
-        channels.append(
-            np.clip(
-                (channel - mean) / deviation,
-                -spec.clip_standard_deviations,
-                spec.clip_standard_deviations,
-            )
+        normalized = np.clip(
+            (channel - mean) / deviation,
+            -spec.clip_standard_deviations,
+            spec.clip_standard_deviations,
         )
+        if spec.preserve_background_zero:
+            normalized = np.where(foreground_mask, normalized, 0.0)
+        channels.append(normalized)
     volumes = torch.from_numpy(np.stack(channels)).permute(0, 3, 2, 1).unsqueeze(0)
+    labels = torch.from_numpy(label).permute(2, 1, 0)[None, None].float()
+    if spec.crop_to_foreground:
+        volumes, labels = crop_and_pad_foreground(volumes.squeeze(0), labels.squeeze(0))
+        volumes = volumes.unsqueeze(0)
+        labels = labels.unsqueeze(0)
     volumes = functional.interpolate(
         volumes,
         size=(spec.spatial_size,) * 3,
         mode="trilinear",
         align_corners=False,
     ).squeeze(0)
-    labels = torch.from_numpy(label).permute(2, 1, 0)[None, None].float()
     labels = functional.interpolate(
         labels,
         size=(spec.spatial_size,) * 3,
         mode="nearest",
     ).squeeze(0).squeeze(0).long()
     return volumes.contiguous(), labels.contiguous()
+
+
+def crop_and_pad_foreground(volumes: Tensor, label: Tensor) -> tuple[Tensor, Tensor]:
+    """Crop by MRI support only, then symmetrically pad to a cube."""
+    if volumes.ndim != 4 or label.ndim != 4 or label.shape[0] != 1:
+        raise ValueError("expected volumes [C,D,H,W] and label [1,D,H,W]")
+    if label.shape[1:] != volumes.shape[1:]:
+        raise ValueError("volume and label shapes must agree")
+    foreground = volumes.ne(0).any(dim=0)
+    coordinates = torch.nonzero(foreground, as_tuple=False)
+    if coordinates.numel() == 0:
+        raise ValueError("MRI foreground is empty")
+    lower = coordinates.min(dim=0).values
+    upper = coordinates.max(dim=0).values + 1
+    slices = tuple(slice(int(lower[i]), int(upper[i])) for i in range(3))
+    cropped_volumes = volumes[(slice(None), *slices)]
+    cropped_label = label[(slice(None), *slices)]
+    target = max(cropped_volumes.shape[1:])
+    pads: list[int] = []
+    for dimension in reversed(cropped_volumes.shape[1:]):
+        difference = target - dimension
+        pads.extend((difference // 2, difference - difference // 2))
+    return functional.pad(cropped_volumes, pads), functional.pad(cropped_label, pads)
 
 
 def tensor_sha256(tensor: Tensor) -> str:

@@ -84,6 +84,9 @@ answers despite high segmentation Dice; the gate remains failed pending QA V1.
 The [development-only QA resolution audit](experiments/QA_RESOLUTION_STABILITY.md) quantifies
 this failure across 418 train/validation subjects, identifies a duplicated comparison task,
 and keeps all test cases unread while QA V1 is redesigned.
+The [residual 3D missing-contrast baseline direction runs](experiments/STRONG_BASELINE_DIRECTION.md)
+establish a standard BraTS WT/TC/ET training path and pass a small 32/8-subject development
+gate, while explicitly withholding any generalization, Figure 4, or release claim.
 
 ## Planned systems
 

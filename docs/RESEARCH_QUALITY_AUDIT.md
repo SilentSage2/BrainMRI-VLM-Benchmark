@@ -66,11 +66,11 @@ abstract if the same test split is reported.
 
 ## 4. Implementation depth — fail at present
 
-`MRI-VLM-Small` is an implemented and tested controlled model, but it is currently a
+`MRI-VLM-Small` is an implemented and tested controlled model, but it remains a compact
 two-layer shared 3D convolutional encoder, pooled token embedding, categorical answer head,
-and evidence head tested on synthetic tensors. It has no real-data preprocessing pipeline,
-training runner, competitive language backbone, one-case overfit, or measured resource
-profile. It must not be described as the final flagship model.
+and evidence head. Real-data preprocessing, training, caching, one-case overfit, and resource
+measurement now exist, but the model still lacks a competitive language backbone and a
+materially sized converged run. It must not be described as the final flagship model.
 
 The framework figure correctly marks the training runner pending. Until the following run
 on real MRI, the implementation remains a research scaffold:
@@ -104,8 +104,11 @@ cannot be attributed to grounded reasoning rather than ordinary multi-task segme
 
 ## 6. Results needed to support a conclusion — absent
 
-There are currently no model results. Descriptive figures and architecture smoke tests do
-not count as evidence for the hypothesis. A defensible ISMRM result package requires:
+Small validation diagnostics now exist, including a 32-train/8-validation residual 3D
+baseline that passed internal direction gates on standard BraTS WT/TC/ET endpoints. This is
+optimization evidence, not hypothesis evidence: the sample is small, continuous QA error
+remains high, and no matched grounded comparison exists. A defensible ISMRM result package
+still requires:
 
 - real validation and single-use held-out test results;
 - primary paired effect size with subject-bootstrap 95% confidence interval;

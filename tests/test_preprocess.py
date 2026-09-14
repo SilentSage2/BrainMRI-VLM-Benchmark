@@ -3,7 +3,12 @@ from typing import Any
 import pytest
 import torch
 
-from mri_vlm.preprocess import PreprocessSpec, _validate_payload, tensor_sha256
+from mri_vlm.preprocess import (
+    PreprocessSpec,
+    _validate_payload,
+    crop_and_pad_foreground,
+    tensor_sha256,
+)
 
 
 def test_tensor_digest_covers_shape_dtype_and_values() -> None:
@@ -49,3 +54,19 @@ def test_cache_payload_round_trip_identity() -> None:
     assert result.cache_hit
     assert result.volume_sha256 == tensor_sha256(volumes)
     assert result.label_sha256 == tensor_sha256(label)
+
+
+def test_foreground_crop_uses_image_and_pads_to_cube() -> None:
+    volumes = torch.zeros(4, 8, 10, 12)
+    volumes[:, 2:6, 3:8, 4:10] = 1.0
+    label = torch.zeros(1, 8, 10, 12)
+    label[:, 3:5, 4:7, 5:9] = 2
+    cropped, cropped_label = crop_and_pad_foreground(volumes, label)
+    assert cropped.shape == (4, 6, 6, 6)
+    assert cropped_label.shape == (1, 6, 6, 6)
+    assert int((cropped_label == 2).sum()) == 24
+
+
+def test_foreground_crop_rejects_label_shape_mismatch() -> None:
+    with pytest.raises(ValueError, match="agree"):
+        crop_and_pad_foreground(torch.zeros(4, 8, 8, 8), torch.zeros(1, 7, 8, 8))
