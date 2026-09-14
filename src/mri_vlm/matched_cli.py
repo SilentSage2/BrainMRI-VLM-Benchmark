@@ -110,7 +110,7 @@ def main() -> None:
     initial = {name: value.detach().clone() for name, value in template.state_dict().items()}
     run_fingerprint = _fingerprint(
         {
-            "model": "MRIVLM3D-v1",
+            "model": "MRIVLM3D-v2-weighted-loss-late-tie",
             "seed": args.seed,
             "train_case_ids": ids[Split.TRAIN],
             "validation_case_ids": ids[Split.VALIDATION],
@@ -298,7 +298,7 @@ def train_role(
             output = model(
                 (item.case.volumes * mask[0, :, None, None, None]).unsqueeze(0), mask, tokens
             )
-            loss = functional.cross_entropy(output.answer_logits, answers, weight=class_weights)
+            loss = weighted_answer_loss(output.answer_logits, answers, class_weights)
             if evidence_mode != "none":
                 evidence_target = (
                     (item.case.label > 0).float().unsqueeze(0)
@@ -332,7 +332,7 @@ def train_role(
                 "validation_balanced_answer_accuracy": score,
             }
         )
-        if score > best_score:
+        if score >= best_score:
             best_score = score
             best_epoch = epoch
             best_state = {
@@ -454,6 +454,12 @@ def _balanced_accuracy(items: list[tuple[str, bool]]) -> float:
     for answer, hit in items:
         grouped[answer].append(hit)
     return sum(sum(values) / len(values) for values in grouped.values()) / len(grouped)
+
+
+def weighted_answer_loss(logits: Tensor, targets: Tensor, class_weights: Tensor) -> Tensor:
+    """Apply inverse-frequency weights without batch-size-one mean cancellation."""
+    losses = functional.cross_entropy(logits, targets, reduction="none")
+    return (losses * class_weights[targets]).mean()
 
 
 def _tensor_evidence_dice(prediction: Tensor, target: Tensor) -> float:
