@@ -12,6 +12,11 @@ The local adapter must verify archive checksum, pseudonymous subject uniqueness,
 completeness, shapes, affines, orientation, spacing, finite values, and allowed mask labels.
 All data remains outside Git.
 
+The source stores all four sequences as channels of one 4D NIfTI volume. The adapter reads
+the channel order from `dataset.json`, validates the 4D image against its 3D label, and
+derives content-addressed logical sequence records. Run `mri-vlm-msd-audit` before any
+question generation or preprocessing.
+
 Limitations include curated tumor prevalence, historical acquisition protocols, synthetic
 language, incomplete site metadata, and mask-based evidence that cannot represent every
 reasoning cue a radiologist might use. Benchmark gains do not establish safety or utility.

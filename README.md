@@ -81,3 +81,10 @@ python -m venv .venv
 
 V0 downloads no medical data. This is a retrospective research benchmark, not a medical
 device or clinical decision-support system.
+
+After obtaining MSD Task01 locally and installing `.[data]`, audit it without producing
+derivatives:
+
+```bash
+mri-vlm-msd-audit /absolute/path/to/Task01_BrainTumour
+```
