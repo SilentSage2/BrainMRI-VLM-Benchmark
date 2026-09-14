@@ -28,6 +28,7 @@ def generate_real_examples(
     *,
     seed: int,
     include_splits: frozenset[Split] = frozenset(Split),
+    include_case_ids: frozenset[str] | None = None,
 ) -> tuple[SplitQAExample, ...]:
     try:
         nib: Any = importlib.import_module("nibabel")
@@ -38,7 +39,9 @@ def generate_real_examples(
     generated: list[SplitQAExample] = []
     for case in discover_training_cases(root):
         split = assign_subject(case.case_id, seed=seed)
-        if split not in include_splits:
+        if split not in include_splits or (
+            include_case_ids is not None and case.case_id not in include_case_ids
+        ):
             continue
         image: Any = nib.load(str(case.label))
         label = np.asanyarray(image.dataobj)

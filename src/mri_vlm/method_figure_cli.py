@@ -141,7 +141,7 @@ def render_method_figure(root: Path, output_prefix: Path, *, seed: int) -> dict[
         "Frozen training protocol\n"
         "answer loss + evidence loss\n"
         "balanced contrast dropout\n"
-        "runner pending",
+        "pilot runner implemented",
         "#F2F2F2",
         linestyle="--",
         fontsize=5.5,

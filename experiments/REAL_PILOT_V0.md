@@ -1,7 +1,10 @@
 # Real-MRI Controlled Pilot V0
 
-Run date: 2026-09-14. Status: **completed diagnostic; not eligible for an abstract claim or
+Run date: 2026-09-14. Status: **V1 completed diagnostic; not eligible for an abstract claim or
 release-gate evidence.**
+
+V1 supersedes the initial artifact after adding per-subregion Dice loss, correcting the
+unconditional-auxiliary evidence target, and enabling verified preprocessing cache reads.
 
 ## Purpose
 
@@ -22,8 +25,8 @@ real MRI. It is intentionally too small to estimate comparative performance.
 - identical deterministic modality-subset training schedule;
 - five validation conditions: all contrasts, no T1-Gd, no FLAIR, FLAIR only, T1-Gd only;
 - 500 subject-bootstrap resamples per reported interval;
-- 50.7 seconds total wall time on CPU; model training itself took approximately one second
-  per path, with NIfTI loading and QA generation dominating the run.
+- 10.3 seconds total wall time on CPU with the verified ten-case cache; model training took
+  approximately one second per path.
 
 ```bash
 mri-vlm-real-pilot /absolute/path/to/Task01_BrainTumour \
@@ -33,17 +36,17 @@ mri-vlm-real-pilot /absolute/path/to/Task01_BrainTumour \
 ```
 
 Result SHA-256:
-`32b557d43c895f4f725f95edb4d99aa578deeebffcaca70995b80a741a84f785`.
+`e548a4888df8d1ed4c7c16dfe9579ec8cabe19dfe751a0a7317ca015e24e82ff`.
 
 ## Validation diagnostic
 
 | Available contrasts | Seg→symbolic accuracy | Seg whole-tumor Dice | Answer-only accuracy | Unconditional auxiliary accuracy / evidence Dice | Question-grounded accuracy / evidence Dice |
 |---|---:|---:|---:|---:|---:|
-| FLAIR+T1+T1-Gd+T2 | 0.30 | 0.024 | 0.30 | 0.20 / 0.239 | 0.20 / 0.216 |
-| FLAIR+T1+T2 | 0.45 | 0.011 | 0.30 | 0.20 / 0.242 | 0.20 / 0.228 |
-| T1+T1-Gd+T2 | 0.20 | 0.000 | 0.30 | 0.20 / 0.098 | 0.20 / 0.201 |
-| FLAIR only | 0.10 | 0.019 | 0.20 | 0.20 / 0.321 | 0.20 / 0.316 |
-| T1-Gd only | 0.10 | 0.007 | 0.30 | 0.20 / 0.068 | 0.20 / 0.071 |
+| FLAIR+T1+T1-Gd+T2 | 0.30 | 0.026 | 0.30 | 0.20 / 0.268 | 0.20 / 0.216 |
+| FLAIR+T1+T2 | 0.45 | 0.019 | 0.30 | 0.20 / 0.268 | 0.20 / 0.228 |
+| T1+T1-Gd+T2 | 0.20 | 0.000 | 0.30 | 0.20 / 0.141 | 0.20 / 0.201 |
+| FLAIR only | 0.10 | 0.021 | 0.20 | 0.20 / 0.473 | 0.20 / 0.316 |
+| T1-Gd only | 0.10 | 0.007 | 0.30 | 0.20 / 0.093 | 0.20 / 0.071 |
 
 Each VLM cell contains 20 validation questions from four subjects. Subject-bootstrap
 intervals are stored in the JSON but are too unstable at `n=4` to interpret. Answer-only
@@ -60,6 +63,8 @@ abstention reliability.
   evidence that question-conditioned grounding adds value.
 - The modality-dropout 3D U-Net did not converge, so it is not the required strong modular
   MR baseline and cannot adjudicate the main study question.
+- Mean validation subregion Dice was at most 0.010 in every condition after two epochs;
+  the apparently nonzero whole-tumor Dice therefore does not indicate useful segmentation.
 - Calibration numbers from an underfit model and four subjects are not scientifically
   meaningful even though the evaluation code executes.
 

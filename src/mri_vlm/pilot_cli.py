@@ -1,14 +1,13 @@
 """Small real-MRI pilot for falsifying the model and evaluation pipeline."""
 
 import argparse
-import importlib
 import json
 import random
 import time
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
 import torch
 import torch.nn.functional as functional
@@ -19,6 +18,7 @@ from mri_vlm.controls import bootstrap_mean_ci
 from mri_vlm.data.msd import discover_training_cases
 from mri_vlm.metrics import answer_correct, dice_score
 from mri_vlm.modeling import MRIVLMSmall
+from mri_vlm.preprocess import PreprocessSpec, load_preprocessed_case
 from mri_vlm.real_qa import SplitQAExample, generate_real_examples
 from mri_vlm.schema import Modality, QuestionType, Split
 from mri_vlm.split import assign_subject
@@ -79,6 +79,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--spatial-size", type=int, default=24)
     parser.add_argument("--epochs", type=int, default=2)
     parser.add_argument("--width", type=int, default=4)
+    parser.add_argument("--cache-dir", type=Path, default=Path("data/processed/pilot-cache"))
     parser.add_argument("--seed", type=int, default=20260914)
     return parser
 
@@ -98,6 +99,7 @@ def main() -> None:
         root,
         seed=args.seed,
         include_splits=frozenset({Split.TRAIN, Split.VALIDATION}),
+        include_case_ids=frozenset(ids[Split.TRAIN] + ids[Split.VALIDATION]),
     )
     questions_by_case: dict[str, list[SplitQAExample]] = defaultdict(list)
     selected = set(ids[Split.TRAIN]) | set(ids[Split.VALIDATION])
@@ -110,6 +112,7 @@ def main() -> None:
             ids[split],
             questions_by_case,
             spatial_size=args.spatial_size,
+            cache_root=args.cache_dir.resolve(),
         )
         for split in (Split.TRAIN, Split.VALIDATION)
     }
@@ -202,48 +205,18 @@ def _load_cases(
     questions_by_case: dict[str, list[SplitQAExample]],
     *,
     spatial_size: int,
+    cache_root: Path,
 ) -> tuple[PilotCase, ...]:
-    try:
-        nib: Any = importlib.import_module("nibabel")
-        np: Any = importlib.import_module("numpy")
-    except ImportError as error:
-        raise RuntimeError("install the project with the 'data' extra") from error
-
     loaded: list[PilotCase] = []
     for case_id in case_ids:
-        image = np.asanyarray(
-            nib.load(str(root / "imagesTr" / f"{case_id}.nii.gz")).dataobj,
-            dtype=np.float32,
+        preprocessed = load_preprocessed_case(
+            root, cache_root, case_id, PreprocessSpec(spatial_size=spatial_size)
         )
-        label = np.asanyarray(
-            nib.load(str(root / "labelsTr" / f"{case_id}.nii.gz")).dataobj,
-            dtype=np.int64,
-        )
-        channels = []
-        for index in range(4):
-            channel = image[..., index]
-            foreground = channel[channel != 0]
-            mean = float(foreground.mean())
-            deviation = max(float(foreground.std()), 1e-6)
-            channels.append(np.clip((channel - mean) / deviation, -5.0, 5.0))
-        volume_tensor = torch.from_numpy(np.stack(channels)).permute(0, 3, 2, 1).unsqueeze(0)
-        volume_tensor = functional.interpolate(
-            volume_tensor,
-            size=(spatial_size, spatial_size, spatial_size),
-            mode="trilinear",
-            align_corners=False,
-        ).squeeze(0)
-        label_tensor = torch.from_numpy(label).permute(2, 1, 0)[None, None].float()
-        label_tensor = functional.interpolate(
-            label_tensor,
-            size=(spatial_size, spatial_size, spatial_size),
-            mode="nearest",
-        ).squeeze(0).squeeze(0).long()
         loaded.append(
             PilotCase(
                 case_id=case_id,
-                volumes=volume_tensor,
-                label=label_tensor,
+                volumes=preprocessed.volumes,
+                label=preprocessed.label,
                 questions=tuple(
                     sorted(
                         questions_by_case[case_id],
@@ -267,7 +240,7 @@ def _train_segmenter(model: nn.Module, cases: tuple[PilotCase, ...], *, epochs: 
             optimizer.zero_grad()
             mask = _condition_mask(conditions[step % len(conditions)])[0, :, None, None, None]
             logits = cast(Tensor, model((case.volumes * mask).unsqueeze(0)))
-            loss = functional.cross_entropy(logits, case.label.unsqueeze(0), weight=weights)
+            loss = _segmentation_loss(logits, case.label.unsqueeze(0), weights)
             loss.backward()  # type: ignore[no-untyped-call]
             optimizer.step()
             step += 1
@@ -341,6 +314,17 @@ def _evidence_loss(logits: Tensor, target: Tensor) -> Tensor:
     return binary + dice_loss
 
 
+def _segmentation_loss(logits: Tensor, target: Tensor, weights: Tensor) -> Tensor:
+    cross_entropy = functional.cross_entropy(logits, target, weight=weights)
+    probabilities = logits.softmax(dim=1)
+    one_hot = functional.one_hot(target, num_classes=4).permute(0, 4, 1, 2, 3).float()
+    intersection = (probabilities[:, 1:] * one_hot[:, 1:]).sum(dim=(0, 2, 3, 4))
+    denominator = probabilities[:, 1:].sum(dim=(0, 2, 3, 4))
+    denominator = denominator + one_hot[:, 1:].sum(dim=(0, 2, 3, 4))
+    dice_loss = 1.0 - ((2.0 * intersection + 1.0) / (denominator + 1.0)).mean()
+    return cross_entropy + dice_loss
+
+
 def _pilot_conditions() -> tuple[frozenset[Modality], ...]:
     return (
         frozenset(Modality),
@@ -391,6 +375,11 @@ def _evaluate_vlm(
                         unanswerable += 1
                         hallucinations += ANSWER_VOCAB[predicted[index]] != "abstain"
                     if role != "answer_only":
+                        evidence_target = (
+                            (case.label > 0).expand_as(evidence[index])
+                            if role == "unconditional_auxiliary"
+                            else evidence[index] > 0
+                        )
                         predicted_voxels = frozenset(
                             torch.nonzero(
                                 (output.evidence_logits[index] > 0).flatten(), as_tuple=False
@@ -400,7 +389,7 @@ def _evaluate_vlm(
                         )
                         target_voxels = frozenset(
                             torch.nonzero(
-                                (evidence[index] > 0).flatten(), as_tuple=False
+                                evidence_target.flatten(), as_tuple=False
                             )
                             .squeeze(1)
                             .tolist()
@@ -432,6 +421,11 @@ def _evaluate_segmenter(
     for condition in conditions:
         subject_accuracy = []
         whole_dice = []
+        region_dice: dict[str, list[float]] = {
+            "edema": [],
+            "non_enhancing": [],
+            "enhancing": [],
+        }
         with torch.no_grad():
             for case in cases:
                 volumes = case.volumes * _condition_mask(condition)[0, :, None, None, None]
@@ -451,12 +445,23 @@ def _evaluate_segmenter(
                     / len(case.questions)
                 )
                 whole_dice.append(_tensor_dice(prediction > 0, case.label > 0))
+                for name, label_value in (
+                    ("edema", 1),
+                    ("non_enhancing", 2),
+                    ("enhancing", 3),
+                ):
+                    region_dice[name].append(
+                        _tensor_dice(prediction == label_value, case.label == label_value)
+                    )
         results[condition_id(condition)] = {
             "symbolic_answer_accuracy": sum(subject_accuracy) / len(subject_accuracy),
             "subject_bootstrap_95ci": bootstrap_mean_ci(
                 subject_accuracy, seed=20260914, samples=500
             ),
             "mean_whole_tumor_dice": sum(whole_dice) / len(whole_dice),
+            "mean_region_dice": {
+                name: sum(values) / len(values) for name, values in region_dice.items()
+            },
             "subjects": len(cases),
         }
     return results

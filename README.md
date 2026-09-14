@@ -78,6 +78,9 @@ the final benchmark because of shortcut leakage.
 The [first controlled real-MRI pilot](experiments/REAL_PILOT_V0.md) executes four model
 paths but demonstrates underfitting and no grounded-over-auxiliary advantage; its results
 are diagnostic and explicitly excluded from abstract claims.
+The [preprocessing and one-case optimization gates](experiments/OPTIMIZATION_GATES.md)
+verify cache identity and VLM learnability but expose unstable threshold-derived symbolic
+answers despite high segmentation Dice; the gate remains failed pending QA V1.
 
 ## Planned systems
 

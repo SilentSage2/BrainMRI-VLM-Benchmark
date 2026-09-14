@@ -14,8 +14,9 @@ path: a shared 3D encoder processes available contrasts; availability masks and 
 sequence identities enter visual fusion with masked-pooled question tokens; the model
 outputs answer logits, including abstention, and voxel-evidence logits. Evaluation spans
 all 15 non-empty contrast subsets and subject-level answer, evidence, grounding,
-hallucination, calibration, and bootstrap analyses. The dashed training box denotes a
-frozen answer/evidence-loss and balanced-dropout protocol whose runner remains pending.
+hallucination, calibration, and bootstrap analyses. The dashed training box denotes the
+frozen answer/evidence-loss and balanced-dropout protocol; a small real-data runner is
+implemented, while the full-scale training path remains pending.
 This framework figure makes no performance or clinical claim.
 
 ## Figure 2 — complete descriptive cohort
