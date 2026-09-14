@@ -87,6 +87,9 @@ and keeps all test cases unread while QA V1 is redesigned.
 The [residual 3D missing-contrast baseline direction runs](experiments/STRONG_BASELINE_DIRECTION.md)
 establish a standard BraTS WT/TC/ET training path and pass a small 32/8-subject development
 gate, while explicitly withholding any generalization, Figure 4, or release claim.
+The [balanced QA V1 protocol](experiments/QA_V1_PROTOCOL.md) freezes three nonredundant
+question families with distinct evidence targets and a matched answer-only/auxiliary/
+grounded comparison contract.
 
 ## Planned systems
 
