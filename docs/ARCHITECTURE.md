@@ -1,14 +1,11 @@
 # Architecture
 
-The package deliberately begins with a small model-independent core:
+V0 contains typed MRI volumes, subject cases, grounded QA examples, canonical fingerprints,
+subject-level splitting, integrity audits, answer/evidence metrics, and synthetic fixtures.
 
-- `schema`: immutable figure-caption records and split labels;
-- `fingerprint`: canonical content hashing for declarative specifications;
-- `split`: deterministic source-group assignment and isolation checks;
-- `audit`: cross-split duplicate and provenance checks;
-- `metrics`: bidirectional retrieval metrics from explicit ranked IDs;
-- `synthetic`: a deterministic metadata fixture for protocol tests.
+V1 adds a NIfTI adapter, mask-derived question generator, counterfactual transforms, a
+slice-based VLM baseline, a sequence-aware 3D visual encoder, language-conditioned fusion,
+answer decoder, voxel-evidence head, modality-mask sampler, and immutable run manifests.
 
-V1 will add narrow adapter interfaces for image and text encoders, contrastive objectives,
-negative samplers, and immutable run manifests. Those interfaces are deferred until the
-data and evaluation contracts pass review.
+The evidence head is part of the tested hypothesis; a standalone segmentation model is an
+oracle/control component, not the flagship system.

@@ -3,9 +3,9 @@ requires = ["hatchling==1.27.0"]
 build-backend = "hatchling.build"
 
 [project]
-name = "scivlm-lab"
+name = "mri-vlm-grounding"
 version = "0.1.0"
-description = "Leakage-aware scientific figure-text retrieval and grounded QA research"
+description = "Grounded 3D vision-language reasoning over multi-sequence brain MRI"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 license = { text = "MIT" }
@@ -20,10 +20,10 @@ dev = [
 ]
 
 [project.scripts]
-scivlm-v0-audit = "scivlm.cli:main"
+mri-vlm-v0-audit = "mri_vlm.cli:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/scivlm"]
+packages = ["src/mri_vlm"]
 
 [tool.pytest.ini_options]
 addopts = "-q --strict-config --strict-markers"
@@ -39,5 +39,5 @@ select = ["E", "F", "I", "B", "UP", "RUF", "SIM"]
 [tool.mypy]
 python_version = "3.12"
 strict = true
-packages = ["scivlm"]
+packages = ["mri_vlm"]
 mypy_path = "src"

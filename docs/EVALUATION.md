@@ -1,18 +1,14 @@
 # Evaluation Contract
 
-Retrieval is evaluated in both directions against a frozen candidate set. A query may
-have multiple relevant candidates, and the rank of its first relevant candidate defines
-Recall@K, reciprocal rank, and median rank. Queries without any relevant candidate are a
-protocol error rather than silently scored as zero.
+Text answers use normalized exact match and numeric answers use frozen absolute/relative
+tolerances. Evidence is scored with voxel Dice. Grounded answer accuracy requires both a
+correct answer and evidence Dice at or above the declared threshold.
 
-Before scoring, the evaluator must verify:
+An unanswerable question is correct only when the VLM abstains. Any non-empty answer counts
+as hallucination. Counterfactual consistency requires both members of a subject-grouped
+pair to be correct.
 
-1. unique query and candidate identifiers;
-2. at least one relevant candidate for every query;
-3. no source group occurs in multiple splits;
-4. no exact specification or rendered-image fingerprint crosses splits;
-5. candidate sets and relevance judgments are identical across compared systems.
-
-Ties use a deterministic candidate-ID ordering fixed before model comparison. Both macro
-query metrics and declared slices are reported; micro-averaging across captions is not a
-substitute for source-group isolation.
+Scores are first aggregated per subject, then across subjects. Bootstrap resampling uses
+subjects. Every model receives identical questions, volumes, modality masks, preprocessing,
+and decoding rules. Before scoring, the evaluator verifies subject isolation, fingerprint
+isolation, example coverage, answer/evidence consistency, and fixed label mapping.

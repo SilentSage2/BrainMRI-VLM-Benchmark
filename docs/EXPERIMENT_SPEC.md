@@ -1,93 +1,55 @@
-# V0–V1 Experiment Specification
-
-- **Status:** V0 implementation started; V1 model work gated on protocol review
-- **Primary artifact:** bidirectional scientific figure-caption retrieval benchmark
-- **Initial data:** deterministic synthetic scientific-chart specifications
+# V0–V1 MRI-VLM Experiment Specification
 
 ## Falsifiable hypothesis
 
-Holding encoder, examples, optimizer budget, and evaluation candidates fixed,
-relation-preserving hard negatives will improve relational-caption Recall@10 over random
-in-batch negatives on the in-domain test split. The improvement counts as robust only if
-it does not materially degrade the held-out-family and held-out-style slices.
+With the base 3D encoder, language decoder, subjects, QA examples, optimizer steps, and
+parameter budget held fixed, adding voxel-evidence supervision and balanced modality
+dropout will improve grounded answer accuracy by at least 0.05 absolute and reduce
+unanswerable hallucination by at least 0.05 versus answer-only fine-tuning under missing
+MRI sequences. Complete-input answer accuracy must remain within 0.01 absolute.
 
-The null outcome and a domain-shift regression are publishable negative results.
+## Tasks
 
-## Data protocol
+Mask- and geometry-derived questions initially cover presence, laterality, relative volume,
+enhancing-component proportion, cross-region comparison, and deliberately unanswerable
+requests. Numeric answers have fixed tolerances. Every answerable example includes one or
+more voxel evidence sets; unanswerable examples include neither answer nor evidence.
 
-Each example is derived from a declarative figure specification and records a figure ID,
-caption ID, source group, generator family, chart type, relation type, visual style,
-specification fingerprint, and rendered-image fingerprint.
+Counterfactuals make one controlled change to a mask-derived property or modality input.
+Originals and variants share a subject group and split.
 
-Counterfactuals and alternate captions derived from one latent specification share a
-source group. Splits operate on source groups. A generator family may be reserved wholly
-for the shifted-domain test slice. Exact image or specification fingerprints may not
-cross splits; perceptual duplicate checks are added with the renderer in V1.
+## Comparisons
 
-The real-corpus milestone requires a separate decision record covering license,
-redistribution, document identifiers, duplicate policy, and document-level splitting.
+1. Question-only majority/template control.
+2. Slice-based VLM using a fixed slice-selection policy.
+3. Answer-only 3D MRI-VLM.
+4. The same 3D MRI-VLM with an evidence head and balanced modality dropout.
 
-## Baselines and treatments
+Ablations remove evidence loss, modality dropout, and sequence identity embeddings.
 
-1. Frozen pretrained image-text encoder with zero-shot similarity.
-2. Projection-only contrastive adapter with random in-batch negatives.
-3. The same adapter with relation-preserving hard negatives.
-4. Parameter-efficient encoder tuning only if projection-only training is insufficient.
+## Evaluation
 
-No architecture may receive different evaluation candidates or split membership.
+- normalized categorical and numeric-tolerance answer accuracy;
+- voxel evidence Dice;
+- grounded answer accuracy, requiring answer and evidence correctness;
+- unanswerable hallucination rate;
+- pairwise counterfactual consistency;
+- expected calibration error and selective accuracy;
+- degradation across complete, single-missing, paired-input, and single-input conditions.
 
-## Metrics and slices
-
-Primary metrics, in both retrieval directions:
-
-- Recall@1, Recall@5, and Recall@10;
-- median rank;
-- mean reciprocal rank as a diagnostic.
-
-Report slices by chart type, relation type, generator family, visual style, and domain
-status. Bootstrap paired query-level differences when query count supports it. For
-stochastic training, use one development seed and at least three final seeds when the
-compute ceiling permits; otherwise disclose the limitation.
-
-## Hard-negative ablation
-
-A hard negative preserves chart type and surface vocabulary while changing the relation
-needed to match the figure (for example, increasing versus decreasing, or A greater than
-B versus B greater than A). It must not be a valid caption for the query figure. Random
-and hard-negative treatments use the same batch count, optimizer steps, model capacity,
-and positive pairs.
+Confidence intervals resample subjects, not questions or slices. Final stochastic models
+use three seeds when the compute ceiling permits.
 
 ## Compute ceiling
 
-- V0 audit and tests: CPU, less than one minute on the reference development machine.
-- V1 smoke run: CPU-capable tiny fixture.
-- V1 meaningful comparison: one GPU, target of at most 12 GPU-hours per final seed.
-- Full three-seed baseline/ablation matrix: target ceiling of 144 GPU-hours total.
+V0 tests run on CPU in under one minute. V1 uses one accessible GPU, parameter-efficient
+tuning, bounded 3D crops, and at most 24 GPU-hours per final seed. The final answer-only
+versus grounded comparison targets at most 144 GPU-hours total.
 
-Actual hardware, wall time, peak memory, energy/cost when available, and aborted runs are
-recorded. The ceiling is a gate, not a promised spend.
+## Acceptance gates
 
-## Acceptance criteria
-
-V0 is complete when:
-
-1. provenance and schema validation are executable;
-2. group-aware splitting is deterministic and tested for group and duplicate leakage;
-3. retrieval metrics agree with hand-computed fixtures;
-4. a versioned synthetic fixture passes the audit from one command;
-5. the real-corpus choice remains explicitly unresolved pending a license audit.
-
-V1 is complete only when:
-
-1. one command prepares a versioned dataset and another trains/evaluates;
-2. the frozen baseline and trained models share the identical protocol;
-3. random-versus-hard negatives are compared under matched compute;
-4. at least one held-out-family or held-out-style slice is reported;
-5. a results table, confidence/variance estimate, retrieval examples, near-duplicate
-   analysis, compute disclosure, and failure taxonomy are based on actual runs.
-
-## Stop/go gate for grounded QA
-
-Grounded QA starts only after V1 produces a repeatable gain on at least one primary
-retrieval metric without a severe domain-shift regression. If it does not, the next work
-is representation failure analysis, not adding a generative model.
+V0 requires executable schemas, subject isolation, duplicate audits, a frozen question
+taxonomy, hand-verified answer/evidence/hallucination metrics, and an approved dataset
+decision. V1 additionally requires a question-only control, matched VLM comparisons,
+every missingness slice, three-seed or bootstrap uncertainty, qualitative evidence
+overlays, compute disclosure, and failure analysis.

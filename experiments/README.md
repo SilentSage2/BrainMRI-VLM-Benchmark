@@ -1,5 +1,5 @@
 # Experiments
 
-Commit resolved configurations, immutable manifests, compact metric summaries, and small
-diagnostic plots. Do not commit datasets, weights, checkpoints, or raw run directories.
-No experiment result exists at V0 scaffold time.
+Commit resolved configs, immutable run manifests, compact aggregate metrics, and selected
+non-identifying diagnostics. Never commit MRI volumes, segmentations, weights, checkpoints,
+or raw run directories. No experiment result exists at V0 scaffold time.

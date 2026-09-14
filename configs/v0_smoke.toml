@@ -1,13 +1,17 @@
 schema_version = 1
 seed = 20260914
-generator_version = "v0-fixture-1"
+dataset_id = "msd-task01-brain-tumour"
 
 [split]
-train = 0.60
-validation = 0.20
-test = 0.20
-held_out_families = ["correlation"]
+train = 0.70
+validation = 0.15
+test = 0.15
 
-[audit]
-require_image_fingerprint = true
-require_spec_fingerprint = true
+[modalities]
+required = ["flair", "t1", "t1gd", "t2"]
+
+[evaluation]
+evidence_dice_threshold = 0.5
+absolute_numeric_tolerance = 0.05
+relative_numeric_tolerance = 0.02
+complete_input_noninferiority_margin = 0.01

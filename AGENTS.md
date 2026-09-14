@@ -2,26 +2,23 @@
 
 ## Purpose
 
-SciVLM Lab is a research repository for leakage-aware scientific figure-text
-retrieval and, only after the retrieval milestone is credible, grounded visual
-question answering.
+MRI-VLM Grounding Lab studies evidence-grounded 3D vision-language reasoning over
+multi-sequence brain MRI. It is not a medical device or clinical tool.
 
 ## Boundaries
 
-- Keep the V0 slice limited to data contracts, provenance, group-aware splits,
-  duplicate checks, retrieval metrics, and deterministic synthetic fixtures.
-- Do not add a VLM, agent framework, web service, or UI before the V1 retrieval
-  protocol and pretrained baseline are reproducible.
-- Treat generated specifications as source data and rendered images as generated
-  artifacts. Never commit external datasets, model weights, or run artifacts.
-- Label planned results as planned. Do not imply that an unrun model improves a
-  baseline.
+- Keep V0 limited to the hypothesis, typed MRI/QA/evidence contracts, subject-level
+  splits, audits, metrics, and deterministic fixtures.
+- Do not train a large VLM before dataset, question-generation, evidence, missingness,
+  compute, and acceptance protocols are reviewed.
+- Never commit MRI data, weights, credentials, or run artifacts.
+- Do not describe mask-derived text as radiology reports or claim clinical validity.
 
-## Quality
+## Research quality
 
-- Use typed Python interfaces and deterministic functions in the core package.
-- Split by source group or generator family, never by image-caption pair.
-- Test metrics, group isolation, duplicate leakage, canonical fingerprints, and
-  serialization before model work.
-- Record seeds, data fingerprints, code revision, environment, hardware, duration,
-  and cost for every experiment.
+- Split by subject before generating questions, slices, patches, or counterfactuals.
+- Keep every derived example from a subject in the same split.
+- Include a question-only control and unanswerable questions to expose language shortcuts.
+- Match training examples, optimizer steps, and compute across answer-only and grounded VLMs.
+- Evaluate every predeclared missing-sequence condition and report negative results.
+- Test label mapping, leakage, evidence metrics, numeric scoring, and serialization.

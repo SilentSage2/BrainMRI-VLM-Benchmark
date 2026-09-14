@@ -1,49 +1,66 @@
-# SciVLM Lab
+# MRI-VLM Grounding Lab
 
-Research-grade evaluation of scientific figure-text retrieval under source leakage,
-hard negatives, and domain shift.
+**Robust 3D Vision-Language Reasoning over Multi-Sequence Brain MRI**
 
-> **Status: V0 protocol scaffold.** No model result is claimed yet. The checked-in
-> code defines the data contract, deterministic fingerprints, group-aware splits,
-> duplicate-leakage audit, and hand-verifiable retrieval metrics required before V1.
+> **Status: V0 protocol scaffold.** No VLM result is claimed yet. The repository currently
+> defines MRI/QA/evidence contracts, subject-level splits, leakage audits, grounded-QA
+> metrics, and deterministic synthetic fixtures.
 
 ## Research question
 
-When do structure-aware contrastive training and hard-negative selection improve
-scientific figure-text retrieval over a frozen pretrained encoder, and do any gains
-survive unseen generator families and visual styles?
+Under matched data and compute, does explicit voxel-level evidence supervision improve a
+3D MRI vision-language model's grounded question answering, counterfactual consistency,
+and abstention under missing MRI sequences compared with answer-only fine-tuning?
 
-The later grounded-QA milestone is conditional: it begins only if a retrieval change
-produces a reproducible representation gain rather than a template-matching artifact.
+Inputs are FLAIR, T1-weighted, post-contrast T1-weighted, and T2-weighted brain MRI.
+Questions test verifiable properties such as affected region, relative lesion volume,
+enhancing-component presence, and changes after a controlled counterfactual. The model
+must return both an answer and the voxel region supporting it.
 
-## V0–V1 hypothesis
+## Why this is a VLM project
 
-Under group-isolated evaluation, hard negatives that preserve chart type while changing
-the underlying relation should improve Recall@10 on relational captions more than random
-negatives. The effect may reverse on shifted domains if the model learns renderer or
-caption-template shortcuts; held-out families and counterfactual pairs test that failure.
-
-## Evaluation shape
+The learned system contains a multi-sequence 3D visual encoder, a language-conditioned
+fusion module, and an answer decoder with an evidence-grounding head. Segmentation masks
+provide auditable supervision and question generation; segmentation alone is not the
+headline task.
 
 ```text
-declarative figure specs -> render + caption -> provenance/duplicate audit
-                                               |
-                              group/family-aware split
-                                               |
-           frozen encoder ----+---- projection-only ---- contrastive tuning
-                                               |
-                  retrieval metrics + shift slices + failure review
+FLAIR / T1 / T1-Gd / T2 volumes -> 3D visual tokens --+
+                                                       +-> language-conditioned fusion
+question text ------------------> text tokens ---------+          |
+                                                                  +-> answer
+                                                                  +-> voxel evidence
 ```
 
-The initial corpus is generated from versioned declarative scientific-chart specs. This
-makes causal counterfactuals, exact provenance, and family-held-out splits possible. A
-real scientific figure-caption corpus is an external-validity milestone and will not be
-selected until license, redistribution, provenance, and document-level split constraints
-are recorded.
+## Main hypothesis
+
+Answer-plus-evidence training with modality dropout will outperform answer-only training
+on **grounded answer accuracy** and **unanswerable hallucination rate** when one or more MRI
+sequences are missing. Ordinary answer accuracy alone cannot establish the claim.
+
+## Data direction
+
+The initial candidate is Medical Segmentation Decathlon `Task01_BrainTumour`, which has
+484 labeled training volumes across four MRI sequences and is published under CC BY-SA
+4.0. Deterministic questions and evidence targets are derived from masks and image
+geometry. They are synthetic research annotations, not radiologist reports.
+
+See [the dataset decision](docs/decisions/0001-msd-brain-tumour.md).
+
+## Planned systems
+
+| System | Visual representation | Training target | Status |
+|---|---|---|---|
+| Question-only prior | none | answer | Planned shortcut control |
+| Slice-based VLM | sampled 2D slices | answer | Planned baseline |
+| 3D MRI-VLM | pooled 3D tokens | answer | Planned baseline |
+| Grounded 3D MRI-VLM | sequence-aware 3D tokens | answer + voxel evidence | Primary treatment |
+
+Primary metrics are answer accuracy, grounded answer accuracy, evidence Dice, numeric
+tolerance accuracy, counterfactual consistency, calibration, and hallucination on
+unanswerable questions. Every system is evaluated across the same missing-sequence matrix.
 
 ## Quick start
-
-Python 3.12 is the reference runtime.
 
 ```bash
 python -m venv .venv
@@ -51,45 +68,8 @@ python -m venv .venv
 .venv/bin/ruff check .
 .venv/bin/mypy src tests
 .venv/bin/pytest
-.venv/bin/scivlm-v0-audit
+.venv/bin/mri-vlm-v0-audit
 ```
 
-The audit command uses only deterministic in-memory metadata. It does not download data
-or create model artifacts.
-
-## Planned comparison
-
-| System | Training | Negative policy | Status |
-|---|---|---|---|
-| Frozen pretrained image-text encoder | none | none | Planned V1 baseline |
-| Projection-only adapter | paired specs | random in-batch | Planned |
-| Projection-only adapter | paired specs | relation-preserving hard | Planned ablation |
-| Parameter-efficient encoder tuning | paired specs | best V1 policy | Conditional |
-
-Primary metrics are text-to-image and image-to-text Recall@1/5/10 and median rank.
-Secondary analysis covers chart type, relation type, template family, visual style,
-near-duplicate density, and shifted-domain slices. Final comparisons use repeated seeds
-or bootstrap confidence intervals as appropriate.
-
-## Scope and non-goals
-
-V0 does not train a model, render a large corpus, download an external dataset, implement
-grounded QA, or build an application. See [the experiment specification](docs/EXPERIMENT_SPEC.md),
-[data card](docs/DATA_CARD.md), and [evaluation contract](docs/EVALUATION.md).
-
-## Repository layout
-
-```text
-src/scivlm/       typed data, split, audit, fingerprint, and metric core
-configs/          versioned experiment configuration
-tests/            correctness-critical unit tests
-experiments/      compact manifests and result summaries only
-docs/             protocol, data, architecture, and evaluation records
-```
-
-## Compute and limitations
-
-V0 requires CPU only. V1 must fit on one accessible GPU, with a CPU fixture run in CI.
-The synthetic-first design improves control but can exaggerate regularity and cannot
-establish performance on real scientific literature. Results remain unclaimed until
-the planned baselines and ablations run under one frozen protocol.
+V0 downloads no medical data. This is a retrospective research benchmark, not a medical
+device or clinical decision-support system.

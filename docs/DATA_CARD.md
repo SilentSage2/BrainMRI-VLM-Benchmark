@@ -1,33 +1,17 @@
 # Data Card
 
-## V0 source
+Medical Segmentation Decathlon `Task01_BrainTumour` is the initial candidate. Its official
+site describes multimodal multisite FLAIR, T1, T1-Gd, and T2 MRI, glioma subregion masks,
+484 training volumes, 266 test volumes, and CC BY-SA 4.0 licensing.
 
-The V0 fixture consists of programmatically generated metadata for declarative scientific
-charts. It contains no downloaded images, patient data, publication text, or third-party
-assets. Every record is reproducible from a checked-in generator version and seed.
+VLM questions, typed answers, and voxel evidence are deterministically derived from the
+labeled training subjects. These are synthetic research annotations—not clinical reports
+or radiologist judgments. The unlabeled challenge test set is not used as validation.
 
-## Unit of grouping
+The local adapter must verify archive checksum, pseudonymous subject uniqueness, modality
+completeness, shapes, affines, orientation, spacing, finite values, and allowed mask labels.
+All data remains outside Git.
 
-`source_group` identifies all views, counterfactual variants, and captions derived from
-one latent experimental setup. A source group belongs to exactly one split. Generator
-families can be held out as a stronger domain-shift condition.
-
-## Required provenance
-
-Every figure-caption record must include stable IDs, generator family/version, chart and
-relation types, visual style, canonical specification SHA-256, rendered image SHA-256,
-and source group. External records will additionally require source document ID, dataset
-version, license, and intended-use notes.
-
-## Known limitations
-
-Synthetic charts have cleaner captions, simpler layouts, and more explicit relations than
-real publication figures. Renderer artifacts can become shortcuts. Generated data cannot
-support claims about biomedical or scientific-literature performance; that requires a
-separately audited external corpus.
-
-## Storage policy
-
-Declarative fixture metadata may be committed when small. Bulk rendered images, processed
-datasets, checkpoints, and run artifacts remain outside Git and are addressed by content
-fingerprints. No private or clinical data is permitted.
+Limitations include curated tumor prevalence, historical acquisition protocols, synthetic
+language, incomplete site metadata, and mask-based evidence that cannot represent every
+reasoning cue a radiologist might use. Benchmark gains do not establish safety or utility.
