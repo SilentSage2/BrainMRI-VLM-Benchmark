@@ -6,16 +6,18 @@ result. Every plot must be regenerated from a versioned command and retain its s
 
 | Figure | Scientific claim | Required input | Due | Failure-safe version |
 |---|---|---|---|---|
-| 1. Cohort and targets | The audited cohort supports varied physical-volume and enhancing-fraction questions without subject leakage. | 484 reference masks and locked split | 18 Sep | Descriptive cohort panel, explicitly not a model result |
-| 2. Grounded MRI-VLM | Answers, voxel evidence, modality availability, and abstention are jointly testable. | Frozen architecture and one real case | 25 Sep | Methods schematic plus real input montage |
+| 1. Overall framework | The implemented pipeline connects multi-contrast MRI and questions to answer/evidence outputs and locked evaluation. | Implemented architecture, frozen protocol, and one real case | 25 Sep | Mark not-yet-implemented training elements explicitly |
+| 2. Cohort and targets | The audited cohort supports varied physical-volume and enhancing-fraction questions without subject leakage. | 484 reference masks and locked split | 18 Sep | Move to supplement if four figures tell the story better |
 | 3. Contrast-dependence heatmap | Grounding changes question-specific sensitivity to FLAIR/T1/T1-Gd/T2 removal. | Matched models × question families × missing contrasts | 6 Oct | Report the predeclared matrix even if effects are null |
 | 4. Robustness and uncertainty | Grounding improves—or fails to improve—performance as available contrasts decrease. | All 15 combinations, subject bootstrap, seeds | 10 Oct | Show effect sizes and confidence intervals without significance claims |
 | 5. Evidence and failure analysis | Spatial evidence and abstention expose supported answers and failure modes. | Frozen representative-selection rule | 15 Oct | Use one success, one correct abstention, one shared failure |
 
-Status on 14 September: Figure 1 is complete from all 484 audited masks in PNG and vector
-PDF form, with a 484-row source CSV and JSON summary. Figure 2 is complete using a real
-validation case selected by the frozen median-burden rule. The remaining panels require
-model outputs and must not be populated with simulated performance.
+Status on 14 September: Figure 1 is a provisional overall framework using a real validation
+case selected by the frozen median-burden rule; the implemented model and evaluation paths
+are solid, while the pending training runner is dashed and labeled. Figure 2 is complete
+from all 484 audited masks in PNG and vector PDF form, with a 484-row source CSV and JSON
+summary. The remaining panels require model outputs and must not contain simulated
+performance.
 
 ## Milestones
 
@@ -56,20 +58,21 @@ model outputs and must not be populated with simulated performance.
 
 ## Figure contracts
 
-### Figure 1 — descriptive, complete
+### Figure 1 — overall framework, provisional
+
+- Supports: the implemented model connects four MRI contrasts, availability masks, and
+  question tokens to answer and voxel-evidence logits, followed by the implemented 15-way
+  missing-contrast evaluation and subject-level metrics.
+- Current limitation: the training protocol is frozen but its runner is not implemented;
+  it is therefore drawn dashed and explicitly labeled pending.
+- Cannot support: learned grounding, robustness, accuracy, or clinical utility.
+
+### Figure 2 — descriptive, complete
 
 - Supports: the audited cohort has a locked subject split and heterogeneous mask-derived
   physical-volume targets.
 - Can refute: sufficient target diversity if distributions collapse or labels are absent.
 - Cannot support: model performance, clinical validity, or population generalizability.
-
-### Figure 2 — methods, complete
-
-- Supports: four co-registered MRI contrasts, availability masking, shared 3D encoding,
-  question fusion, answer logits including abstention, and voxel evidence are represented
-  in the implemented controlled model.
-- Can refute: implementation fidelity if any displayed data path lacks a code/config match.
-- Cannot support: learned grounding, accuracy, robustness, or clinical utility.
 
 ### Figure 3 — empirical, planned
 
@@ -94,18 +97,18 @@ model outputs and must not be populated with simulated performance.
 
 ## Reproduction
 
-Figure 1 is generated from real reference masks and writes PNG, vector PDF, CSV source data,
+Figure 2 is generated from real reference masks and writes PNG, vector PDF, CSV source data,
 and a JSON summary. Generated artifacts remain outside Git.
 
 ```bash
 mri-vlm-cohort-figure /absolute/path/to/Task01_BrainTumour \
-  --output-prefix artifacts/figures/figure1_cohort
+  --output-prefix artifacts/figures/figure2_cohort
 ```
 
-Figure 2 writes PNG, vector PDF, and selection metadata. The reference overlay is shown as
+Figure 1 writes PNG, vector PDF, and selection metadata. The reference overlay is shown as
 the supervision target and is explicitly not a model input.
 
 ```bash
 mri-vlm-method-figure /absolute/path/to/Task01_BrainTumour \
-  --output-prefix artifacts/figures/figure2_method
+  --output-prefix artifacts/figures/figure1_overview
 ```

@@ -92,48 +92,82 @@ def render_method_figure(root: Path, output_prefix: Path, *, seed: int) -> dict[
     _box(
         diagram_axis,
         patches,
-        0.02,
-        0.25,
-        0.16,
-        0.5,
-        "4 MRI contrasts\n+ availability mask",
+        0.01,
+        0.38,
+        0.13,
+        0.38,
+        "4 MRI contrasts\n+ availability",
         "#DDEAF3",
     )
     _box(
         diagram_axis,
         patches,
-        0.23,
-        0.25,
-        0.16,
-        0.5,
+        0.18,
+        0.38,
+        0.14,
+        0.38,
         "Shared 3D encoder\n+ sequence identity",
         "#D8EAD3",
     )
-    _box(diagram_axis, patches, 0.44, 0.25, 0.16, 0.5, "Question-conditioned\nfusion", "#FFF0C7")
     _box(
         diagram_axis,
         patches,
-        0.69,
-        0.57,
-        0.22,
-        0.3,
+        0.18,
+        0.05,
+        0.14,
+        0.2,
+        "Question tokens\n+ masked pooling",
+        "#DDEAF3",
+    )
+    _box(diagram_axis, patches, 0.37, 0.29, 0.15, 0.42, "Question-conditioned\nfusion", "#FFF0C7")
+    _box(
+        diagram_axis,
+        patches,
+        0.58,
+        0.56,
+        0.14,
+        0.25,
         "Answer logits\n(including abstain)",
         "#E8D8EE",
     )
-    _box(diagram_axis, patches, 0.69, 0.15, 0.14, 0.3, "Voxel evidence", "#F5D0D0")
-    _arrow(diagram_axis, patches, (0.18, 0.5), (0.23, 0.5))
-    _arrow(diagram_axis, patches, (0.39, 0.5), (0.44, 0.5))
-    _arrow(diagram_axis, patches, (0.60, 0.5), (0.69, 0.72))
-    _arrow(diagram_axis, patches, (0.60, 0.5), (0.69, 0.30))
-    diagram_axis.text(
-        0.52,
-        0.08,
-        "Matched comparison: answer-only vs answer + voxel-evidence supervision "
-        "and balanced contrast dropout",
-        ha="center",
-        fontsize=7,
-        fontweight="bold",
+    _box(diagram_axis, patches, 0.58, 0.18, 0.14, 0.25, "Voxel evidence\nlogits", "#F5D0D0")
+    _box(
+        diagram_axis,
+        patches,
+        0.78,
+        0.59,
+        0.20,
+        0.28,
+        "Frozen training protocol\n"
+        "answer loss + evidence loss\n"
+        "balanced contrast dropout\n"
+        "runner pending",
+        "#F2F2F2",
+        linestyle="--",
+        fontsize=5.5,
     )
+    _box(
+        diagram_axis,
+        patches,
+        0.78,
+        0.12,
+        0.20,
+        0.34,
+        "Implemented evaluation\n"
+        "15 non-empty contrast subsets\n"
+        "answer, Dice, grounding,\n"
+        "hallucination, calibration\n"
+        "subject-level bootstrap",
+        "#E5F5F9",
+        fontsize=5.5,
+    )
+    _arrow(diagram_axis, patches, (0.14, 0.57), (0.18, 0.57))
+    _arrow(diagram_axis, patches, (0.32, 0.57), (0.37, 0.53))
+    _arrow(diagram_axis, patches, (0.32, 0.15), (0.39, 0.32))
+    _arrow(diagram_axis, patches, (0.52, 0.5), (0.58, 0.68))
+    _arrow(diagram_axis, patches, (0.52, 0.5), (0.58, 0.30))
+    _arrow(diagram_axis, patches, (0.72, 0.68), (0.78, 0.34))
+    _arrow(diagram_axis, patches, (0.72, 0.30), (0.78, 0.25))
     figure.suptitle(
         "Voxel-grounded 3D MRI vision-language reasoning under missing contrasts",
         fontsize=10,
@@ -148,7 +182,13 @@ def render_method_figure(root: Path, output_prefix: Path, *, seed: int) -> dict[
         fontsize=8,
         fontweight="bold",
     )
-    figure.text(0.01, 0.435, "B  Controlled model and outputs", fontsize=8, fontweight="bold")
+    figure.text(
+        0.01,
+        0.435,
+        "B  Implemented model and protocol-aware evaluation flow",
+        fontsize=8,
+        fontweight="bold",
+    )
 
     output_prefix.parent.mkdir(parents=True, exist_ok=True)
     figure.savefig(output_prefix.with_suffix(".png"), dpi=300, bbox_inches="tight")
@@ -178,6 +218,9 @@ def _box(
     height: float,
     label: str,
     color: str,
+    *,
+    linestyle: str = "-",
+    fontsize: float = 7,
 ) -> None:
     box = patches.FancyBboxPatch(
         (x, y),
@@ -187,9 +230,17 @@ def _box(
         facecolor=color,
         edgecolor="#333333",
         linewidth=1.2,
+        linestyle=linestyle,
     )
     axis.add_patch(box)
-    axis.text(x + width / 2, y + height / 2, label, ha="center", va="center", fontsize=7)
+    axis.text(
+        x + width / 2,
+        y + height / 2,
+        label,
+        ha="center",
+        va="center",
+        fontsize=fontsize,
+    )
 
 
 def _arrow(axis: Any, patches: Any, start: tuple[float, float], end: tuple[float, float]) -> None:
