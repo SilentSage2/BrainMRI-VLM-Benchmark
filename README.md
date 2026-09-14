@@ -54,6 +54,8 @@ and [question taxonomy](docs/QUESTION_TAXONOMY.md). GitHub publication follows t
 The [V1 model decision](docs/MODEL_SELECTION.md) selects M3D-LaMed-Phi-3-4B as a
 single-volume external baseline and defines `MRI-VLM-Small` for the matched multi-sequence
 answer-only versus grounded comparison.
+The [ISMRM 2027 abstract plan](docs/ISMRM_2027_ABSTRACT_PLAN.md) freezes the MR-specific
+storyline, primary endpoint, figure plan, and submission decision gate.
 
 ## Planned systems
 

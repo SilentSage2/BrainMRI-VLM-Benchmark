@@ -36,6 +36,8 @@ Ablations remove evidence loss, modality dropout, and sequence identity embeddin
 - pairwise counterfactual consistency;
 - expected calibration error and selective accuracy;
 - degradation across complete, single-missing, paired-input, and single-input conditions.
+- question-family-by-dropped-contrast changes in accuracy, evidence Dice, and confidence,
+  compared with preregistered contrast dependencies.
 
 Confidence intervals resample subjects, not questions or slices. Final stochastic models
 use three seeds when the compute ceiling permits.
@@ -53,3 +55,6 @@ taxonomy, hand-verified answer/evidence/hallucination metrics, and an approved d
 decision. V1 additionally requires a question-only control, matched VLM comparisons,
 every missingness slice, three-seed or bootstrap uncertainty, qualitative evidence
 overlays, compute disclosure, and failure analysis.
+
+The ISMRM-facing narrative, figure plan, and October 2026 decision gates are frozen in
+`docs/ISMRM_2027_ABSTRACT_PLAN.md`.
