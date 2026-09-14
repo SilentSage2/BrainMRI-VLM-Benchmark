@@ -1,0 +1,13 @@
+schema_version = 1
+seed = 20260914
+generator_version = "v0-fixture-1"
+
+[split]
+train = 0.60
+validation = 0.20
+test = 0.20
+held_out_families = ["correlation"]
+
+[audit]
+require_image_fingerprint = true
+require_spec_fingerprint = true
