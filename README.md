@@ -66,6 +66,9 @@ The working [ISMRM abstract package](docs/ISMRM_2027_ABSTRACT_DRAFT.md) and
 experimental facts synchronized.
 The [research-substance audit](docs/RESEARCH_QUALITY_AUDIT.md) records current failures,
 mandatory controls, evidence gates, and the minimum defensible pivot.
+The first [real-data control ledger](experiments/REAL_CONTROLS.md) reports a 65.9%
+question-only validation accuracy and rejects the initial fixed-template distribution as
+the final benchmark because of shortcut leakage.
 
 ## Planned systems
 

@@ -58,6 +58,12 @@ Required remedies: question-only performance by template family, near-duplicate 
 screening, threshold sensitivity, explicit support-availability definitions, and held-out
 test evaluation only after all selection is frozen.
 
+Protocol disclosure: the initial integrity audit and cohort figure inspected aggregate
+label properties across all 484 cases, including the locked test split. No test prediction
+or per-case model-outcome selection has occurred, but the split is not pristine unseen data.
+All future selection must remain validation-only, and this limitation must appear in the
+abstract if the same test split is reported.
+
 ## 4. Implementation depth — fail at present
 
 `MRI-VLM-Small` is an implemented and tested controlled model, but it is currently a

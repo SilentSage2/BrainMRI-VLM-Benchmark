@@ -62,7 +62,8 @@ unanswerable questions, counterfactual consistency, calibration, and complete-in
 accuracy. Question-family-by-dropped-contrast effects test preregistered contrast
 dependencies. Report paired subject bootstrap 95% confidence intervals and three seeds
 where training variance is material. The held-out test set is evaluated once after model
-and threshold selection.
+and threshold selection. Its aggregate label distribution was previously included in
+dataset auditing and descriptive cohort analysis; no test predictions inform selection.
 
 ### Results
 
