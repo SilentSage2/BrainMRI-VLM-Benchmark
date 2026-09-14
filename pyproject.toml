@@ -46,6 +46,7 @@ mri-vlm-matched = "mri_vlm.matched_cli:main"
 mri-vlm-multiseed = "mri_vlm.multiseed_cli:main"
 mri-vlm-qa-v1-control = "mri_vlm.qa_v1_control_cli:main"
 mri-vlm-slice-baseline = "mri_vlm.slice_cli:main"
+mri-vlm-matched-figure = "mri_vlm.matched_figure_cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/mri_vlm"]
