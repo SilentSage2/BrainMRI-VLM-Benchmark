@@ -34,13 +34,63 @@ model outputs and must not be populated with simulated performance.
 
 ## Non-negotiable figure rules
 
+- Every figure starts with a contract specifying the scientific conclusion it can support,
+  its null or disconfirming interpretation, required inputs, and prohibited claims.
 - Never insert illustrative or simulated performance values into a result panel.
 - Label descriptive, validation, and held-out test results unambiguously.
 - Select qualitative cases by a frozen rule, not by visual appeal after inspecting test
   outcomes.
-- Include units, sample sizes, uncertainty definitions, and readable text at final size.
+- Empirical result figures must include meaningful baselines, controlled ablations, sample
+  sizes, and confidence intervals or error bars with their construction stated. Use three
+  seeds when training variance is material and subject-level bootstrap for paired inference.
+- Qualitative panels must show representative success, boundary, and failure cases, with
+  the outcome-independent selection rule retained beside the source data.
+- Method schematics must be checked against the implemented forward pass and configuration.
+- Include units, sample sizes, uncertainty definitions, and readable text at the locked
+  180-mm output width; use a color-vision-deficiency-safe palette and redundant labels.
 - Retain CSV/JSON source data and the exact command/config used to produce every figure.
+- Export high-resolution PNG and vector PDF; visually inspect both before release.
+- Captions must be independently understandable and distinguish observation from inference.
 - Negative results keep their planned panel; the interpretation changes, not the endpoint.
+- Figures 3–5 remain explicitly `planned` until their locked real-data inputs exist.
+
+## Figure contracts
+
+### Figure 1 — descriptive, complete
+
+- Supports: the audited cohort has a locked subject split and heterogeneous mask-derived
+  physical-volume targets.
+- Can refute: sufficient target diversity if distributions collapse or labels are absent.
+- Cannot support: model performance, clinical validity, or population generalizability.
+
+### Figure 2 — methods, complete
+
+- Supports: four co-registered MRI contrasts, availability masking, shared 3D encoding,
+  question fusion, answer logits including abstention, and voxel evidence are represented
+  in the implemented controlled model.
+- Can refute: implementation fidelity if any displayed data path lacks a code/config match.
+- Cannot support: learned grounding, accuracy, robustness, or clinical utility.
+
+### Figure 3 — empirical, planned
+
+- Supports only after locked evaluation: whether grounding changes question-specific
+  leave-one-contrast-out sensitivity relative to the matched answer-only model.
+- Disconfirming result: no aligned interaction, reversed dependence, or intervals spanning
+  effects too broadly for the predeclared claim.
+
+### Figure 4 — empirical, planned
+
+- Supports only after locked evaluation: whether performance degrades differently as the
+  number and identity of available contrasts change.
+- Disconfirming result: no grounded-model advantage or violation of the complete-input
+  non-inferiority margin.
+
+### Figure 5 — qualitative plus empirical, planned
+
+- Supports only after frozen case selection: how correct grounding, calibrated abstention,
+  boundary behavior, and shared failure appear spatially.
+- Cannot support prevalence or comparative performance without the corresponding aggregate
+  result and uncertainty.
 
 ## Reproduction
 

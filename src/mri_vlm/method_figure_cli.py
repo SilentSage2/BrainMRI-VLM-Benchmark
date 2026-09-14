@@ -38,7 +38,8 @@ def render_method_figure(root: Path, output_prefix: Path, *, seed: int) -> dict[
     tumor_coordinates = np.argwhere(label > 0)
     axial_index = round(float(np.median(tumor_coordinates[:, 2])))
 
-    figure = plt.figure(figsize=(12, 6.7), constrained_layout=True)
+    plt.rcParams.update({"font.size": 7.5, "axes.titlesize": 8.5})
+    figure = plt.figure(figsize=(7.2, 4.15), constrained_layout=True)
     grid = figure.add_gridspec(2, 5, height_ratios=(1.0, 0.78))
     modality_names = ("FLAIR", "T1", "T1-Gd", "T2")
     for channel, name in enumerate(modality_names):
@@ -63,16 +64,16 @@ def render_method_figure(root: Path, output_prefix: Path, *, seed: int) -> dict[
         vmax=_quantile(np, background, 0.99),
     )
     region_map = np.ma.masked_where(overlay == 0, overlay)
-    cmap = colors_module.ListedColormap(("#4DAF4A", "#377EB8", "#E41A1C"))
+    cmap = colors_module.ListedColormap(("#009E73", "#0072B2", "#D55E00"))
     norm = colors_module.BoundaryNorm((0.5, 1.5, 2.5, 3.5), cmap.N)
     overlay_axis.imshow(region_map, cmap=cmap, norm=norm, alpha=0.62)
     overlay_axis.set_title("Reference evidence", fontweight="bold")
     overlay_axis.axis("off")
 
     legend_handles = (
-        patches.Patch(color="#4DAF4A", label="Edema"),
-        patches.Patch(color="#377EB8", label="Non-enhancing"),
-        patches.Patch(color="#E41A1C", label="Enhancing"),
+        patches.Patch(color="#009E73", label="Edema"),
+        patches.Patch(color="#0072B2", label="Non-enhancing"),
+        patches.Patch(color="#D55E00", label="Enhancing"),
     )
     overlay_axis.legend(
         handles=legend_handles,
@@ -81,7 +82,7 @@ def render_method_figure(root: Path, output_prefix: Path, *, seed: int) -> dict[
         frameon=True,
         facecolor="white",
         framealpha=0.82,
-        fontsize=7,
+        fontsize=6.5,
     )
 
     diagram_axis = figure.add_subplot(grid[1, :])
@@ -109,37 +110,45 @@ def render_method_figure(root: Path, output_prefix: Path, *, seed: int) -> dict[
         "#D8EAD3",
     )
     _box(diagram_axis, patches, 0.44, 0.25, 0.16, 0.5, "Question-conditioned\nfusion", "#FFF0C7")
-    _box(diagram_axis, patches, 0.69, 0.57, 0.14, 0.3, "Answer", "#E8D8EE")
+    _box(
+        diagram_axis,
+        patches,
+        0.69,
+        0.57,
+        0.22,
+        0.3,
+        "Answer logits\n(including abstain)",
+        "#E8D8EE",
+    )
     _box(diagram_axis, patches, 0.69, 0.15, 0.14, 0.3, "Voxel evidence", "#F5D0D0")
-    _box(diagram_axis, patches, 0.86, 0.36, 0.12, 0.3, "Abstain when\nunsupported", "#E6E6E6")
     _arrow(diagram_axis, patches, (0.18, 0.5), (0.23, 0.5))
     _arrow(diagram_axis, patches, (0.39, 0.5), (0.44, 0.5))
     _arrow(diagram_axis, patches, (0.60, 0.5), (0.69, 0.72))
     _arrow(diagram_axis, patches, (0.60, 0.5), (0.69, 0.30))
-    _arrow(diagram_axis, patches, (0.83, 0.72), (0.86, 0.56))
     diagram_axis.text(
         0.52,
         0.08,
         "Matched comparison: answer-only vs answer + voxel-evidence supervision "
         "and balanced contrast dropout",
         ha="center",
-        fontsize=10,
+        fontsize=7,
         fontweight="bold",
     )
     figure.suptitle(
         "Voxel-grounded 3D MRI vision-language reasoning under missing contrasts",
-        fontsize=14,
+        fontsize=10,
         fontweight="bold",
+        y=1.085,
     )
     figure.text(
         0.01,
-        0.955,
+        1.015,
         "A  Real co-registered inputs and reference regions: "
         f"{selected.case_id}, axial index {axial_index}",
-        fontsize=11,
+        fontsize=8,
         fontweight="bold",
     )
-    figure.text(0.01, 0.435, "B  Controlled model and outputs", fontsize=11, fontweight="bold")
+    figure.text(0.01, 0.435, "B  Controlled model and outputs", fontsize=8, fontweight="bold")
 
     output_prefix.parent.mkdir(parents=True, exist_ok=True)
     figure.savefig(output_prefix.with_suffix(".png"), dpi=300, bbox_inches="tight")
@@ -180,7 +189,7 @@ def _box(
         linewidth=1.2,
     )
     axis.add_patch(box)
-    axis.text(x + width / 2, y + height / 2, label, ha="center", va="center", fontsize=10)
+    axis.text(x + width / 2, y + height / 2, label, ha="center", va="center", fontsize=7)
 
 
 def _arrow(axis: Any, patches: Any, start: tuple[float, float], end: tuple[float, float]) -> None:

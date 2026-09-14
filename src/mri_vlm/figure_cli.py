@@ -101,8 +101,9 @@ def render_figure(rows: tuple[TumorBurden, ...], output_prefix: Path) -> None:
     except ImportError as error:
         raise RuntimeError("install the project with the 'figures' extra") from error
 
-    colors = ("#355C7D", "#6C5B7B", "#C06C84")
-    fig, axes = plt.subplots(1, 3, figsize=(11.5, 3.6), constrained_layout=True)
+    plt.rcParams.update({"font.size": 7.5, "axes.titlesize": 8.5, "axes.labelsize": 8})
+    colors = ("#0072B2", "#CC79A7", "#D55E00")
+    fig, axes = plt.subplots(1, 3, figsize=(7.2, 2.65), constrained_layout=True)
 
     split_counts = Counter(row.split for row in rows)
     split_order = (Split.TRAIN, Split.VALIDATION, Split.TEST)
@@ -111,7 +112,7 @@ def render_figure(rows: tuple[TumorBurden, ...], output_prefix: Path) -> None:
         [split_counts[item] for item in split_order],
         color=colors,
     )
-    axes[0].bar_label(bars, padding=3, fontsize=9)
+    axes[0].bar_label(bars, padding=3, fontsize=7)
     axes[0].set_ylabel("Subjects")
     axes[0].set_title("A  Locked subject split", loc="left", fontweight="bold")
     axes[0].spines[["top", "right"]].set_visible(False)
@@ -137,7 +138,7 @@ def render_figure(rows: tuple[TumorBurden, ...], output_prefix: Path) -> None:
     upper_limit = axes[1].get_ylim()[1]
     for position, values in enumerate(region_values, start=1):
         absent = sum(value == 0.0 for value in values)
-        axes[1].text(position, upper_limit / 1.3, f"absent: {absent}", ha="center", fontsize=8)
+        axes[1].text(position, upper_limit / 1.3, f"absent: {absent}", ha="center", fontsize=6.5)
 
     fractions = [row.enhancing_fraction for row in rows]
     axes[2].hist(fractions, bins=20, range=(0.0, 1.0), color=colors[2], edgecolor="white")
@@ -148,7 +149,7 @@ def render_figure(rows: tuple[TumorBurden, ...], output_prefix: Path) -> None:
         axes[2].get_ylim()[1] * 0.92,
         f" median={median:.2f}",
         va="top",
-        fontsize=9,
+        fontsize=7,
     )
     axes[2].set_xlabel("Enhancing / whole-tumor volume")
     axes[2].set_ylabel("Subjects")
@@ -157,7 +158,7 @@ def render_figure(rows: tuple[TumorBurden, ...], output_prefix: Path) -> None:
 
     fig.suptitle(
         f"MSD Task01 BrainTumour: audited cohort and mask-derived targets (n={len(rows)})",
-        fontsize=13,
+        fontsize=10,
         fontweight="bold",
     )
     fig.text(
@@ -165,7 +166,7 @@ def render_figure(rows: tuple[TumorBurden, ...], output_prefix: Path) -> None:
         -0.02,
         "Reference masks supervise and verify questions; they are not model inputs.",
         ha="center",
-        fontsize=9,
+        fontsize=6.5,
     )
     output_prefix.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output_prefix.with_suffix(".png"), dpi=300, bbox_inches="tight")
