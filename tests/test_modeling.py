@@ -3,7 +3,7 @@ import io
 import pytest
 import torch
 
-from mri_vlm.modeling import MRIVLMSmall
+from mri_vlm.modeling import MRIVLM3D, MRIVLMSmall
 
 
 def inputs() -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
@@ -77,3 +77,14 @@ def test_unconditional_auxiliary_evidence_ignores_question_tokens() -> None:
         second = model(volumes, modality_mask, changed_questions)
 
     assert torch.equal(first.evidence_logits, second.evidence_logits)
+
+
+def test_hierarchical_vlm_preserves_answer_and_evidence_shapes() -> None:
+    model = MRIVLM3D(vocab_size=20, answer_classes=9, width=4)
+    output = model(
+        torch.randn(2, 4, 16, 24, 32),
+        torch.ones(2, 4, dtype=torch.bool),
+        torch.tensor([[1, 2, 0], [3, 4, 5]]),
+    )
+    assert output.answer_logits.shape == (2, 9)
+    assert output.evidence_logits.shape == (2, 16, 24, 32)

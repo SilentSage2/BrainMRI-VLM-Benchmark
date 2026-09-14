@@ -42,6 +42,7 @@ mri-vlm-overfit-check = "mri_vlm.overfit_cli:main"
 mri-vlm-qa-stability = "mri_vlm.qa_stability_cli:main"
 mri-vlm-stability-figure = "mri_vlm.stability_figure_cli:main"
 mri-vlm-baseline = "mri_vlm.baseline_cli:main"
+mri-vlm-matched = "mri_vlm.matched_cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/mri_vlm"]

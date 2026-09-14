@@ -43,6 +43,9 @@ class FractionThresholds:
             raise ValueError("fraction thresholds must be ordered in [0, 1]")
 
 
+FROZEN_FRACTION_THRESHOLDS = FractionThresholds(0.07244455, 0.16695966, 0.27325105)
+
+
 @dataclass(frozen=True, slots=True)
 class QATargetV1:
     question_type: QuestionType

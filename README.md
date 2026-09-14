@@ -90,6 +90,9 @@ gate, while explicitly withholding any generalization, Figure 4, or release clai
 The [balanced QA V1 protocol](experiments/QA_V1_PROTOCOL.md) freezes three nonredundant
 question families with distinct evidence targets and a matched answer-only/auxiliary/
 grounded comparison contract.
+The [matched-run recovery ledger](experiments/MATCHED_RECOVERY.md) records the host-restart
+interruption, rejects an unverifiable partial artifact, and defines fingerprint-checked
+per-role reuse without touching the test split.
 
 ## Planned systems
 
