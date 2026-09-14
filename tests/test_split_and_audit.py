@@ -36,6 +36,7 @@ def test_qa_subject_must_match_case() -> None:
         answer_kind=original.answer_kind,
         answer=original.answer,
         evidence_sha256=original.evidence_sha256,
+        counterfactual_group=original.counterfactual_group,
     )
     with pytest.raises(ValueError, match="does not match"):
         audit_examples(cases, (mismatched,))

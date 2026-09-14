@@ -7,6 +7,7 @@ from mri_vlm.schema import (
     CaseRecord,
     GroundedQAExample,
     Modality,
+    QuestionType,
     VolumeRecord,
 )
 
@@ -43,9 +44,10 @@ def fixture_examples(cases: tuple[CaseRecord, ...]) -> tuple[GroundedQAExample, 
     examples: list[GroundedQAExample] = []
     for index, case in enumerate(cases):
         answerable = index % 5 != 0
+        question_type = QuestionType.PRESENCE if answerable else QuestionType.UNANSWERABLE
         examples.append(
             GroundedQAExample(
-                example_id=f"example-{index:04d}",
+                example_id=f"example-{index:04d}-base",
                 case_id=case.case_id,
                 subject_id=case.subject_id,
                 question=(
@@ -53,7 +55,7 @@ def fixture_examples(cases: tuple[CaseRecord, ...]) -> tuple[GroundedQAExample, 
                     if answerable
                     else "What is the volume of the absent comparison scan?"
                 ),
-                question_type="presence" if answerable else "unanswerable",
+                question_type=question_type,
                 answer_kind=AnswerKind.CATEGORICAL,
                 answer="yes" if answerable else None,
                 evidence_sha256=(
@@ -61,7 +63,48 @@ def fixture_examples(cases: tuple[CaseRecord, ...]) -> tuple[GroundedQAExample, 
                 ),
             )
         )
+        if index % 10 == 1:
+            counterfactual_group = f"counterfactual-{index:04d}"
+            examples.extend(
+                (
+                    GroundedQAExample(
+                        example_id=f"example-{index:04d}-original",
+                        case_id=case.case_id,
+                        subject_id=case.subject_id,
+                        question="What fraction of the tumor is enhancing?",
+                        question_type=QuestionType.ENHANCING_FRACTION,
+                        answer_kind=AnswerKind.NUMERIC,
+                        answer="0.25",
+                        evidence_sha256=_digest(f"{case.subject_id}:original-evidence"),
+                        counterfactual_group=counterfactual_group,
+                    ),
+                    GroundedQAExample(
+                        example_id=f"example-{index:04d}-edited",
+                        case_id=case.case_id,
+                        subject_id=case.subject_id,
+                        question="What fraction of the tumor is enhancing?",
+                        question_type=QuestionType.ENHANCING_FRACTION,
+                        answer_kind=AnswerKind.NUMERIC,
+                        answer="0.50",
+                        evidence_sha256=_digest(f"{case.subject_id}:edited-evidence"),
+                        counterfactual_group=counterfactual_group,
+                    ),
+                )
+            )
     return tuple(examples)
+
+
+def fixture_evidence(
+    examples: tuple[GroundedQAExample, ...],
+) -> dict[str, frozenset[int]]:
+    """Create non-empty deterministic voxel-index sets for answerable examples."""
+    return {
+        example.example_id: frozenset(
+            {index * 10 + 1, index * 10 + 2, index * 10 + 3}
+        )
+        for index, example in enumerate(examples)
+        if example.is_answerable
+    }
 
 
 def _digest(value: str) -> str:

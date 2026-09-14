@@ -53,8 +53,11 @@ class GroundedQAMetrics:
     mean_evidence_dice: float
     grounded_answer_accuracy: float
     unanswerable_hallucination_rate: float
+    unanswerable_evidence_rate: float
+    counterfactual_consistency: float | None
     answerable_count: int
     unanswerable_count: int
+    counterfactual_pair_count: int
 
 
 def evaluate_grounded_qa(
@@ -63,6 +66,8 @@ def evaluate_grounded_qa(
     reference_evidence: Mapping[str, frozenset[int]],
     *,
     evidence_threshold: float = 0.5,
+    absolute_tolerance: float = 0.05,
+    relative_tolerance: float = 0.02,
 ) -> GroundedQAMetrics:
     if not examples:
         raise ValueError("at least one example is required")
@@ -77,21 +82,45 @@ def evaluate_grounded_qa(
 
     answer_hits = 0
     grounded_hits = 0
+    grounded_by_id: dict[str, bool] = {}
     evidence_scores: list[float] = []
     for example in answerable:
         prediction = predictions[example.example_id]
         answer_hit = prediction.answer is not None and answer_correct(
-            example.answer or "", prediction.answer, example.answer_kind
+            example.answer or "",
+            prediction.answer,
+            example.answer_kind,
+            absolute_tolerance=absolute_tolerance,
+            relative_tolerance=relative_tolerance,
         )
         evidence = dice_score(
             prediction.evidence_voxels, reference_evidence[example.example_id]
         )
         answer_hits += answer_hit
         grounded_hits += answer_hit and evidence >= evidence_threshold
+        grounded_by_id[example.example_id] = answer_hit and evidence >= evidence_threshold
         evidence_scores.append(evidence)
 
     hallucinations = sum(
         predictions[example.example_id].answer not in (None, "") for example in unanswerable
+    )
+    unsupported_evidence = sum(
+        bool(predictions[example.example_id].evidence_voxels) for example in unanswerable
+    )
+    counterfactual_groups: dict[str, list[GroundedQAExample]] = {}
+    for example in examples:
+        if example.counterfactual_group is not None:
+            counterfactual_groups.setdefault(example.counterfactual_group, []).append(example)
+    for group, members in counterfactual_groups.items():
+        if len(members) != 2:
+            raise ValueError(f"counterfactual group {group!r} must contain exactly two examples")
+        if len({member.subject_id for member in members}) != 1:
+            raise ValueError(f"counterfactual group {group!r} crosses subjects")
+        if any(not member.is_answerable for member in members):
+            raise ValueError(f"counterfactual group {group!r} must be answerable")
+    consistent_pairs = sum(
+        all(grounded_by_id[member.example_id] for member in members)
+        for members in counterfactual_groups.values()
     )
     answerable_count = len(answerable)
     unanswerable_count = len(unanswerable)
@@ -106,6 +135,13 @@ def evaluate_grounded_qa(
         unanswerable_hallucination_rate=(
             hallucinations / unanswerable_count if unanswerable_count else 0.0
         ),
+        unanswerable_evidence_rate=(
+            unsupported_evidence / unanswerable_count if unanswerable_count else 0.0
+        ),
+        counterfactual_consistency=(
+            consistent_pairs / len(counterfactual_groups) if counterfactual_groups else None
+        ),
         answerable_count=answerable_count,
         unanswerable_count=unanswerable_count,
+        counterfactual_pair_count=len(counterfactual_groups),
     )

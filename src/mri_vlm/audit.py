@@ -26,6 +26,7 @@ def audit_partitions(partitions: Mapping[Split, Iterable[CaseRecord]]) -> None:
 def audit_examples(cases: Iterable[CaseRecord], examples: Iterable[GroundedQAExample]) -> None:
     case_by_id = {case.case_id: case for case in cases}
     example_ids: set[str] = set()
+    counterfactual_groups: dict[str, list[GroundedQAExample]] = {}
     for example in examples:
         if example.example_id in example_ids:
             raise ValueError(f"duplicate example ID: {example.example_id}")
@@ -35,6 +36,13 @@ def audit_examples(cases: Iterable[CaseRecord], examples: Iterable[GroundedQAExa
             raise ValueError(f"unknown case ID: {example.case_id}")
         if case.subject_id != example.subject_id:
             raise ValueError("QA subject does not match its MRI case")
+        if example.counterfactual_group is not None:
+            counterfactual_groups.setdefault(example.counterfactual_group, []).append(example)
+    for group, members in counterfactual_groups.items():
+        if len(members) != 2:
+            raise ValueError(f"counterfactual group {group!r} must contain exactly two examples")
+        if len({member.subject_id for member in members}) != 1:
+            raise ValueError(f"counterfactual group {group!r} crosses subjects")
 
 
 def _claim(digest: str, split: Split, owners: dict[str, Split]) -> None:

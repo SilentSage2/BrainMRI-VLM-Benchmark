@@ -47,6 +47,10 @@ geometry. They are synthetic research annotations, not radiologist reports.
 
 See [the dataset decision](docs/decisions/0001-msd-brain-tumour.md).
 
+The frozen protocol is documented in the [experiment specification](docs/EXPERIMENT_SPEC.md)
+and [question taxonomy](docs/QUESTION_TAXONOMY.md). GitHub publication follows the
+[release checklist](docs/RELEASE_CHECKLIST.md) after a VLM baseline exists.
+
 ## Planned systems
 
 | System | Visual representation | Training target | Status |

@@ -22,6 +22,15 @@ class AnswerKind(StrEnum):
     NUMERIC = "numeric"
 
 
+class QuestionType(StrEnum):
+    PRESENCE = "presence"
+    LATERALITY = "laterality"
+    RELATIVE_VOLUME = "relative_volume"
+    ENHANCING_FRACTION = "enhancing_fraction"
+    CROSS_REGION_COMPARISON = "cross_region_comparison"
+    UNANSWERABLE = "unanswerable"
+
+
 ALL_MODALITIES = frozenset(Modality)
 
 
@@ -83,7 +92,7 @@ class GroundedQAExample:
     case_id: str
     subject_id: str
     question: str
-    question_type: str
+    question_type: QuestionType
     answer_kind: AnswerKind
     answer: str | None
     evidence_sha256: str | None
@@ -101,6 +110,10 @@ class GroundedQAExample:
             raise ValueError("answer must be non-empty when present")
         if self.evidence_sha256 is not None:
             validate_digest("evidence sha256", self.evidence_sha256)
+        if self.counterfactual_group is not None and not self.counterfactual_group.strip():
+            raise ValueError("counterfactual group must be non-empty when present")
+        if (self.question_type is QuestionType.UNANSWERABLE) != (self.answer is None):
+            raise ValueError("unanswerable question type and null answer must agree")
 
     @property
     def is_answerable(self) -> bool:

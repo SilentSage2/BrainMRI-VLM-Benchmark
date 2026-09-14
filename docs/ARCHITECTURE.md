@@ -2,6 +2,8 @@
 
 V0 contains typed MRI volumes, subject cases, grounded QA examples, canonical fingerprints,
 subject-level splitting, integrity audits, answer/evidence metrics, and synthetic fixtures.
+The `conditions` module enumerates all 15 non-empty combinations of the four MRI sequences
+so experiments cannot omit an inconvenient missing-modality case.
 
 V1 adds a NIfTI adapter, mask-derived question generator, counterfactual transforms, a
 slice-based VLM baseline, a sequence-aware 3D visual encoder, language-conditioned fusion,

@@ -1,6 +1,12 @@
 import pytest
 
-from mri_vlm.schema import AnswerKind, GroundedQAExample, Modality, VolumeRecord
+from mri_vlm.schema import (
+    AnswerKind,
+    GroundedQAExample,
+    Modality,
+    QuestionType,
+    VolumeRecord,
+)
 
 
 def test_volume_rejects_non_positive_shape() -> None:
@@ -15,7 +21,7 @@ def test_answer_and_evidence_must_agree() -> None:
             case_id="case-1",
             subject_id="subject-1",
             question="Is the region present?",
-            question_type="presence",
+            question_type=QuestionType.PRESENCE,
             answer_kind=AnswerKind.CATEGORICAL,
             answer="yes",
             evidence_sha256=None,
@@ -28,7 +34,7 @@ def test_unanswerable_example_has_no_answer_or_evidence() -> None:
         case_id="case-1",
         subject_id="subject-1",
         question="What is absent?",
-        question_type="unanswerable",
+        question_type=QuestionType.UNANSWERABLE,
         answer_kind=AnswerKind.CATEGORICAL,
         answer=None,
         evidence_sha256=None,
