@@ -50,6 +50,9 @@ See [the dataset decision](docs/decisions/0001-msd-brain-tumour.md).
 The frozen protocol is documented in the [experiment specification](docs/EXPERIMENT_SPEC.md)
 and [question taxonomy](docs/QUESTION_TAXONOMY.md). GitHub publication follows the
 [release checklist](docs/RELEASE_CHECKLIST.md) after a VLM baseline exists.
+The [V1 model decision](docs/MODEL_SELECTION.md) selects M3D-LaMed-Phi-3-4B as a
+single-volume external baseline and defines `MRI-VLM-Small` for the matched multi-sequence
+answer-only versus grounded comparison.
 
 ## Planned systems
 
