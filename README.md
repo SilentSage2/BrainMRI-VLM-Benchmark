@@ -115,8 +115,8 @@ answer-only was +0.167, bootstrap 95% CI [-0.042, 0.375]. Test cases remain seal
 
 | System | Visual representation | Training target | Status |
 |---|---|---|---|
-| Question-only prior | none | answer | V0.1 control completed; QA V1 rerun pending |
-| Slice-based VLM | sampled 2D slices | answer | Planned baseline |
+| Question-only prior | none | answer | QA V1: 0.521 raw / 0.417 balanced validation accuracy |
+| Slice-based VLM | fixed axial quartile slices | answer | 0.542 raw / 0.417 balanced; no gain over question-only |
 | Residual 3D MR segmenter | four registered contrasts | WT/TC/ET masks → symbolic QA | Small direction gate passed |
 | 3D MRI-VLM | coordinate-aware hierarchical 3D tokens | answer | Small real-data run completed |
 | Auxiliary 3D MRI-VLM | same | answer + unconditional whole tumor | Small real-data run completed |
@@ -125,6 +125,10 @@ answer-only was +0.167, bootstrap 95% CI [-0.042, 0.375]. Test cases remain seal
 Primary metrics are answer accuracy, grounded answer accuracy, evidence Dice, numeric
 tolerance accuracy, counterfactual consistency, calibration, and hallucination on
 unanswerable questions. Every system is evaluated across the same missing-sequence matrix.
+
+The frozen [V3 multi-seed protocol](experiments/MATCHED_V3_PROTOCOL.md) expands the matched
+comparison to 64/16 subjects and three training seeds, adds hierarchical subject/seed
+bootstrap uncertainty, and predefines a negative-result interpretation before aggregation.
 
 ## Quick start
 

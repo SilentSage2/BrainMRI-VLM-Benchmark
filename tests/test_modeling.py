@@ -3,7 +3,7 @@ import io
 import pytest
 import torch
 
-from mri_vlm.modeling import MRIVLM3D, MRIVLMSmall
+from mri_vlm.modeling import MRIVLM3D, MRIVLMSmall, SliceVLM2D
 
 
 def inputs() -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
@@ -88,3 +88,14 @@ def test_hierarchical_vlm_preserves_answer_and_evidence_shapes() -> None:
     )
     assert output.answer_logits.shape == (2, 9)
     assert output.evidence_logits.shape == (2, 16, 24, 32)
+
+
+def test_slice_vlm_2d_preserves_answer_shapes() -> None:
+    model = SliceVLM2D(vocab_size=10, answer_classes=9, width=4)
+    output = model(
+        torch.randn(2, 4, 16, 16, 16),
+        torch.ones(2, 4),
+        torch.tensor([[1, 2, 0], [3, 4, 5]]),
+    )
+    assert output.answer_logits.shape == (2, 9)
+    assert output.evidence_logits.shape == (2, 16, 16, 16)

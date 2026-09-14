@@ -181,6 +181,61 @@ class MRIVLM3D(nn.Module):
         return MRIModelOutput(answer_logits=answer_logits, evidence_logits=evidence_logits)
 
 
+class SliceVLM2D(nn.Module):
+    """Fixed-policy axial-slice VLM baseline for the same four-contrast QA task."""
+
+    def __init__(self, *, vocab_size: int, answer_classes: int, width: int = 8) -> None:
+        super().__init__()
+        if vocab_size <= 1 or answer_classes <= 1 or width < 4:
+            raise ValueError("invalid vocabulary, answer classes, or width")
+        features = 4 * width
+        self.modality_count = len(Modality)
+        self.visual_encoder = nn.Sequential(
+            nn.Conv2d(2 * self.modality_count, width, kernel_size=5, stride=2, padding=2),
+            nn.GELU(),
+            nn.Conv2d(width, 2 * width, kernel_size=3, stride=2, padding=1),
+            nn.GELU(),
+            nn.Conv2d(2 * width, features, kernel_size=3, stride=2, padding=1),
+            nn.GELU(),
+            nn.AdaptiveAvgPool2d(1),
+        )
+        self.slice_embeddings = nn.Parameter(torch.empty(3, features))
+        self.question_embeddings = nn.Embedding(vocab_size, features, padding_idx=0)
+        self.question_encoder = nn.GRU(features, features, batch_first=True)
+        self.fusion = nn.Linear(2 * features, features)
+        self.answer_head = nn.Linear(features, answer_classes)
+        nn.init.normal_(self.slice_embeddings, std=0.02)
+
+    def forward(
+        self, volumes: Tensor, modality_mask: Tensor, question_tokens: Tensor
+    ) -> MRIModelOutput:
+        _validate_common_inputs(volumes, modality_mask, question_tokens, self.modality_count)
+        batch, _, depth, height, width = volumes.shape
+        indices = torch.tensor(
+            (depth // 4, depth // 2, min(depth - 1, 3 * depth // 4)),
+            device=volumes.device,
+        )
+        slices = volumes.index_select(2, indices).permute(0, 2, 1, 3, 4)
+        available = modality_mask.to(dtype=volumes.dtype)
+        slices = slices * available[:, None, :, None, None]
+        mask_planes = available[:, None, :, None, None].expand(-1, 3, -1, height, width)
+        visual_input = torch.cat((slices, mask_planes), dim=2).reshape(
+            batch * 3, 2 * self.modality_count, height, width
+        )
+        encoded = self.visual_encoder(visual_input).flatten(1).reshape(batch, 3, -1)
+        visual = (encoded + self.slice_embeddings[None]).mean(dim=1)
+        embedded = self.question_embeddings(question_tokens)
+        encoded_question, _ = self.question_encoder(embedded)
+        lengths = question_tokens.ne(0).sum(dim=1) - 1
+        question = encoded_question[torch.arange(batch, device=volumes.device), lengths]
+        joint = torch.tanh(self.fusion(torch.cat((visual, question), dim=1)))
+        answer_logits = self.answer_head(joint)
+        evidence_logits = torch.zeros(
+            batch, depth, height, width, dtype=volumes.dtype, device=volumes.device
+        )
+        return MRIModelOutput(answer_logits=answer_logits, evidence_logits=evidence_logits)
+
+
 def _conv_norm_activation(inputs: int, outputs: int, *, stride: int) -> nn.Sequential:
     return nn.Sequential(
         nn.Conv3d(inputs, outputs, kernel_size=3, stride=stride, padding=1, bias=False),

@@ -1,0 +1,11 @@
+# Frozen V3 development protocol. The CLI flags mirror these values.
+split_seed = 20260914
+training_seeds = [20260914, 20260915, 20260916]
+train_cases = 64
+validation_cases = 16
+spatial_size = 48
+epochs = 12
+width = 4
+learning_rate = 0.003
+bootstrap_samples = 5000
+test_cases_read = 0

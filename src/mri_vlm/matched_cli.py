@@ -18,7 +18,7 @@ from mri_vlm.baseline_cli import load_cases, select_case_ids
 from mri_vlm.conditions import condition_id, modality_conditions
 from mri_vlm.controls import bootstrap_mean_ci
 from mri_vlm.metrics import dice_score
-from mri_vlm.modeling import MRIVLM3D
+from mri_vlm.modeling import MRIVLM3D, SliceVLM2D
 from mri_vlm.pilot_cli import _condition_mask, _ece, _evidence_loss
 from mri_vlm.preprocess import PreprocessedCase, PreprocessSpec
 from mri_vlm.qa_v1 import (
@@ -52,6 +52,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--width", type=int, default=4)
     parser.add_argument("--learning-rate", type=float, default=3e-3)
     parser.add_argument("--seed", type=int, default=20260914)
+    parser.add_argument(
+        "--split-seed",
+        type=int,
+        default=20260914,
+        help="frozen cohort seed; independent of the training seed",
+    )
     return parser
 
 
@@ -62,13 +68,13 @@ def main() -> None:
     root = args.dataset_root.resolve()
     ids = select_case_ids(
         root,
-        seed=args.seed,
+        seed=args.split_seed,
         train_count=args.train_cases,
         validation_count=args.validation_cases,
     )
     examples = generate_real_examples(
         root,
-        seed=args.seed,
+        seed=args.split_seed,
         include_splits=frozenset({Split.TRAIN, Split.VALIDATION}),
         include_case_ids=frozenset(ids[Split.TRAIN] + ids[Split.VALIDATION]),
     )
@@ -112,6 +118,7 @@ def main() -> None:
         {
             "model": "MRIVLM3D-v2-weighted-loss-late-tie",
             "seed": args.seed,
+            "split_seed": args.split_seed,
             "train_case_ids": ids[Split.TRAIN],
             "validation_case_ids": ids[Split.VALIDATION],
             "epochs": args.epochs,
@@ -215,6 +222,7 @@ def main() -> None:
         "config": {
             "train_cases": len(prepared[Split.TRAIN]),
             "validation_cases": len(prepared[Split.VALIDATION]),
+            "split_seed": args.split_seed,
             "spatial_size": args.spatial_size,
             "epochs": args.epochs,
             "width": args.width,
@@ -266,7 +274,7 @@ def answer_class_weights(cases: tuple[MatchedCase, ...], classes: int) -> Tensor
 
 
 def train_role(
-    model: MRIVLM3D,
+    model: MRIVLM3D | SliceVLM2D,
     train_cases: tuple[MatchedCase, ...],
     validation_cases: tuple[MatchedCase, ...],
     *,
@@ -342,7 +350,7 @@ def train_role(
 
 
 def evaluate_role(
-    model: MRIVLM3D,
+    model: MRIVLM3D | SliceVLM2D,
     cases: tuple[MatchedCase, ...],
     *,
     conditions: tuple[frozenset[Modality], ...],
