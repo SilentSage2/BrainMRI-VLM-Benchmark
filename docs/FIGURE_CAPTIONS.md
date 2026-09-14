@@ -1,6 +1,6 @@
 # Working Figure Captions
 
-These captions describe only generated evidence. Figures 3–5 remain planned and must not
+These captions describe only generated evidence. Figures 4–5 remain planned and must not
 be written as observed results before their locked source tables exist.
 
 ## Figure 1 — provisional overall framework
@@ -31,11 +31,20 @@ enhancing-to-whole-tumor volume fraction; the dashed line is the cohort median. 
 masks define supervision and evaluation targets but are not model inputs. This descriptive
 figure does not report model performance or clinical validity.
 
-## Figures 3–5 — planned
+## Figure 3 — complete development target-validity audit
+
+**Resolution sensitivity of mask-derived QA targets.** Using 418 training/validation
+subjects with test cases unread, (A) categorical answer stability and (B) enhancing-fraction
+error are shown after nearest-neighbor resampling to 16³–48³. (C) At 32³, margins derived
+only from unstable training cases retained 76/81, 81/81, and 73/81 validation cases with
+100% stability; enhancing presence became single-class. The two comparison targets were
+algebraically redundant. No model performance is shown.
+
+## Figures 4–5 — planned
 
 Captions will be generated only from frozen real-data result tables. Each will state the
 model versions, evaluation split, subject and question counts, missing-contrast conditions,
 baseline or ablation, seed count, interval construction, and the result-supported claim.
-Figure 3 prioritizes the 15-condition comparison with the modular MR baseline; Figure 4
-prioritizes calibration, abstention, and question-specific contrast sensitivity; Figure 5
-uses the same frozen success, boundary, and failure cases for learned and modular methods.
+Figure 4 prioritizes the 15-condition comparison with the modular MR baseline, calibration,
+abstention, and question-specific contrast sensitivity. Figure 5 uses the same frozen
+success, boundary, and failure cases for learned and modular methods.

@@ -81,6 +81,9 @@ are diagnostic and explicitly excluded from abstract claims.
 The [preprocessing and one-case optimization gates](experiments/OPTIMIZATION_GATES.md)
 verify cache identity and VLM learnability but expose unstable threshold-derived symbolic
 answers despite high segmentation Dice; the gate remains failed pending QA V1.
+The [development-only QA resolution audit](experiments/QA_RESOLUTION_STABILITY.md) quantifies
+this failure across 418 train/validation subjects, identifies a duplicated comparison task,
+and keeps all test cases unread while QA V1 is redesigned.
 
 ## Planned systems
 

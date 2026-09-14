@@ -46,9 +46,12 @@ shape, finite values, spacing and affine agreement, label range, subject uniquen
 fingerprint isolation. A deterministic hash split (seed 20260914) assigned 337/81/66
 subjects to training/validation/test sets before generating any examples.
 
-Questions and voxel evidence are deterministically derived from labels and geometry for
-presence, laterality, relative volume, enhancing fraction, cross-region comparison, and
-unanswerable tasks. Reference masks are never model inputs. The controlled MRI-VLM uses a
+Questions and voxel evidence are deterministically derived from labels and geometry.
+A development-only resampling audit screens unstable boundary targets, removes an
+algebraically duplicated comparison, and excludes enhancing presence from aggregate
+accuracy because stability screening makes it single-class. Primary retained families
+include laterality, enhancing fraction, and contrast-dependent support/abstention.
+Reference masks are never model inputs. The controlled MRI-VLM uses a
 shared 3D convolutional encoder, learned sequence identities, availability masking,
 masked-pooled question embeddings, question-conditioned fusion, categorical answer logits
 including abstention, and voxel-evidence logits.
@@ -109,7 +112,8 @@ state that the added VLM complexity is not justified by this study.]
 Framework for voxel-grounded 3D MRI reasoning. A real, preselected validation case shows
 co-registered FLAIR, T1, T1-Gd, T2 and the non-input evidence target. The implemented model
 combines available contrasts and question tokens to predict answer and evidence logits.
-Evaluation covers all 15 contrast subsets; the dashed box marks the pending training runner.
+Evaluation covers all 15 contrast subsets; a small pilot runner is implemented while
+full-scale training remains pending.
 
 ### Figure 2
 Audited MSD Task01 cohort (n=484). Panels show the locked 337/81/66 subject split, physical
@@ -118,12 +122,16 @@ supervision and evaluation targets but are not model inputs. This is descriptive
 no performance or clinical claim.
 
 ### Figure 3
-[PLANNED — 15-condition robustness caption comparing grounded, answer-only, and modular MR
-methods with split, n, effect size, seeds, and subject-bootstrap interval definition.]
+Resolution sensitivity of mask-derived QA targets in 418 training/validation subjects;
+test cases were unread. Categorical stability increased from 85.6% at 16³ to 97.8% at 48³.
+At 32³, train-derived margins made retained validation targets stable but enhancing
+presence became single-class; duplicated comparison targets were removed. No model
+performance is shown.
 
 ### Figure 4
-[PLANNED — calibration, abstention, and question-by-removed-contrast sensitivity caption
-with support definition, split, n, intervals, and complete-input non-inferiority result.]
+[PLANNED — 15-condition robustness, calibration, abstention, and
+question-by-removed-contrast sensitivity caption with support definition, split, n,
+intervals, modular baseline, and complete-input non-inferiority result.]
 
 ### Figure 5
 [PLANNED — paired VLM/modular evidence and failure-analysis caption with frozen

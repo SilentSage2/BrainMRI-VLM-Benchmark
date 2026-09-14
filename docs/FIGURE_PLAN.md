@@ -8,16 +8,16 @@ result. Every plot must be regenerated from a versioned command and retain its s
 |---|---|---|---|---|
 | 1. Overall framework | The implemented pipeline connects multi-contrast MRI and questions to answer/evidence outputs and locked evaluation. | Implemented architecture, frozen protocol, and one real case | 25 Sep | Mark not-yet-implemented training elements explicitly |
 | 2. Cohort and targets | The audited cohort supports varied physical-volume and enhancing-fraction questions without subject leakage. | 484 reference masks and locked split | 18 Sep | Move to supplement if four figures tell the story better |
-| 3. Fifteen-condition MR robustness | Compare grounded, answer-only, and modular segmentation-to-symbolic interpretation across every contrast subset. | Models × 15 contrast subsets, subject bootstrap, seeds | 6 Oct | Report the locked matrix even if the modular baseline wins |
-| 4. Reliability and contrast dependence | Test calibration, abstention, and question-specific sensitivity to FLAIR/T1/T1-Gd/T2 removal. | Confidence, support state, question families, paired intervals | 10 Oct | Show effect sizes and intervals without significance language |
+| 3. QA target validity | Show how spatial resolution changes mask-derived answers and why ambiguity controls are required. | 418 development masks × four resolutions; test unread | 20 Sep | Retain as a real negative-methods result |
+| 4. Fifteen-condition MR robustness and reliability | Compare grounded, answer-only, and modular segmentation-to-symbolic interpretation, calibration, and abstention across all contrast subsets. | Models × 15 contrast subsets, subject bootstrap, seeds | 10 Oct | Report the locked matrix even if the modular baseline wins |
 | 5. Evidence and failure boundaries | Show where voxel evidence supports interpretation and where missing contrasts cause abstention or failure. | Frozen success/boundary/failure selection | 15 Oct | Include the same cases for VLM and modular MR baseline |
 
 Status on 14 September: Figure 1 is a provisional overall framework using a real validation
-case selected by the frozen median-burden rule; the implemented model and evaluation paths
-are solid, while the pending training runner is dashed and labeled. Figure 2 is complete
+case selected by the frozen median-burden rule; the implemented model and small pilot runner
+are labeled without a performance claim. Figure 2 is complete
 from all 484 audited masks in PNG and vector PDF form, with a 484-row source CSV and JSON
-summary. The remaining panels require model outputs and must not contain simulated
-performance.
+summary. Figure 3 uses 418 development masks and no test cases to document target
+instability. Figures 4–5 require model outputs and must not contain simulated performance.
 
 ## Milestones
 
@@ -74,17 +74,19 @@ performance.
 - Can refute: sufficient target diversity if distributions collapse or labels are absent.
 - Cannot support: model performance, clinical validity, or population generalizability.
 
-### Figure 3 — empirical, planned
+### Figure 3 — target-validity audit, in progress
 
-- Supports only after locked evaluation: how grounded, answer-only, and modular MR methods
-  behave across every one of the 15 available-contrast subsets.
-- Disconfirming result: no grounded advantage, or a simpler modular MR baseline that is as
-  robust or better.
+- Supports: answer stability improves with spatial resolution, while boundary-derived
+  categorical targets require development-derived ambiguity rules.
+- Disconfirming result already observed: the presence screen becomes single-class and two
+  comparison families are algebraically redundant, so both must be redesigned or removed.
+- Cannot support: model performance, test generalization, or clinical utility.
 
 ### Figure 4 — empirical, planned
 
-- Supports only after locked evaluation: whether calibration, abstention, and evidence
-  localization respond appropriately to the identity of a removed contrast.
+- Supports only after locked evaluation: how grounded, answer-only, and modular MR methods
+  behave across all 15 contrast subsets, and whether calibration and abstention respond
+  appropriately to the identity of a removed contrast.
 - Disconfirming result: overconfident unsupported answers, no question-specific contrast
   sensitivity, or violation of the complete-input non-inferiority margin.
 
@@ -111,4 +113,12 @@ the supervision target and is explicitly not a model input.
 ```bash
 mri-vlm-method-figure /absolute/path/to/Task01_BrainTumour \
   --output-prefix artifacts/figures/figure1_overview
+```
+
+Figure 3 reads the development-only QA audit summary, verifies that no test cases were read,
+and writes PNG, vector PDF, and source metadata.
+
+```bash
+mri-vlm-stability-figure artifacts/results/qa_resolution_stability_v1.json \
+  --output-prefix artifacts/figures/figure3_qa_stability
 ```
