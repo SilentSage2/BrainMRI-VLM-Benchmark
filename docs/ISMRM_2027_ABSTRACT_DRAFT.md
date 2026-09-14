@@ -1,5 +1,5 @@
 # Title
-Voxel Grounding Improves Contrast-Aware Reasoning in 3D MRI Vision-Language Models
+Reliability of Voxel-Grounded 3D Vision-Language Models across Missing Brain MRI Contrasts
 
 ## Synopsis
 

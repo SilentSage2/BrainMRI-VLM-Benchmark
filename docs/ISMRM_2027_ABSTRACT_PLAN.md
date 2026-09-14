@@ -19,7 +19,7 @@ title, 100-word synopsis, 40-word impact statement, 750-word body, and up to fiv
 
 ## Recommended title
 
-**Voxel Grounding Improves Contrast-Aware Reasoning in 3D MRI Vision-Language Models**
+**Reliability of Voxel-Grounded 3D Vision-Language Models across Missing Brain MRI Contrasts**
 
 Alternative, if missingness is the strongest result:
 
