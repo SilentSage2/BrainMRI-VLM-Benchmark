@@ -50,9 +50,11 @@ masked-pooled question embeddings, question-conditioned fusion, categorical answ
 including abstention, and voxel-evidence logits.
 
 [PLANNED — train a question-only control, fixed-policy 2D baseline, matched answer-only 3D
-model, and grounded 3D model using frozen preprocessing, examples, optimizer steps, and
-compute. Evaluate every one of the 15 non-empty contrast subsets. Run ablations without
-evidence loss, balanced contrast dropout, and sequence identity.]
+model, unconditional segmentation-auxiliary control, question-conditioned grounded model,
+and strong segmentation-to-symbolic-QA baseline using frozen preprocessing, examples,
+optimizer steps, and compute. Evaluate every one of the 15 non-empty contrast subsets. Run
+ablations without evidence loss, balanced contrast dropout, sequence identity, and question
+conditioning of the spatial head.]
 
 The primary endpoint is subject-aggregated grounded answer accuracy over missing-contrast
 conditions. Secondary endpoints are answer accuracy, evidence Dice, hallucination on

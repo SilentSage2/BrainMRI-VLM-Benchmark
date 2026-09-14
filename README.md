@@ -2,10 +2,11 @@
 
 **Robust 3D Vision-Language Reasoning over Multi-Sequence Brain MRI**
 
-> **Status: V0 protocol plus architecture smoke.** `MRI-VLM-Small` is implemented and
-> tested on synthetic tensors, but it is not trained and no VLM result is claimed. The
-> repository also defines MRI/QA/evidence contracts, subject-level splits, leakage audits,
-> grounded-QA metrics, and deterministic fixtures.
+> **Status: audited research scaffold, not publish-ready.** `MRI-VLM-Small` is a controlled
+> proof-of-pipeline tested on synthetic tensors; it is not a competitive trained VLM and no
+> performance or novelty result is claimed. The public-release and ISMRM gates remain closed
+> pending strong baselines, isolation ablations, real-data results, uncertainty, and failure
+> analysis.
 
 ## Research question
 
@@ -63,6 +64,8 @@ descriptive/method figures from planned empirical results.
 The working [ISMRM abstract package](docs/ISMRM_2027_ABSTRACT_DRAFT.md) and
 [proceedings-format audit](docs/ISMRM_PROCEEDINGS_NOTES.md) keep text, figures, and frozen
 experimental facts synchronized.
+The [research-substance audit](docs/RESEARCH_QUALITY_AUDIT.md) records current failures,
+mandatory controls, evidence gates, and the minimum defensible pivot.
 
 ## Planned systems
 

@@ -24,8 +24,13 @@ Originals and variants share a subject group and split.
 2. Slice-based VLM using a fixed slice-selection policy.
 3. Answer-only 3D MRI-VLM.
 4. The same 3D MRI-VLM with an evidence head and balanced modality dropout.
+5. The same 3D model with unconditional segmentation auxiliary supervision, isolating
+   generic spatial multi-task supervision from question-conditioned grounding.
+6. A strong 3D segmentation-to-symbolic-QA factorized baseline.
 
-Ablations remove evidence loss, modality dropout, and sequence identity embeddings.
+Ablations remove evidence loss, modality dropout, sequence identity embeddings, and
+question conditioning of the spatial head. M3D-LaMed remains a non-matched contextual
+baseline because it does not receive the same four-sequence input.
 
 ## Evaluation
 

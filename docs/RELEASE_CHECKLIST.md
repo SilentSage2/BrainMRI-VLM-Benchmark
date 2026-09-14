@@ -3,7 +3,10 @@
 Do not publish or pin an empty scaffold. Create the independent GitHub repository and push
 the local history only after all of these are true:
 
+- the research-substance audit is cleared with evidence, not documentation alone;
 - at least one named VLM baseline runs end to end;
+- a strong segmentation-to-symbolic-QA baseline runs end to end;
+- an unconditional spatial-auxiliary control isolates grounding from extra supervision;
 - a real-data smoke evaluation produces traceable metrics;
 - dataset acquisition and preparation commands are documented without redistributing data;
 - tests, lint, typing, and the CPU protocol smoke command pass;
