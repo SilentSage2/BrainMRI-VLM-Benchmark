@@ -1,0 +1,12 @@
+split_seed = 20260914
+training_seeds = [20260914, 20260915, 20260916]
+train_cases = 64
+validation_cases = 16
+spatial_size = 48
+epochs = 20
+width = 4
+learning_rate = 0.001
+bootstrap_samples = 5000
+ablation = ["balanced_modality_dropout", "complete_input_only"]
+abstention_threshold = 0.75
+test_cases_read = 0

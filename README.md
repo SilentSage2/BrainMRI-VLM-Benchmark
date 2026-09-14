@@ -135,6 +135,9 @@ unanswerable questions. Every system is evaluated across the same missing-sequen
 The frozen [V3 multi-seed protocol](experiments/MATCHED_V3_PROTOCOL.md) expands the matched
 comparison to 64/16 subjects and three training seeds, adds hierarchical subject/seed
 bootstrap uncertainty, and predefines a negative-result interpretation before aggregation.
+The frozen [modular V4 protocol](experiments/MODULAR_V4_PROTOCOL.md) now evaluates whether
+MR-specialized 3D segmentation followed by symbolic QA is more reliable, including a
+matched modality-dropout ablation and all 15 missing-contrast conditions.
 
 ## Quick start
 

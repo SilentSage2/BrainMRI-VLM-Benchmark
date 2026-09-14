@@ -17,8 +17,15 @@ from torch import Tensor
 from mri_vlm.conditions import condition_id, modality_conditions
 from mri_vlm.controls import bootstrap_mean_ci
 from mri_vlm.data.msd import discover_training_cases
-from mri_vlm.pilot_cli import _condition_mask, _symbolic_answer, _tensor_dice
+from mri_vlm.pilot_cli import _condition_mask, _ece, _symbolic_answer, _tensor_dice
 from mri_vlm.preprocess import PreprocessedCase, PreprocessSpec, load_preprocessed_case
+from mri_vlm.qa_v1 import (
+    FROZEN_FRACTION_THRESHOLDS,
+    QATargetV1,
+    build_word_vocabulary,
+    fraction_bin,
+    materialize_targets,
+)
 from mri_vlm.real_qa import SplitQAExample, generate_real_examples
 from mri_vlm.schema import Modality, QuestionType, Split
 from mri_vlm.segmentation import ResidualUNet3D
@@ -38,6 +45,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--width", type=int, default=4)
     parser.add_argument("--learning-rate", type=float, default=1e-3)
     parser.add_argument("--seed", type=int, default=20260914)
+    parser.add_argument("--split-seed", type=int, default=20260914)
+    parser.add_argument(
+        "--no-modality-dropout", action="store_true", help="train on complete inputs only"
+    )
     return parser
 
 
@@ -52,13 +63,13 @@ def main() -> None:
     root = args.dataset_root.resolve()
     selected_ids = select_case_ids(
         root,
-        seed=args.seed,
+        seed=args.split_seed,
         train_count=args.train_cases,
         validation_count=args.validation_cases,
     )
     questions = generate_real_examples(
         root,
-        seed=args.seed,
+        seed=args.split_seed,
         include_splits=frozenset({Split.TRAIN, Split.VALIDATION}),
         include_case_ids=frozenset(selected_ids[Split.TRAIN] + selected_ids[Split.VALIDATION]),
     )
@@ -82,6 +93,19 @@ def main() -> None:
         split: load_cases(root, cache_root, selected_ids[split], spec)
         for split in (Split.TRAIN, Split.VALIDATION)
     }
+    vocabulary = build_word_vocabulary()
+    qa_targets = {
+        split: {
+            case.case_id: materialize_targets(
+                case,
+                tuple(questions_by_case[case.case_id]),
+                FROZEN_FRACTION_THRESHOLDS,
+                vocabulary,
+            )
+            for case in datasets[split]
+        }
+        for split in (Split.TRAIN, Split.VALIDATION)
+    }
     model = ResidualUNet3D(width=args.width)
     history, best_epoch, best_state = train(
         model,
@@ -90,6 +114,7 @@ def main() -> None:
         epochs=args.epochs,
         learning_rate=args.learning_rate,
         seed=args.seed,
+        modality_dropout=not args.no_modality_dropout,
     )
     model.load_state_dict(best_state)
     args.checkpoint.parent.mkdir(parents=True, exist_ok=True)
@@ -107,7 +132,7 @@ def main() -> None:
     evaluation = evaluate(
         model,
         datasets[Split.VALIDATION],
-        questions_by_case,
+        qa_targets[Split.VALIDATION],
         conditions=conditions,
         bootstrap_seed=args.seed,
     )
@@ -137,6 +162,8 @@ def main() -> None:
             "spatial_size": args.spatial_size,
             "width": args.width,
             "learning_rate": args.learning_rate,
+            "split_seed": args.split_seed,
+            "modality_dropout": not args.no_modality_dropout,
             "preprocessing": asdict(spec),
             "modality_schedule": [condition_id(item) for item in conditions],
         },
@@ -190,6 +217,7 @@ def train(
     epochs: int,
     learning_rate: float,
     seed: int,
+    modality_dropout: bool = True,
 ) -> tuple[list[dict[str, float]], int, dict[str, Tensor]]:
     optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=1e-5)
     weights = torch.tensor((0.05, 1.0, 2.0, 2.0))
@@ -206,7 +234,12 @@ def train(
         model.train()
         for index in order:
             case = train_cases[index]
-            mask = _condition_mask(conditions[step % len(conditions)])[0, :, None, None, None]
+            condition = (
+                conditions[step % len(conditions)]
+                if modality_dropout
+                else frozenset(Modality)
+            )
+            mask = _condition_mask(condition)[0, :, None, None, None]
             optimizer.zero_grad()
             logits = model((case.volumes * mask).unsqueeze(0))
             loss = brats_segmentation_loss(logits, case.label.unsqueeze(0), weights)
@@ -254,7 +287,7 @@ def mean_region_dice(
 def evaluate(
     model: ResidualUNet3D,
     cases: tuple[PreprocessedCase, ...],
-    questions_by_case: dict[str, list[SplitQAExample]],
+    targets_by_case: dict[str, tuple[QATargetV1, ...]],
     *,
     conditions: tuple[frozenset[Modality], ...],
     bootstrap_seed: int,
@@ -272,34 +305,54 @@ def evaluate(
         hits_by_type: dict[str, list[tuple[str, bool]]] = defaultdict(list)
         fraction_errors: list[float] = []
         retained_by_type: dict[str, int] = defaultdict(int)
+        all_hits: list[bool] = []
+        confidences: list[float] = []
+        selective_hits: list[bool] = []
+        subject_ids: list[str] = []
         with torch.no_grad():
             for case in cases:
                 mask = _condition_mask(condition)[0, :, None, None, None]
-                prediction = model((case.volumes * mask).unsqueeze(0)).argmax(dim=1).squeeze(0)
+                logits = model((case.volumes * mask).unsqueeze(0))
+                probabilities = logits.softmax(dim=1)
+                prediction = probabilities.argmax(dim=1).squeeze(0)
+                foreground = prediction > 0
+                voxel_confidence = probabilities.max(dim=1).values.squeeze(0)
+                confidence = float(
+                    voxel_confidence[foreground].mean()
+                    if bool(foreground.any())
+                    else voxel_confidence.mean()
+                )
                 whole_dice.append(_tensor_dice(prediction > 0, case.label > 0))
                 for name, (predicted_region, target_region) in _brats_regions(
                     prediction, case.label
                 ).items():
                     region_dice[name].append(_tensor_dice(predicted_region, target_region))
                 case_hits: list[bool] = []
-                for item in questions_by_case[case.case_id]:
-                    question_type = item.example.question_type
-                    expected = item.example.answer or ""
-                    if question_type in (QuestionType.LATERALITY, QuestionType.RELATIVE_VOLUME):
-                        reference_resampled = _symbolic_answer(case.label, question_type)
-                        if reference_resampled != expected:
-                            continue
-                        predicted = _symbolic_answer(prediction, question_type)
-                        hit = predicted == expected
-                        case_hits.append(hit)
-                        hits_by_type[question_type.value].append((expected, hit))
-                        retained_by_type[question_type.value] += 1
-                    elif question_type is QuestionType.ENHANCING_FRACTION:
+                for target in targets_by_case[case.case_id]:
+                    question_type = target.question_type
+                    expected = target.answer
+                    predicted = (
+                        fraction_bin(
+                            _enhancing_fraction(prediction), FROZEN_FRACTION_THRESHOLDS
+                        )
+                        if question_type is QuestionType.ENHANCING_FRACTION
+                        else _symbolic_answer(prediction, question_type)
+                    )
+                    hit = predicted == expected
+                    case_hits.append(hit)
+                    all_hits.append(hit)
+                    confidences.append(confidence)
+                    if confidence >= 0.75:
+                        selective_hits.append(hit)
+                    hits_by_type[question_type.value].append((expected, hit))
+                    retained_by_type[question_type.value] += 1
+                    if question_type is QuestionType.ENHANCING_FRACTION:
                         fraction_errors.append(
-                            abs(_enhancing_fraction(prediction) - float(expected))
+                            abs(_enhancing_fraction(prediction) - _enhancing_fraction(case.label))
                         )
                 if case_hits:
                     subject_symbolic.append(sum(case_hits) / len(case_hits))
+                    subject_ids.append(case.case_id)
         balanced_by_type = {
             question: _balanced_accuracy(items) for question, items in hits_by_type.items()
         }
@@ -317,6 +370,14 @@ def evaluate(
                 subject_symbolic, seed=bootstrap_seed, samples=1000
             ),
             "enhancing_fraction_mae": sum(fraction_errors) / len(fraction_errors),
+            "segmentation_confidence_proxy_ece_5bin": _ece(all_hits, confidences, bins=5),
+            "abstention_threshold": 0.75,
+            "selective_coverage": len(selective_hits) / len(all_hits),
+            "selective_answer_accuracy": (
+                sum(selective_hits) / len(selective_hits) if selective_hits else None
+            ),
+            "subject_ids": subject_ids,
+            "subject_symbolic_scores": subject_symbolic,
         }
     return results
 
