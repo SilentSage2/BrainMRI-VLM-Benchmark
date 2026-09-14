@@ -60,3 +60,20 @@ def test_all_sequences_missing_is_rejected() -> None:
     modality_mask[0] = False
     with pytest.raises(ValueError, match="at least one MRI sequence"):
         model(volumes, modality_mask, question_tokens)
+
+
+def test_unconditional_auxiliary_evidence_ignores_question_tokens() -> None:
+    torch.manual_seed(13)
+    model = MRIVLMSmall(
+        vocab_size=16,
+        answer_classes=5,
+        width=4,
+        question_conditioned_evidence=False,
+    ).eval()
+    volumes, modality_mask, question_tokens = inputs()
+    changed_questions = question_tokens.flip(dims=(1,))
+    with torch.no_grad():
+        first = model(volumes, modality_mask, question_tokens)
+        second = model(volumes, modality_mask, changed_questions)
+
+    assert torch.equal(first.evidence_logits, second.evidence_logits)

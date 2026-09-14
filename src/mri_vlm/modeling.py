@@ -21,11 +21,19 @@ class MRIVLMSmall(nn.Module):
     intentionally small; model size can change only through versioned configuration.
     """
 
-    def __init__(self, *, vocab_size: int, answer_classes: int, width: int = 16) -> None:
+    def __init__(
+        self,
+        *,
+        vocab_size: int,
+        answer_classes: int,
+        width: int = 16,
+        question_conditioned_evidence: bool = True,
+    ) -> None:
         super().__init__()
         if vocab_size <= 1 or answer_classes <= 1 or width <= 0:
             raise ValueError("vocab, answer classes, and width must be greater than one")
         self.modality_count = len(Modality)
+        self.question_conditioned_evidence = question_conditioned_evidence
         self.visual_encoder = nn.Sequential(
             nn.Conv3d(1, width, kernel_size=3, padding=1),
             nn.GELU(),
@@ -70,9 +78,11 @@ class MRIVLMSmall(nn.Module):
 
         joint = torch.tanh(self.fusion(torch.cat((fused_visual, question_pooled), dim=1)))
         answer_logits = self.answer_head(joint)
-        scale, shift = self.evidence_conditioner(joint).chunk(2, dim=1)
-        conditioned = fused_spatial * (1.0 + scale[:, :, None, None, None])
-        conditioned = conditioned + shift[:, :, None, None, None]
+        conditioned = fused_spatial
+        if self.question_conditioned_evidence:
+            scale, shift = self.evidence_conditioner(joint).chunk(2, dim=1)
+            conditioned = conditioned * (1.0 + scale[:, :, None, None, None])
+            conditioned = conditioned + shift[:, :, None, None, None]
         evidence_logits = self.evidence_head(conditioned).squeeze(1)
         return MRIModelOutput(answer_logits=answer_logits, evidence_logits=evidence_logits)
 

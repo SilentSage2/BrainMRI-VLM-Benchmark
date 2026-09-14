@@ -75,6 +75,9 @@ mandatory controls, evidence gates, and the minimum defensible pivot.
 The first [real-data control ledger](experiments/REAL_CONTROLS.md) reports a 65.9%
 question-only validation accuracy and rejects the initial fixed-template distribution as
 the final benchmark because of shortcut leakage.
+The [first controlled real-MRI pilot](experiments/REAL_PILOT_V0.md) executes four model
+paths but demonstrates underfitting and no grounded-over-auxiliary advantage; its results
+are diagnostic and explicitly excluded from abstract claims.
 
 ## Planned systems
 
