@@ -8,9 +8,9 @@ result. Every plot must be regenerated from a versioned command and retain its s
 |---|---|---|---|---|
 | 1. Overall framework | The implemented pipeline connects multi-contrast MRI and questions to answer/evidence outputs and locked evaluation. | Implemented architecture, frozen protocol, and one real case | 25 Sep | Mark not-yet-implemented training elements explicitly |
 | 2. Cohort and targets | The audited cohort supports varied physical-volume and enhancing-fraction questions without subject leakage. | 484 reference masks and locked split | 18 Sep | Move to supplement if four figures tell the story better |
-| 3. Contrast-dependence heatmap | Grounding changes question-specific sensitivity to FLAIR/T1/T1-Gd/T2 removal. | Matched models × question families × missing contrasts | 6 Oct | Report the predeclared matrix even if effects are null |
-| 4. Robustness and uncertainty | Grounding improves—or fails to improve—performance as available contrasts decrease. | All 15 combinations, subject bootstrap, seeds | 10 Oct | Show effect sizes and confidence intervals without significance claims |
-| 5. Evidence and failure analysis | Spatial evidence and abstention expose supported answers and failure modes. | Frozen representative-selection rule | 15 Oct | Use one success, one correct abstention, one shared failure |
+| 3. Fifteen-condition MR robustness | Compare grounded, answer-only, and modular segmentation-to-symbolic interpretation across every contrast subset. | Models × 15 contrast subsets, subject bootstrap, seeds | 6 Oct | Report the locked matrix even if the modular baseline wins |
+| 4. Reliability and contrast dependence | Test calibration, abstention, and question-specific sensitivity to FLAIR/T1/T1-Gd/T2 removal. | Confidence, support state, question families, paired intervals | 10 Oct | Show effect sizes and intervals without significance language |
+| 5. Evidence and failure boundaries | Show where voxel evidence supports interpretation and where missing contrasts cause abstention or failure. | Frozen success/boundary/failure selection | 15 Oct | Include the same cases for VLM and modular MR baseline |
 
 Status on 14 September: Figure 1 is a provisional overall framework using a real validation
 case selected by the frozen median-burden rule; the implemented model and evaluation paths
@@ -76,22 +76,22 @@ performance.
 
 ### Figure 3 — empirical, planned
 
-- Supports only after locked evaluation: whether grounding changes question-specific
-  leave-one-contrast-out sensitivity relative to the matched answer-only model.
-- Disconfirming result: no aligned interaction, reversed dependence, or intervals spanning
-  effects too broadly for the predeclared claim.
+- Supports only after locked evaluation: how grounded, answer-only, and modular MR methods
+  behave across every one of the 15 available-contrast subsets.
+- Disconfirming result: no grounded advantage, or a simpler modular MR baseline that is as
+  robust or better.
 
 ### Figure 4 — empirical, planned
 
-- Supports only after locked evaluation: whether performance degrades differently as the
-  number and identity of available contrasts change.
-- Disconfirming result: no grounded-model advantage or violation of the complete-input
-  non-inferiority margin.
+- Supports only after locked evaluation: whether calibration, abstention, and evidence
+  localization respond appropriately to the identity of a removed contrast.
+- Disconfirming result: overconfident unsupported answers, no question-specific contrast
+  sensitivity, or violation of the complete-input non-inferiority margin.
 
 ### Figure 5 — qualitative plus empirical, planned
 
 - Supports only after frozen case selection: how correct grounding, calibrated abstention,
-  boundary behavior, and shared failure appear spatially.
+  boundary behavior, and shared failure compare with the modular MR pipeline spatially.
 - Cannot support prevalence or comparative performance without the corresponding aggregate
   result and uncertainty.
 

@@ -10,9 +10,10 @@
 
 ## Research question
 
-Under matched data and compute, does explicit voxel-level evidence supervision improve a
-3D MRI vision-language model's grounded question answering, counterfactual consistency,
-and abstention under missing MRI sequences compared with answer-only fine-tuning?
+When one or more complementary brain MRI contrasts are unavailable, does explicit
+voxel-level evidence supervision improve the reliability of quantitative interpretation—
+including grounded answers, calibration, and abstention—relative to answer-only modeling
+and a strong segmentation-to-symbolic MR workflow under matched evaluation?
 
 Inputs are FLAIR, T1-weighted, post-contrast T1-weighted, and T2-weighted brain MRI.
 Questions test verifiable properties such as affected region, relative lesion volume,
@@ -39,6 +40,11 @@ question text ------------------> text tokens ---------+          |
 Answer-plus-evidence training with modality dropout will outperform answer-only training
 on **grounded answer accuracy** and **unanswerable hallucination rate** when one or more MRI
 sequences are missing. Ordinary answer accuracy alone cannot establish the claim.
+
+The intended audience is MR scientists working with retrospective or heterogeneous
+multi-contrast datasets. The project does not argue that a VLM is inherently preferable:
+the learned language-conditioned system must outperform or reveal information beyond a
+strong modular segmentation-to-symbolic pipeline to justify its added complexity.
 
 ## Data direction
 

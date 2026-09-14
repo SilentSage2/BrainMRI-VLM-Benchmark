@@ -29,9 +29,9 @@ Both titles intentionally name MRI, 3D, vision-language modeling, and voxel grou
 
 ## One-sentence story
 
-Explicit voxel-evidence supervision makes a 3D MRI vision-language model less likely to
-give unsupported answers when an informative contrast is missing and makes its failure
-pattern more consistent with the contrast dependence of the question being asked.
+For MR scientists working with incomplete multi-contrast brain MRI, test whether explicit
+voxel evidence reduces unsupported quantitative interpretations and improves calibrated
+abstention beyond answer-only and modular segmentation-to-symbolic workflows.
 
 ## Why this is an MR abstract rather than a generic AI abstract
 

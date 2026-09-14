@@ -20,13 +20,14 @@ Originals and variants share a subject group and split.
 
 ## Comparisons
 
-1. Question-only majority/template control.
-2. Slice-based VLM using a fixed slice-selection policy.
-3. Answer-only 3D MRI-VLM.
-4. The same 3D MRI-VLM with an evidence head and balanced modality dropout.
-5. The same 3D model with unconditional segmentation auxiliary supervision, isolating
+1. Strong missing-modality 3D segmentation followed by deterministic symbolic QA: the
+   principal MR workflow baseline.
+2. Answer-only 3D MRI-VLM.
+3. The same 3D MRI-VLM with an evidence head and balanced modality dropout.
+4. The same 3D model with unconditional segmentation auxiliary supervision, isolating
    generic spatial multi-task supervision from question-conditioned grounding.
-6. A strong 3D segmentation-to-symbolic-QA factorized baseline.
+5. Question-only majority/template control for language shortcut diagnosis.
+6. Slice-based VLM using a fixed slice-selection policy for volumetric-information loss.
 
 Ablations remove evidence loss, modality dropout, sequence identity embeddings, and
 question conditioning of the spatial head. M3D-LaMed remains a non-matched contextual
@@ -43,6 +44,10 @@ baseline because it does not receive the same four-sequence input.
 - degradation across complete, single-missing, paired-input, and single-input conditions.
 - question-family-by-dropped-contrast changes in accuracy, evidence Dice, and confidence,
   compared with preregistered contrast dependencies.
+
+ISMRM reporting order is fixed: all 15 contrast conditions and the modular MR baseline;
+calibration/abstention and spatial evidence; matched grounding effect and isolation
+ablations; then shortcut and 2D diagnostics. Model novelty is not an endpoint.
 
 Confidence intervals resample subjects, not questions or slices. Final stochastic models
 use three seeds when the compute ceiling permits.

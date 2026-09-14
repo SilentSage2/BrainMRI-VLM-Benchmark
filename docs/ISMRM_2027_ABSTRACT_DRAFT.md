@@ -4,35 +4,39 @@ Voxel Grounding Improves Contrast-Aware Reasoning in 3D MRI Vision-Language Mode
 ## Synopsis
 
 ### Motivation
-MRI vision-language models may give plausible answers when a contrast needed to support
-the answer is missing.
+Retrospective and heterogeneous brain MRI datasets often lack contrasts, while current
+missing-modality methods do not verify whether language answers have spatial support.
 
 ### Goal(s)
-Test whether voxel grounding makes 3D MRI question answering more robust and transparent
-under missing contrasts.
+Test whether voxel evidence improves interpretation reliability and abstention across
+incomplete multi-contrast MRI.
 
 ### Approach
-We compare matched answer-only and voxel-grounded models across every available subset of
-FLAIR, T1, T1-Gd, and T2 using mask-verifiable questions.
+Compare answer-only, voxel-grounded, and segmentation-to-symbolic methods on mask-verifiable
+questions across all 15 subsets of FLAIR, T1, T1-Gd, and T2.
 
 ### Results
 [PLANNED — replace with the primary effect, 95% confidence interval, hallucination result,
 and complete-input non-inferiority result from the locked table.]
 
 ## Impact
-[PLANNED — write after results; state what MRI researchers can now evaluate or avoid, name
-voxel grounding and missing contrasts, and make no clinical-use claim.]
+[PLANNED — state whether MR scientists can use voxel evidence and abstention to identify
+unsupported interpretations in incomplete multi-contrast datasets, or whether the simpler
+modular MR pipeline remains preferable. Make no clinical-use claim.]
 
 ## Main Body
 
 ### Introduction
 
-Multi-contrast brain MRI provides complementary tissue information, but retrospective and
-deployed examinations may lack one or more sequences. A vision-language model can still
-produce a fluent answer when the contrast needed to support it is absent. Answer accuracy
-alone cannot establish whether the response is tied to spatially relevant image evidence.
-We test whether explicit voxel-evidence supervision makes 3D MRI question answering more
-robust, inspectable, and appropriately uncertain under missing contrasts.
+Retrospective, multi-center, and protocol-heterogeneous brain MRI collections often lack
+one or more complementary contrasts. Existing missing-modality methods primarily optimize
+image synthesis or segmentation; they do not establish whether a language-level
+interpretation is spatially supported or whether a system abstains when evidence is
+insufficient. A model can therefore produce a plausible answer despite removal of the
+contrast most relevant to the question. We test whether explicit voxel-evidence supervision
+improves quantitative interpretation, calibration, and abstention across incomplete
+multi-contrast MRI, and whether it adds value beyond a modular segmentation-to-symbolic MR
+workflow.
 
 ### Methods
 
@@ -60,32 +64,36 @@ The primary endpoint is subject-aggregated grounded answer accuracy over missing
 conditions. Secondary endpoints are answer accuracy, evidence Dice, hallucination on
 unanswerable questions, counterfactual consistency, calibration, and complete-input
 accuracy. Question-family-by-dropped-contrast effects test preregistered contrast
-dependencies. Report paired subject bootstrap 95% confidence intervals and three seeds
+dependencies. The principal MR comparison is against a 3D missing-modality segmentation
+model followed by deterministic symbolic answers; language-only and fixed-slice controls
+diagnose shortcuts and loss of volumetric information. Report paired subject bootstrap 95%
+confidence intervals and three seeds
 where training variance is material. The held-out test set is evaluated once after model
 and threshold selection. Its aggregate label distribution was previously included in
 dataset auditing and descriptive cohort analysis; no test predictions inform selection.
 
 ### Results
 
-[PLANNED — report audited example counts by split and question family; question-only and 2D
-baseline results; matched answer-only versus grounded primary effect with 95% CI; all 15
-contrast conditions; hallucination and calibration; complete-input non-inferiority;
-ablation effects; three-seed dispersion; and the preregistered contrast-dependence test.
+[PLANNED — lead with all 15 contrast conditions and the segmentation-to-symbolic MR
+baseline; then report the matched grounded effect with 95% CI, calibration and abstention,
+evidence Dice, complete-input non-inferiority, question-only and 2D diagnostics, ablation
+effects, three-seed dispersion, and the preregistered contrast-dependence test.
 Insert only values exported from the locked results manifest.]
 
 ### Discussion
 
-[PLANNED — interpret the observed effect direction and uncertainty. Discuss whether
-T1-Gd/enhancement and FLAIR/edema sensitivities align with the preregistration. Report
-negative and boundary results. Limitations must include one public tumor dataset,
+[PLANNED — interpret what the observed effect means for incomplete MRI analysis, including
+whether the added VLM complexity improves on the modular MR baseline. Discuss whether
+T1-Gd/enhancement and FLAIR/edema sensitivities align with the preregistration and whether
+abstention is calibrated. Report negative and boundary results. Limitations must include one public tumor dataset,
 mask-derived synthetic language, historical acquisition protocols, inherited segmentation
 ontology, no reader study, and no evidence of clinical utility.]
 
 ### Conclusion
 
-[PLANNED — answer the research question directly from the primary endpoint. If thresholds
-are not met, state that voxel grounding did not establish improved missing-contrast
-robustness and identify the supported negative conclusion.]
+[PLANNED — answer whether voxel evidence makes incomplete multi-contrast MRI interpretation
+more reliable than answer-only and modular MR alternatives. If thresholds are not met,
+state that the added VLM complexity is not justified by this study.]
 
 ### References
 
@@ -110,16 +118,16 @@ supervision and evaluation targets but are not model inputs. This is descriptive
 no performance or clinical claim.
 
 ### Figure 3
-[PLANNED — contrast-dependence heatmap caption with split, n, baseline, model, metric,
-effect direction, and 95% CI definition.]
+[PLANNED — 15-condition robustness caption comparing grounded, answer-only, and modular MR
+methods with split, n, effect size, seeds, and subject-bootstrap interval definition.]
 
 ### Figure 4
-[PLANNED — all-subset robustness caption with split, n, seeds, subject-bootstrap intervals,
-and complete-input non-inferiority result.]
+[PLANNED — calibration, abstention, and question-by-removed-contrast sensitivity caption
+with support definition, split, n, intervals, and complete-input non-inferiority result.]
 
 ### Figure 5
-[PLANNED — evidence and failure-analysis caption with frozen success/boundary/failure
-selection rules and aggregate context.]
+[PLANNED — paired VLM/modular evidence and failure-analysis caption with frozen
+success/boundary/failure selection rules and aggregate context.]
 
 ## Preview Figure
 

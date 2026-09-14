@@ -35,3 +35,6 @@ figure does not report model performance or clinical validity.
 Captions will be generated only from frozen real-data result tables. Each will state the
 model versions, evaluation split, subject and question counts, missing-contrast conditions,
 baseline or ablation, seed count, interval construction, and the result-supported claim.
+Figure 3 prioritizes the 15-condition comparison with the modular MR baseline; Figure 4
+prioritizes calibration, abstention, and question-specific contrast sensitivity; Figure 5
+uses the same frozen success, boundary, and failure cases for learned and modular methods.
