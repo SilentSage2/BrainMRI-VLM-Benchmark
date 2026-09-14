@@ -1,11 +1,12 @@
 import json
+from pathlib import Path
 
 import pytest
 
 from mri_vlm.stability_figure_cli import load_summary
 
 
-def test_figure_summary_rejects_test_read(tmp_path) -> None:
+def test_figure_summary_rejects_test_read(tmp_path: Path) -> None:
     path = tmp_path / "summary.json"
     path.write_text(
         json.dumps(
@@ -20,7 +21,7 @@ def test_figure_summary_rejects_test_read(tmp_path) -> None:
         load_summary(path, screen_resolution=32)
 
 
-def test_figure_summary_requires_screen_resolution(tmp_path) -> None:
+def test_figure_summary_requires_screen_resolution(tmp_path: Path) -> None:
     path = tmp_path / "summary.json"
     path.write_text(
         json.dumps(

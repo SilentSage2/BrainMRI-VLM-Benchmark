@@ -2,11 +2,11 @@
 
 **Robust 3D Vision-Language Reasoning over Multi-Sequence Brain MRI**
 
-> **Status: audited research scaffold, not publish-ready.** `MRI-VLM-Small` is a controlled
-> proof-of-pipeline tested on synthetic tensors; it is not a competitive trained VLM and no
-> performance or novelty result is claimed. The public-release and ISMRM gates remain closed
-> pending strong baselines, isolation ablations, real-data results, uncertainty, and failure
-> analysis.
+> **Status: research-preview candidate, not publish-ready.** A residual 3D MR baseline and
+> three matched hierarchical MRI-VLM paths now run on real data. The first 32/8-subject
+> validation experiment is a small negative diagnostic, not a performance or novelty claim.
+> The ISMRM evidence gate remains closed pending larger multi-seed validation, an external
+> VLM baseline, and frozen failure analysis.
 
 ## Research question
 
@@ -93,15 +93,34 @@ grounded comparison contract.
 The [matched-run recovery ledger](experiments/MATCHED_RECOVERY.md) records the host-restart
 interruption, rejects an unverifiable partial artifact, and defines fingerprint-checked
 per-role reuse without touching the test split.
+The [matched direction-run ledger](experiments/MATCHED_DIRECTION.md) reports the corrected
+real-data result: question-conditioned grounding matched, but did not improve upon,
+unconditional spatial supervision and produced worse evidence localization at `n=8`.
+
+## Preliminary development diagnostic
+
+These numbers are validation diagnostics from one seed and eight subjects. They are shown
+to make the current negative evidence auditable, not to claim generalization.
+
+| Path | Answer accuracy | Balanced answer accuracy | Grounded answer accuracy | Mean evidence Dice |
+|---|---:|---:|---:|---:|
+| Answer only | 0.375 | 0.444 | — | — |
+| Unconditional whole-tumor auxiliary | 0.542 | 0.472 | 0.417 | 0.638 |
+| Question-conditioned grounding | 0.542 | 0.472 | 0.167 | 0.486 |
+
+Grounded-minus-auxiliary paired answer effect was 0.000 for every subject. Grounded-minus-
+answer-only was +0.167, bootstrap 95% CI [-0.042, 0.375]. Test cases remain sealed.
 
 ## Planned systems
 
 | System | Visual representation | Training target | Status |
 |---|---|---|---|
-| Question-only prior | none | answer | Planned shortcut control |
+| Question-only prior | none | answer | V0.1 control completed; QA V1 rerun pending |
 | Slice-based VLM | sampled 2D slices | answer | Planned baseline |
-| 3D MRI-VLM | pooled 3D tokens | answer | Planned baseline |
-| Grounded 3D MRI-VLM | sequence-aware 3D tokens | answer + voxel evidence | Architecture smoke implemented |
+| Residual 3D MR segmenter | four registered contrasts | WT/TC/ET masks → symbolic QA | Small direction gate passed |
+| 3D MRI-VLM | coordinate-aware hierarchical 3D tokens | answer | Small real-data run completed |
+| Auxiliary 3D MRI-VLM | same | answer + unconditional whole tumor | Small real-data run completed |
+| Grounded 3D MRI-VLM | same + GRU question tokens | answer + question-specific evidence | Small real-data run completed; no benefit observed |
 
 Primary metrics are answer accuracy, grounded answer accuracy, evidence Dice, numeric
 tolerance accuracy, counterfactual consistency, calibration, and hallucination on

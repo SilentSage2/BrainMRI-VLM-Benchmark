@@ -64,23 +64,18 @@ or per-case model-outcome selection has occurred, but the split is not pristine 
 All future selection must remain validation-only, and this limitation must appear in the
 abstract if the same test split is reported.
 
-## 4. Implementation depth — fail at present
+## 4. Implementation depth — partial pass
 
-`MRI-VLM-Small` is an implemented and tested controlled model, but it remains a compact
-two-layer shared 3D convolutional encoder, pooled token embedding, categorical answer head,
-and evidence head. Real-data preprocessing, training, caching, one-case overfit, and resource
-measurement now exist, but the model still lacks a competitive language backbone and a
-materially sized converged run. It must not be described as the final flagship model.
+The project now includes deterministic real-data preprocessing, QA/evidence materialization,
+a memory-bounded cache, serialization recovery, a residual 3D MR segmenter, and matched
+answer-only, unconditional-auxiliary, and question-grounded training paths. The corrected
+V2 run records seed, split, parameter count, hardware, wall time, fingerprints, and artifact
+hashes without reading test cases.
 
-The framework figure correctly marks the training runner pending. Until the following run
-on real MRI, the implementation remains a research scaffold:
-
-- deterministic crop/resample/normalization and QA/evidence materialization;
-- memory-bounded dataloader with all modality masks;
-- one-case overfit and serialization recovery;
-- matched answer-only and grounded training;
-- external or factorized strong baseline execution; and
-- immutable run manifests with seed, environment, hardware, time, and cost.
+This is substantive implementation progress, but the hierarchical 3D VLM is still a compact
+14,962-parameter controlled model with a GRU language encoder. The 32-train/8-validation run
+is a direction diagnostic, not a materially sized converged experiment, and no external VLM
+has yet been executed. It must not be described as the final flagship model.
 
 ## 5. Baselines and ablations — insufficient at present
 
@@ -102,13 +97,15 @@ subsets, and compute for matched claims. Parameter counts and wall time must be 
 The unconditional spatial auxiliary is a hard requirement: without it, an improvement
 cannot be attributed to grounded reasoning rather than ordinary multi-task segmentation.
 
-## 6. Results needed to support a conclusion — absent
+## 6. Results needed to support a conclusion — preliminary negative evidence only
 
 Small validation diagnostics now exist, including a 32-train/8-validation residual 3D
-baseline that passed internal direction gates on standard BraTS WT/TC/ET endpoints. This is
-optimization evidence, not hypothesis evidence: the sample is small, continuous QA error
-remains high, and no matched grounded comparison exists. A defensible ISMRM result package
-still requires:
+baseline and a corrected matched comparison of answer-only, unconditional spatial
+auxiliary, and question-conditioned grounding paths. In the matched V2 run, grounded and
+unconditional-auxiliary answer accuracy were identical for every validation subject, while
+question-conditioned evidence Dice was lower. This is honest negative direction evidence,
+not a generalization result: the cohort is eight subjects and one seed. A defensible ISMRM
+result package still requires:
 
 - real validation and single-use held-out test results;
 - primary paired effect size with subject-bootstrap 95% confidence interval;
@@ -158,8 +155,8 @@ At release, the summary must point to concrete artifacts showing:
 - either a meaningful reduction in unsupported answers without complete-input harm, or a
   rigorous negative result that changes how MRI-VLM grounding should be evaluated.
 
-Until then, the accurate description is **audited research scaffold with real-data cohort
-characterization**, not publish-ready MRI-VLM research.
+Until then, the accurate description is **research-preview implementation with preliminary
+negative validation evidence**, not publish-ready MRI-VLM research.
 
 ## Literature checked
 

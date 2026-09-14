@@ -1,6 +1,6 @@
 # Balanced QA V1 Protocol
 
-Status: **implemented target materialization; matched model training pending.** This protocol
+Status: **implemented target materialization; first matched direction run complete.** This protocol
 replaces the rejected fixed-template V0.1 distribution for development experiments.
 
 ## Research role

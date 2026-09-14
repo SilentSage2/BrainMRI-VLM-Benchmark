@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import torch
+from pytest import MonkeyPatch
 
 from mri_vlm.baseline_cli import (
     _balanced_accuracy,
@@ -43,7 +44,7 @@ def test_brats_loss_rewards_correct_labels() -> None:
     )
 
 
-def test_case_selection_is_seeded(monkeypatch) -> None:
+def test_case_selection_is_seeded(monkeypatch: MonkeyPatch) -> None:
     class Case:
         def __init__(self, case_id: str) -> None:
             self.case_id = case_id
