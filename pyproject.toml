@@ -19,6 +19,11 @@ data = [
   "nibabel==5.4.2",
   "numpy==2.5.3",
 ]
+figures = [
+  "matplotlib==3.10.6",
+  "nibabel==5.4.2",
+  "numpy==2.5.3",
+]
 dev = [
   "mypy==1.15.0",
   "pytest==8.3.5",
@@ -28,6 +33,8 @@ dev = [
 [project.scripts]
 mri-vlm-v0-audit = "mri_vlm.cli:main"
 mri-vlm-msd-audit = "mri_vlm.data_cli:main"
+mri-vlm-cohort-figure = "mri_vlm.figure_cli:main"
+mri-vlm-method-figure = "mri_vlm.method_figure_cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/mri_vlm"]
