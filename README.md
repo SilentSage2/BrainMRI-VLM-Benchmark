@@ -60,6 +60,9 @@ The [figure contract](docs/FIGURE_PLAN.md) assigns each submission figure a clai
 inputs, delivery date, and negative-result-safe fallback.
 Working [standalone captions](docs/FIGURE_CAPTIONS.md) explicitly separate completed
 descriptive/method figures from planned empirical results.
+The working [ISMRM abstract package](docs/ISMRM_2027_ABSTRACT_DRAFT.md) and
+[proceedings-format audit](docs/ISMRM_PROCEEDINGS_NOTES.md) keep text, figures, and frozen
+experimental facts synchronized.
 
 ## Planned systems
 

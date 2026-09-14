@@ -35,6 +35,7 @@ mri-vlm-v0-audit = "mri_vlm.cli:main"
 mri-vlm-msd-audit = "mri_vlm.data_cli:main"
 mri-vlm-cohort-figure = "mri_vlm.figure_cli:main"
 mri-vlm-method-figure = "mri_vlm.method_figure_cli:main"
+mri-vlm-abstract-lint = "mri_vlm.abstract_lint:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/mri_vlm"]
