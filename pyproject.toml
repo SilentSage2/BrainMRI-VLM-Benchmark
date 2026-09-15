@@ -3,7 +3,7 @@ requires = ["hatchling==1.27.0"]
 build-backend = "hatchling.build"
 
 [project]
-name = "mri-vlm-grounding"
+name = "brainmri-vlm-benchmark"
 version = "0.1.0"
 description = "Grounded 3D vision-language reasoning over multi-sequence brain MRI"
 readme = "README.md"

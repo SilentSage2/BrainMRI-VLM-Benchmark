@@ -1,4 +1,4 @@
-# MRI-VLM Grounding Lab
+# BrainMRI-VLM Benchmark
 
 **Robust 3D Vision-Language Reasoning over Multi-Sequence Brain MRI**
 

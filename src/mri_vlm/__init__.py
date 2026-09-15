@@ -1,4 +1,4 @@
-"""Protocol foundations for MRI-VLM Grounding Lab."""
+"""Protocol foundations for the BrainMRI-VLM Benchmark."""
 
 from mri_vlm.schema import (
     AnswerKind,

@@ -14,7 +14,7 @@ the local history only after all of these are true:
 - no MRI data, derived volumes, model weights, credentials, or run directories are tracked;
 - compute, license, research-only use, and clinical non-goals are visible.
 
-After the gate passes: create `SilentSage2/mri-vlm-grounding`, push `main`, enable CI, add
+After the gate passes: create `SilentSage2/BrainMRI-VLM-Benchmark`, push `main`, enable CI, add
 accurate topics (`medical-imaging`, `mri`, `vision-language-model`, `multimodal-learning`,
 `grounding`), and create an MVP tag only after the reproduction command is verified.
 

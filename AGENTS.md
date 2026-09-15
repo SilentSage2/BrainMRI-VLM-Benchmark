@@ -2,7 +2,7 @@
 
 ## Purpose
 
-MRI-VLM Grounding Lab studies evidence-grounded 3D vision-language reasoning over
+BrainMRI-VLM Benchmark studies evidence-grounded 3D vision-language reasoning over
 multi-sequence brain MRI. It is not a medical device or clinical tool.
 
 ## Boundaries
