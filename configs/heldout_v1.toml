@@ -1,4 +1,5 @@
 protocol = "heldout-v1-frozen-20260914"
+result_schema = "heldout-v1-complete-aggregate-20260914"
 status = "locked-awaiting-explicit-user-authorization"
 split_seed = 20260914
 test_subject_count = 66

@@ -65,9 +65,11 @@ as such without a separate validation protocol.
 Summary SHA-256:
 `3c30b91131ee77015e858fc793d78301e662734aae5f62d4f2436bc42bd063db`.
 Figure 5 PNG/PDF/CSV SHA-256:
-`9a61c180735170db9969da76b627e196fa9201ae5e62c1f6682dce45bcfa3c26`,
-`0439606ff474a4da58d9fa2ce4e50f349c19fcf77da045593b27e1fc51f2921e`, and
+`4a5ceebe1f0a07b78989a0d06ee426e8ca5cedf18999fe6a8c14b9d593c5faa2`,
+`b89078534426d2dc5e320ae04ecd315ff8851df7c3172f353f3a5136f42e9a54`, and
 `5b54b49b390923e2b84da5e7825ddc68d1433e03ef488758381d4d83dc6d3ece`.
+The PNG/PDF hashes changed after a label-only paper-readability revision; the source CSV
+and all numerical values are unchanged.
 
 **Decision:** promote the modular pathway to the primary MR-specialized baseline and frame
 the end-to-end grounding result as a controlled negative comparison. Keep the held-out test

@@ -49,13 +49,21 @@ balanced-accuracy condition matrix for the matched 3D systems; and (C) grounded-
 comparator raw answer effects with hierarchical 95% intervals. The held-out version may
 replace development values only; it may not add, remove, or reorder systems or conditions.
 
-Figure 5 retains four panels in this order: (A) full-input WT/TC/ET Dice for modular
-dropout and no-dropout systems; (B) their 2-by-15 balanced-accuracy condition matrix; (C)
-predefined subject-level reliability categories; and (D) dropout-minus-no-dropout raw
-incomplete-condition accuracy with its hierarchical 95% interval. The development panel-C
-subjects remain the three lowest and three highest performers selected before visual
-review. Held-out panel C is aggregate-only: no test image or subject-specific example will
-be published or selected after outcomes are viewed.
+Development Figure 5 retains its modular four-panel audit, including the six profiles
+selected before visual review. The final held-out Figure 5 replacement is frozen separately:
+(A) full-input versus 14-incomplete-condition balanced QA for grounded VLM, modular
+dropout, and modular no-dropout; (B) the same three systems in a 3-by-15 condition matrix;
+(C) full-input WT/TC/ET Dice for both modular regimes; and (D) all three paired raw-accuracy
+effects with hierarchical 95% intervals. Aggregate success/boundary/failure counts appear
+in text/source data only. No test image or subject-specific identifier will be selected or
+published after outcomes are viewed.
+
+The machine-readable held-out summary schema is frozen as
+`heldout-v1-complete-aggregate-20260914`. It must contain all 15 conditions for every
+system, raw and balanced QA, WT/TC/ET Dice, enhancing-fraction error, calibration proxy,
+coverage/selective accuracy (including undefined values at zero coverage), the three paired
+comparisons with hierarchical intervals, and aggregate profile-bin counts. Ordered subject
+identifiers are used only to verify pairing and are not published in the summary.
 
 For held-out aggregate subject profiles, **success** means mean raw QA accuracy of at least
 0.80 across the 14 incomplete conditions, **failure** means at most 0.40, and **boundary**

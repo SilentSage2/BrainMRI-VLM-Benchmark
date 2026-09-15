@@ -56,6 +56,14 @@ def test_completed_abstract_without_markers_is_submission_ready() -> None:
     assert result["status"] == "submission-ready"
 
 
+def test_heldout_marker_prevents_submission_ready_status() -> None:
+    result = validate_abstract(_draft(result="[HELD-OUT result is still sealed]"))
+
+    assert result["status"] == "draft"
+    assert result["heldout_markers"] == 2
+    assert result["unresolved_markers"] == 2
+
+
 def test_title_limit_is_enforced() -> None:
     result = validate_abstract(_draft(title="x" * 126))
 

@@ -12,12 +12,12 @@ result. Every plot must be regenerated from a versioned command and retain its s
 | 4. Fifteen-condition MR robustness and reliability | Compare grounded, answer-only, and modular segmentation-to-symbolic interpretation, calibration, and abstention across all contrast subsets. | Models × 15 contrast subsets, subject bootstrap, seeds | 10 Oct | Report the locked matrix even if the modular baseline wins |
 | 5. Evidence and failure boundaries | Show where voxel evidence supports interpretation and where missing contrasts cause abstention or failure. | Frozen success/boundary/failure selection | 15 Oct | Include the same cases for VLM and modular MR baseline |
 
-Status on 14 September: Figure 1 is a provisional overall framework using a real validation
-case selected by the frozen median-burden rule; the implemented model and small pilot runner
-are labeled without a performance claim. Figure 2 is complete
-from all 484 audited masks in PNG and vector PDF form, with a 484-row source CSV and JSON
-summary. Figure 3 uses 418 development masks and no test cases to document target
-instability. Figures 4–5 require model outputs and must not contain simulated performance.
+Status on 14 September: all five development figures are complete in high-resolution PNG
+and vector PDF form. Figure 1 now shows both the matched end-to-end VLMs and the modular MR
+pathway using a validation case selected by the frozen median-burden rule. Figure 2 is a
+descriptive 484-case cohort audit; Figure 3 uses 418 development masks with test unread;
+Figures 4–5 contain only completed 64/16-subject, three-seed development results. Final
+held-out values may enter only through the frozen result schema after authorization.
 
 ## Milestones
 
@@ -54,17 +54,17 @@ instability. Figures 4–5 require model outputs and must not contain simulated 
 - Export high-resolution PNG and vector PDF; visually inspect both before release.
 - Captions must be independently understandable and distinguish observation from inference.
 - Negative results keep their planned panel; the interpretation changes, not the endpoint.
-- Figures 3–5 remain explicitly `planned` until their locked real-data inputs exist.
+- Development Figures 1–5 are complete. Any held-out replacement remains explicitly
+  unresolved until the one-shot result export exists.
 
 ## Figure contracts
 
-### Figure 1 — overall framework, provisional
+### Figure 1 — overall comparative framework, complete
 
-- Supports: the implemented model connects four MRI contrasts, availability masks, and
-  question tokens to answer and voxel-evidence logits, followed by the implemented 15-way
-  missing-contrast evaluation and subject-level metrics.
-- Current limitation: the training protocol is frozen but its runner is not implemented;
-  it is therefore drawn dashed and explicitly labeled pending.
+- Supports: the implemented matched VLM and modular MR paths consume the same available
+  contrasts and enter the same 15-way, subject-level reliability evaluation.
+- The displayed validation case was selected by a frozen median-burden rule before model
+  outcomes; its label-derived overlay is explicitly not a model input.
 - Cannot support: learned grounding, robustness, accuracy, or clinical utility.
 
 ### Figure 2 — descriptive, complete
@@ -139,4 +139,23 @@ Figure 5 reads the six test-sealed V4 seed/ablation results and emits PNG, PDF, 
 ```bash
 mri-vlm-modular-figure artifacts/results/modular_v4/summary.json \
   --output-prefix artifacts/figures/figure5_modular_v4
+```
+
+The separate ISMRM preview image is not one of the five review figures. It uses the same
+frozen validation case as Figure 1, contains no performance values, and exports exactly
+1200×1200 pixels plus vector PDF and metadata.
+
+```bash
+mri-vlm-preview-figure /absolute/path/to/Task01_BrainTumour \
+  --output-prefix artifacts/figures/preview_figure
+```
+
+The frozen final held-out Figure 5 generator is present but must not be run before the
+one-shot summary exists. It accepts only a completed 66-subject result with schema
+`heldout-v1-complete-aggregate-20260914` and displays the three systems, all 15 subsets,
+full-input modular Dice, and all three paired effects.
+
+```bash
+mri-vlm-heldout-figure artifacts/results/heldout_v1/summary.json \
+  --output-prefix artifacts/figures/figure5_heldout_v1
 ```

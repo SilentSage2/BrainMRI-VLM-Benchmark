@@ -1,10 +1,12 @@
 # Research Substance Audit
 
-Audit date: 2026-09-14. Verdict: **NOT YET PUBLISH-READY**.
+Audit date: 2026-09-14. Verdict: **PRE-UNSEAL PACKAGE COMPLETE; NOT YET SUBMISSION-READY**.
 
 Passing tests, complete documentation, and polished figures establish engineering hygiene;
-they do not establish a research contribution. This audit remains a release blocker until
-real locked experiments satisfy the evidence gates below.
+they do not establish a research contribution. Development experiments, controlled
+negative results, the modular pivot, five figures, frozen claim, checkpoint hashes, and
+one-shot evaluator now satisfy the pre-unseal engineering gate. The remaining scientific
+blocker is the explicitly authorized 66-subject held-out evaluation.
 
 ## 1. Importance and falsifiability — conditional pass
 
@@ -64,7 +66,7 @@ or per-case model-outcome selection has occurred, but the split is not pristine 
 All future selection must remain validation-only, and this limitation must appear in the
 abstract if the same test split is reported.
 
-## 4. Implementation depth — partial pass
+## 4. Implementation depth — controlled-study pass, model-scale limitation
 
 The project now includes deterministic real-data preprocessing, QA/evidence materialization,
 a memory-bounded cache, serialization recovery, a residual 3D MR segmenter, and matched
@@ -72,12 +74,14 @@ answer-only, unconditional-auxiliary, and question-grounded training paths. The 
 V2 run records seed, split, parameter count, hardware, wall time, fingerprints, and artifact
 hashes without reading test cases.
 
-This is substantive implementation progress, but the hierarchical 3D VLM is still a compact
-14,962-parameter controlled model with a GRU language encoder. The 32-train/8-validation run
-is a direction diagnostic, not a materially sized converged experiment, and no external VLM
-has yet been executed. It must not be described as the final flagship model.
+The final development package uses 64 training and 16 validation subjects across three
+seeds for both matched VLM and modular MR paths, with all 15 input subsets and recoverable
+checkpoints. This is sufficient for a controlled mechanism study, but the 14,962-parameter
+VLM remains a compact GRU-based model. M3D-LaMed was audited but not executed because its
+single-volume interface, custom-code requirement, compute footprint, and overlap questions
+prevent a fair four-contrast comparison. No foundation-model superiority claim is allowed.
 
-## 5. Baselines and ablations — insufficient at present
+## 5. Baselines and ablations — development set complete, external-scale gap disclosed
 
 Minimum credible comparison set:
 
@@ -90,12 +94,15 @@ Minimum credible comparison set:
 6. segmentation-to-symbolic-QA factorized baseline, using a strong 3D segmentation model;
 7. M3D-LaMed as a clearly labeled, non-matched external 3D medical VLM baseline.
 
-Required ablations remove evidence loss, balanced contrast dropout, sequence identities,
-and question conditioning of the spatial head. Equalize examples, optimizer steps, input
-subsets, and compute for matched claims. Parameter counts and wall time must be reported.
+The question-only, fixed-slice 2D, answer-only 3D, unconditional spatial-auxiliary,
+question-conditioned grounded, modular dropout, and modular no-dropout paths have all run
+on the same development protocol. Examples, input subsets, seeds, parameter counts, and
+wall time are recorded. Sequence identity was retained as part of the frozen architecture;
+the project makes no claim that every architectural component has been independently
+identified.
 
-The unconditional spatial auxiliary is a hard requirement: without it, an improvement
-cannot be attributed to grounded reasoning rather than ordinary multi-task segmentation.
+The unconditional spatial auxiliary exposes the central negative result: question-
+conditioned grounding did not improve answers over ordinary extra spatial supervision.
 
 ## 6. Results needed to support a conclusion — preliminary negative evidence only
 
@@ -135,9 +142,10 @@ conclusion.
 
 ### Research release gate
 
-Open a public GitHub repository only after a real-data smoke run, named strong baseline,
-reproducible command, and honest preliminary table exist. A release must explain why the
-work is worth examining using actual evidence, not repository completeness.
+The public research-preview gate is complete: the repository contains real-data runs,
+named controls, reproducible commands, honest negative tables, and no tracked data or
+weights. The MVP/submission tag remains withheld until held-out evaluation and final claim
+branching are complete.
 
 ### Standard-abstract gate on 10 October
 

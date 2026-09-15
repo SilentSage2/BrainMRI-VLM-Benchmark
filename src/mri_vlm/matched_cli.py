@@ -403,6 +403,7 @@ def evaluate_role(
         result: dict[str, object] = {
             "subjects": len(cases),
             "questions": len(all_hits),
+            "subject_ids": [item.case.case_id for item in cases],
             "answer_accuracy": sum(all_hits) / len(all_hits),
             "balanced_answer_accuracy": sum(balanced_by_type.values()) / len(balanced_by_type),
             "balanced_accuracy_by_type": balanced_by_type,

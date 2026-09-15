@@ -11,7 +11,10 @@ authorizes one-time held-out test access.
 4. All nine checkpoint hashes match the frozen config.
 5. Figure 4/5 schemas, metrics, exclusions, bootstrap seed, and interpretation branches are
    frozen in Git.
-6. An authorization file outside Git contains exactly:
+6. Result schema `heldout-v1-complete-aggregate-20260914` includes every condition and seed,
+   the primary comparison, dropout ablation, all mandatory secondary metrics, and aggregate
+   success/boundary/failure counts. Ordered subject identifiers must match across systems.
+7. An authorization file outside Git contains exactly:
    `AUTHORIZE MRI-VLM HELDOUT V1 ONCE`.
 
 ## One-shot command
@@ -33,11 +36,14 @@ mri-vlm-heldout-once /absolute/path/to/Task01_BrainTumour \
 
 - Write all 15 conditions, all three seeds, and all frozen systems before reading any
   aggregate comparison.
+- Reject aggregation if ordered subject identifiers differ across any system, seed, or
+  condition.
 - Preserve raw per-subject scores internally; publish only aggregate metrics and
   preselected examples consistent with dataset terms.
 - Do not tune thresholds, prompts, preprocessing, checkpoint selection, or exclusions.
 - Report crashes, missing subjects, and resumed execution in the immutable run ledger.
-- Generate final figures from the locked result schema; do not hand-edit values.
+- Generate the final held-out Figure 5 only through `mri-vlm-heldout-figure`; keep Figure 4
+  as the development mechanism/ablation result and do not hand-edit values.
 - Update the abstract through the prewritten interpretation branch matching the result.
 
 The test split is not pristine unseen data because aggregate label properties were included

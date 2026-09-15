@@ -70,6 +70,8 @@ single-volume external baseline and defines `MRI-VLM-Small` for the matched mult
 answer-only versus grounded comparison.
 The [ISMRM 2027 abstract plan](docs/ISMRM_2027_ABSTRACT_PLAN.md) freezes the MR-specific
 storyline, primary endpoint, figure plan, and submission decision gate.
+The [submission-readiness checklist](docs/ISMRM_SUBMISSION_CHECKLIST.md) records completed
+paper-level deliverables and the sole remaining scientific blocker without opening test.
 The [figure contract](docs/FIGURE_PLAN.md) assigns each submission figure a claim, required
 inputs, delivery date, and negative-result-safe fallback.
 Working [standalone captions](docs/FIGURE_CAPTIONS.md) explicitly separate completed

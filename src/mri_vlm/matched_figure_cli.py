@@ -52,6 +52,8 @@ def render_figure(
     *,
     output_prefix: Path,
 ) -> None:
+    matplotlib: Any = importlib.import_module("matplotlib")
+    matplotlib.use("Agg")
     plt: Any = importlib.import_module("matplotlib.pyplot")
 
     conditions = [condition_id(item) for item in modality_conditions()]
@@ -96,7 +98,7 @@ def render_figure(
     axes[0].set_xticks(range(len(labels)), labels, rotation=25, ha="right")
     axes[0].set_ylim(0.0, 1.0)
     axes[0].set_ylabel("Balanced answer accuracy")
-    axes[0].set_title("A  Full-input development performance", loc="left", fontweight="bold")
+    axes[0].set_title("A  Full-input balanced QA", loc="left", fontweight="bold")
 
     image = axes[1].imshow(heatmap, vmin=0.0, vmax=1.0, cmap="viridis", aspect="auto")
     axes[1].set_yticks(range(3), ("Answer", "Auxiliary", "Grounded"))
@@ -107,7 +109,7 @@ def render_figure(
     axes[1].set_xticks(
         range(len(conditions)), condition_labels, rotation=60, ha="right", fontsize=6.5
     )
-    axes[1].set_title("B  Missing-contrast matrix", loc="left", fontweight="bold")
+    axes[1].set_title("B  Balanced QA across 15 subsets", loc="left", fontweight="bold")
     figure.colorbar(image, ax=axes[1], label="Balanced accuracy", fraction=0.05)
 
     means = [item["mean"] for item in effect_items]
@@ -119,7 +121,7 @@ def render_figure(
     axes[2].axvline(0.05, color="#636363", linewidth=0.8, linestyle=":")
     axes[2].set_yticks(range(2), ("vs answer-only", "vs auxiliary"))
     axes[2].set_xlabel("Grounded-minus-comparator accuracy")
-    axes[2].set_title("C  Hierarchical bootstrap effects", loc="left", fontweight="bold")
+    axes[2].set_title("C  Grounding effects (95% CI)", loc="left", fontweight="bold")
     axes[2].invert_yaxis()
 
     output_prefix.parent.mkdir(parents=True, exist_ok=True)

@@ -3,21 +3,18 @@
 These captions describe only generated evidence. Figures 4–5 are development results and
 must not be described as held-out test performance.
 
-## Figure 1 — provisional overall framework
+## Figure 1 — complete overall comparative framework
 
-**Voxel-grounded 3D MRI vision-language framework and evaluation flow.** (A) Co-registered
+**Grounded VLM versus modular MR reasoning under missing contrasts.** (A) Co-registered
 FLAIR, T1, T1-Gd, and T2 images and reference tumor regions for BRATS_415 at axial index
 88. The case was selected before model evaluation as the validation subject closest to the
 median whole-tumor volume (82.921 mL), rather than by visual appearance or model outcome.
-The reference overlay shows the evidence target and is not an input. (B) Implemented model
-path: a shared 3D encoder processes available contrasts; availability masks and learned
-sequence identities enter visual fusion with masked-pooled question tokens; the model
-outputs answer logits, including abstention, and voxel-evidence logits. Evaluation spans
-all 15 non-empty contrast subsets and subject-level answer, evidence, grounding,
-hallucination, calibration, and bootstrap analyses. The dashed training box denotes the
-frozen answer/evidence-loss and balanced-dropout protocol; a small real-data runner is
-implemented, while the full-scale training path remains pending.
-This framework figure makes no performance or clinical claim.
+The reference overlay is label-derived and is not an input. (B) The implemented matched
+answer-only, auxiliary, and grounded 3D VLMs are compared with dropout and full-input-only
+residual 3D segmentation-to-symbolic paths. Every path enters the same frozen 15-subset
+evaluation with subject-level answer accuracy, WT/TC/ET Dice, hierarchical seed/subject
+bootstrap, calibration, and failure analysis. This framework figure makes no performance
+or clinical claim.
 
 ## Figure 2 — complete descriptive cohort
 

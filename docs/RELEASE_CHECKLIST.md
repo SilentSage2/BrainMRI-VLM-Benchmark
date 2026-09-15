@@ -23,7 +23,7 @@ accurate topics (`medical-imaging`, `mri`, `vision-language-model`, `multimodal-
 The repository qualifies for an explicitly labeled **research preview**: it has a real-data
 residual 3D MR baseline, a reproducible matched 3D MRI-VLM run, the required unconditional
 spatial-auxiliary control, traceable negative results, and a clean-install protocol smoke.
-The test split was not read by any model run. Ruff, mypy, and all 84 tests pass in both the
+The test split was not read by any model run. Ruff, mypy, and all 89 tests pass in both the
 development environment and a clean Python 3.12 editable install.
 
 The larger 64/16 development cohort, three seeds, QA V1 question-only control, fixed-slice

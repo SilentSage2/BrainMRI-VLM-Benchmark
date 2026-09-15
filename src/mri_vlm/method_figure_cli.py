@@ -1,4 +1,4 @@
-"""Generate a real-input MRI montage and the grounded VLM method schematic."""
+"""Generate a real-input MRI montage and the frozen comparative-study schematic."""
 
 import argparse
 import importlib
@@ -93,83 +93,89 @@ def render_method_figure(root: Path, output_prefix: Path, *, seed: int) -> dict[
         diagram_axis,
         patches,
         0.01,
-        0.38,
+        0.35,
         0.13,
-        0.38,
-        "4 MRI contrasts\n+ availability",
-        "#DDEAF3",
-    )
-    _box(
-        diagram_axis,
-        patches,
-        0.18,
-        0.38,
-        0.14,
-        0.38,
-        "Shared 3D encoder\n+ sequence identity",
-        "#D8EAD3",
-    )
-    _box(
-        diagram_axis,
-        patches,
-        0.18,
-        0.05,
-        0.14,
-        0.2,
-        "Question tokens\n+ masked pooling",
-        "#DDEAF3",
-    )
-    _box(diagram_axis, patches, 0.37, 0.29, 0.15, 0.42, "Question-conditioned\nfusion", "#FFF0C7")
-    _box(
-        diagram_axis,
-        patches,
-        0.58,
-        0.56,
-        0.14,
-        0.25,
-        "Answer logits\n(including abstain)",
-        "#E8D8EE",
-    )
-    _box(diagram_axis, patches, 0.58, 0.18, 0.14, 0.25, "Voxel evidence\nlogits", "#F5D0D0")
-    _box(
-        diagram_axis,
-        patches,
-        0.78,
-        0.59,
-        0.20,
-        0.28,
-        "Frozen training protocol\n"
-        "answer loss + evidence loss\n"
-        "balanced contrast dropout\n"
-        "pilot runner implemented",
-        "#F2F2F2",
-        linestyle="--",
-        fontsize=5.5,
-    )
-    _box(
-        diagram_axis,
-        patches,
-        0.78,
-        0.12,
-        0.20,
         0.34,
-        "Implemented evaluation\n"
-        "15 non-empty contrast subsets\n"
-        "answer, Dice, grounding,\n"
-        "hallucination, calibration\n"
-        "subject-level bootstrap",
-        "#E5F5F9",
-        fontsize=5.5,
+        "Available MRI\ncontrasts + mask",
+        "#DDEAF3",
     )
-    _arrow(diagram_axis, patches, (0.14, 0.57), (0.18, 0.57))
-    _arrow(diagram_axis, patches, (0.32, 0.57), (0.37, 0.53))
-    _arrow(diagram_axis, patches, (0.32, 0.15), (0.39, 0.32))
-    _arrow(diagram_axis, patches, (0.52, 0.5), (0.58, 0.68))
-    _arrow(diagram_axis, patches, (0.52, 0.5), (0.58, 0.30))
-    _arrow(diagram_axis, patches, (0.72, 0.68), (0.78, 0.34))
-    _arrow(diagram_axis, patches, (0.72, 0.30), (0.78, 0.25))
+    _box(diagram_axis, patches, 0.01, 0.05, 0.13, 0.18, "Question", "#DDEAF3")
+    _box(
+        diagram_axis,
+        patches,
+        0.20,
+        0.58,
+        0.17,
+        0.26,
+        "Matched 3D VLMs\nanswer-only | auxiliary\nquestion-grounded",
+        "#FFF0C7",
+        fontsize=5.8,
+    )
+    _box(
+        diagram_axis,
+        patches,
+        0.43,
+        0.58,
+        0.15,
+        0.26,
+        "Answer + optional\nvoxel evidence",
+        "#E8D8EE",
+        fontsize=6.5,
+    )
+    _box(
+        diagram_axis,
+        patches,
+        0.20,
+        0.14,
+        0.17,
+        0.26,
+        "Residual 3D segmenter\ndropout | full-only",
+        "#D8EAD3",
+        fontsize=6.5,
+    )
+    _box(
+        diagram_axis,
+        patches,
+        0.43,
+        0.14,
+        0.15,
+        0.26,
+        "WT / TC / ET masks\n+ question → symbolic QA",
+        "#F5D0D0",
+        fontsize=6.5,
+    )
+    _box(
+        diagram_axis,
+        patches,
+        0.67,
+        0.25,
+        0.30,
+        0.48,
+        "Frozen evaluation\n"
+        "15 non-empty contrast subsets\n"
+        "subject-level answer accuracy + Dice\n"
+        "hierarchical seed/subject bootstrap\n"
+        "calibration and failure audit",
+        "#E5F5F9",
+        fontsize=6.1,
+    )
+    diagram_axis.text(
+        0.20,
+        0.91,
+        "End-to-end vision-language pathway",
+        fontsize=6.5,
+        fontweight="bold",
+    )
+    diagram_axis.text(0.20, 0.47, "MR-specialized modular pathway", fontsize=6.5, fontweight="bold")
+    _arrow(diagram_axis, patches, (0.14, 0.57), (0.20, 0.71))
+    _arrow(diagram_axis, patches, (0.14, 0.50), (0.20, 0.27))
+    _arrow(diagram_axis, patches, (0.14, 0.14), (0.20, 0.68))
+    _arrow(diagram_axis, patches, (0.37, 0.71), (0.43, 0.71))
+    _arrow(diagram_axis, patches, (0.37, 0.27), (0.43, 0.27))
+    _arrow(diagram_axis, patches, (0.58, 0.71), (0.67, 0.59))
+    _arrow(diagram_axis, patches, (0.58, 0.27), (0.67, 0.39))
     figure.suptitle(
-        "Voxel-grounded 3D MRI vision-language reasoning under missing contrasts",
+        "Grounded VLM versus modular MR reasoning under missing contrasts",
         fontsize=10,
         fontweight="bold",
         y=1.085,
@@ -177,15 +183,14 @@ def render_method_figure(root: Path, output_prefix: Path, *, seed: int) -> dict[
     figure.text(
         0.01,
         1.015,
-        "A  Real co-registered inputs and reference regions: "
-        f"{selected.case_id}, axial index {axial_index}",
+        "A  Co-registered MR inputs and label-derived reference (not a model input)",
         fontsize=8,
         fontweight="bold",
     )
     figure.text(
         0.01,
         0.435,
-        "B  Implemented model and protocol-aware evaluation flow",
+        "B  Frozen comparative framework and evaluation protocol",
         fontsize=8,
         fontweight="bold",
     )

@@ -39,6 +39,8 @@ def render(
     *,
     output_prefix: Path,
 ) -> None:
+    matplotlib: Any = importlib.import_module("matplotlib")
+    matplotlib.use("Agg")
     plt: Any = importlib.import_module("matplotlib.pyplot")
     conditions = [condition_id(item) for item in modality_conditions()]
     full_id = condition_id(frozenset(Modality))
@@ -99,7 +101,7 @@ def render(
     axes[0].set_ylim(0.0, 1.0)
     axes[0].set_ylabel("Dice")
     axes[0].legend(frameon=False, fontsize=7)
-    axes[0].set_title("A  Full-input perception", loc="left", fontweight="bold")
+    axes[0].set_title("A  Full-input segmentation", loc="left", fontweight="bold")
 
     matrix = [condition_accuracy[mode] for mode in modes]
     image = axes[1].imshow(matrix, vmin=0.0, vmax=1.0, cmap="viridis", aspect="auto")
@@ -111,7 +113,7 @@ def render(
     axes[1].set_xticks(
         range(15), condition_labels, rotation=60, ha="right", fontsize=6.5
     )
-    axes[1].set_title("B  Symbolic QA by contrast", loc="left", fontweight="bold")
+    axes[1].set_title("B  QA across 15 contrast subsets", loc="left", fontweight="bold")
     figure.colorbar(image, ax=axes[1], label="Balanced accuracy", fraction=0.05)
 
     y = range(len(selected))
@@ -131,7 +133,7 @@ def render(
     axes[2].set_yticks(list(y), selected, fontsize=6.5)
     axes[2].set_xlim(0.0, 1.0)
     axes[2].set_xlabel("Mean missing-contrast accuracy")
-    axes[2].set_title("C  Frozen failure profiles", loc="left", fontweight="bold")
+    axes[2].set_title("C  Frozen extreme profiles", loc="left", fontweight="bold")
     axes[2].legend(frameon=False, fontsize=7)
     axes[2].invert_yaxis()
 
@@ -148,7 +150,7 @@ def render(
     axes[3].axvline(0.0, color="black", linewidth=0.8, linestyle="--")
     axes[3].set_yticks([0], ["Dropout minus\nno dropout"])
     axes[3].set_xlabel("Missing-contrast accuracy effect")
-    axes[3].set_title("D  Hierarchical effect", loc="left", fontweight="bold")
+    axes[3].set_title("D  Dropout effect (95% CI)", loc="left", fontweight="bold")
 
     output_prefix.parent.mkdir(parents=True, exist_ok=True)
     figure.savefig(output_prefix.with_suffix(".png"), dpi=300)

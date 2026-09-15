@@ -71,9 +71,13 @@ def validate_abstract(text: str) -> dict[str, Any]:
     if any(length > 500 for length in caption_characters):
         errors.append("a figure caption exceeds 500 characters")
     planned = text.count("[PLANNED")
+    heldout = text.count("[HELD-OUT")
+    unresolved = planned + heldout
     return {
-        "status": "invalid" if errors else ("draft" if planned else "submission-ready"),
+        "status": "invalid" if errors else ("draft" if unresolved else "submission-ready"),
         "planned_markers": planned,
+        "heldout_markers": heldout,
+        "unresolved_markers": unresolved,
         "counts": counts,
         "errors": errors,
     }

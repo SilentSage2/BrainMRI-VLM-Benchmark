@@ -1,7 +1,10 @@
 # ISMRM Format and Proceedings Notes
 
-This is a writing-style audit, not an evidence source for model claims. The 2027 call will
-supersede the working rules below.
+This is a writing-style audit, not an evidence source for model claims. Checked on
+2026-09-14. The official 2027 meeting page confirms Vancouver, 8–13 May 2027, and an
+abstract window of 1–28 October 2026. Detailed 2027 standard-abstract limits were not yet
+posted, so the latest official 2026 standard guidance remains the working format and must
+be rechecked when the 2027 call is published.
 
 ## Official working constraints
 
@@ -12,7 +15,14 @@ Synopsis headings are Motivation, Goal(s), Approach, and Results. Synopsis and I
 written for the broad meeting audience; the main body carries specialist detail.
 
 - https://www.ismrm.org/26m/call/standard/
-- https://www.ismrm.org/26m/call/submission-guide/impact-synopsis/
+- https://www.ismrm.org/26m/call/
+- https://www.ismrm.org/27m/
+- https://www.ismrm.org/meetings-workshops/future-ismrm-meetings/
+
+The same guidance asks for substantive results, appropriate statistical analysis, and
+high-quality images. It explicitly notes that impact need not be positive: a result showing
+that a methodological pivot is needed can matter. That supports the present negative-result
+story, but does not relax the requirement for the single frozen held-out evaluation.
 
 ## Public proceedings sampled
 
@@ -36,7 +46,8 @@ uncertainty, controlled comparisons, limitations, and reproducibility.
 
 - One frozen results manifest supplies every number in Synopsis, body, captions, tables,
   README, and figures.
-- `PLANNED` markers are mandatory until the corresponding real output exists.
+- `[PLANNED]` or `[HELD-OUT]` markers are mandatory until the corresponding real output
+  exists; either marker keeps the lint status at `draft`.
 - Results lead with effect size and interval, not adjectives such as “robust” or
   “significant.”
 - Discussion contains both supported interpretation and disconfirming/negative findings.

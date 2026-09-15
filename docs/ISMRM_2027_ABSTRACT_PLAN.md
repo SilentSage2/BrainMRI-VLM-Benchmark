@@ -5,9 +5,9 @@
 - Target: ISMRM 2027 Annual Meeting, Vancouver, 8–13 May 2027.
 - Submission window currently advertised: 1–28 October 2026.
 - Primary plan: submit a standard scientific abstract with completed results.
-- Go/no-go date: 10 October 2026. Continue with the standard abstract only if the
-  locked validation pipeline has produced the matched answer-only versus grounded
-  comparison, missing-contrast results, uncertainty estimates, and auditable overlays.
+- Go/no-go date: 10 October 2026. The development gate is complete: matched VLM controls,
+  modular MR baselines, all 15 contrast subsets, three-seed uncertainty, and five audited
+  figures exist. Standard submission still requires the single frozen held-out evaluation.
 - Fallback: use the registered-abstract route only if the 2027 call explicitly offers it
   and the study meets that route's requirements. Do not submit aspirational results in a
   standard abstract.
@@ -29,9 +29,9 @@ Both titles intentionally name MRI, 3D, vision-language modeling, and voxel grou
 
 ## One-sentence story
 
-For MR scientists working with incomplete multi-contrast brain MRI, test whether explicit
-voxel evidence reduces unsupported quantitative interpretations and improves calibrated
-abstention beyond answer-only and modular segmentation-to-symbolic workflows.
+For MR scientists working with incomplete multi-contrast brain MRI, determine whether the
+added complexity of a voxel-grounded 3D VLM improves reliability beyond a transparent
+segmentation-to-symbolic workflow, including when neither approach succeeds.
 
 ## Why this is an MR abstract rather than a generic AI abstract
 
@@ -48,16 +48,16 @@ remaining evidence or abstain, rather than answer confidently from language prio
 
 ## Falsifiable hypothesis
 
-With architecture, data, optimization steps, and parameter budget matched, voxel-evidence
-supervision plus balanced contrast dropout will:
+The initial development hypothesis required a grounded-over-auxiliary answer effect of at
+least +0.05 with a 95% interval excluding zero and no material calibration harm. It failed:
+the observed effect was +0.007 [-0.229, +0.243]. The frozen held-out claim now asks whether
+the MR-specialized segmentation-to-symbolic system has higher subject-averaged raw QA
+accuracy than the tested small grounded VLM across 14 incomplete-contrast conditions.
 
-1. improve grounded answer accuracy by at least 0.05 under missing-contrast conditions;
-2. reduce unanswerable hallucination by at least 0.05;
-3. keep complete-input answer accuracy within 0.01 of answer-only training; and
-4. improve contrast-dependence alignment: the largest leave-one-contrast-out degradation
-   should occur for the question families preregistered as dependent on that contrast.
-
-Failure to meet these thresholds is a negative result, not grounds to revise the endpoint.
+Support requires a positive modular-dropout-minus-grounded mean with its hierarchical 95%
+interval excluding zero. An interval crossing zero yields a benchmark/null conclusion; a
+negative interval rejects the modular reliability claim. Dropout-versus-no-dropout remains
+a separate tradeoff analysis. No branch permits a foundation-model or clinical-use claim.
 
 ## Study design
 
@@ -86,7 +86,10 @@ generalization beyond this public dataset.
 1. Question-only majority/template control.
 2. Fixed-policy 2D slice VLM.
 3. Answer-only 3D MRI-VLM.
-4. Matched 3D MRI-VLM with voxel-evidence supervision and balanced contrast dropout.
+4. Matched 3D MRI-VLM with unconditional spatial auxiliary supervision.
+5. Matched question-conditioned voxel-grounded 3D MRI-VLM.
+6. Residual 3D segmentation-to-symbolic QA, with balanced modality dropout and a
+   complete-input-only ablation.
 
 A public general-purpose 3D medical VLM may be reported as a contextual baseline, but it
 must not be presented as a matched comparison if it accepts only one volume rather than
@@ -94,9 +97,10 @@ the same four-contrast input.
 
 ### Endpoints and statistics
 
-Primary endpoint: subject-aggregated grounded answer accuracy over missing-contrast
-conditions. Key secondary endpoints are answer accuracy, evidence Dice, abstention and
-hallucination rates, counterfactual consistency, calibration, and complete-input accuracy.
+Primary endpoint: paired subject-averaged raw QA accuracy across 14 incomplete-contrast
+conditions, modular dropout minus grounded VLM. Key secondary endpoints are balanced QA
+accuracy, full-input QA, WT/TC/ET Dice, enhancing-fraction error, calibration proxy,
+coverage, selective accuracy, and dropout-versus-no-dropout effects.
 
 The MR-specific mechanistic endpoint is a **contrast-dependence alignment matrix**:
 
@@ -106,40 +110,35 @@ Report subject-level paired bootstrap 95% confidence intervals for matched diffe
 Use three seeds where training variance is material. Freeze numerical tolerances,
 evidence-Dice thresholds, decoding, and the test set before the final run.
 
-## Planned figures
+## Frozen figures
 
-1. Method diagram: four MRI contrasts, availability mask, 3D encoder, language answer,
-   voxel evidence, and abstention path.
-2. Question-family by dropped-contrast heatmap showing paired performance changes.
-3. Robustness curve from all four contrasts to single-contrast inputs, with confidence
-   intervals for answer-only and grounded training.
-4. Representative axial/sagittal/coronal evidence overlays including one correct answer,
-   one appropriate abstention, and one failure.
-5. Calibration or selective-accuracy plot, used only if it adds information beyond the
-   main robustness result.
+1. Overall framework: one preselected validation case plus parallel matched-VLM and modular
+   MR paths entering the same 15-subset evaluation.
+2. Audited 484-subject cohort, locked split, tumor burden, and quantitative target
+   distribution.
+3. Development-only target-validity audit showing resampling sensitivity and exclusions.
+4. Three-seed matched VLM comparison, 15-condition matrix, and hierarchical effects.
+5. Modular dropout tradeoff, 15-condition matrix, frozen development profiles, and
+   hierarchical effect.
 
-Do not spend a figure on a decorative architecture rendering if the result heatmap needs
-the space.
+All five development figures are complete. The abstract may use four by default and retain
+Figure 2 as supplementary context if visual density is excessive. Held-out replacements
+must preserve the locked Figure 4/5 schemas and may not introduce post-outcome examples.
 
 ## Abstract skeleton
 
 ### Synopsis draft (working, <=100 words)
 
-Vision-language models can generate plausible answers even when an MRI contrast needed
-to support the answer is missing. We evaluate matched 3D brain MRI models with and without
-voxel-evidence supervision and balanced contrast dropout across every non-empty subset of
-FLAIR, T1, T1-Gd, and T2. Mask-derived questions provide verifiable answers and spatial
-evidence without exposing masks to the model. The primary endpoint is grounded answer
-accuracy under missing contrasts; secondary analyses quantify hallucination, calibration,
-counterfactual consistency, and question-specific contrast dependence. The study tests
-whether grounding improves robustness while revealing when model behavior depends on the
-MRI contrast relevant to each question.
+Use the four separately labeled fields in `ISMRM_2027_ABSTRACT_DRAFT.md`. The current total
+is 87 words and reports the controlled negative development result without implying held-out
+generalization. The Results field must receive the frozen test effect and interval before
+submission.
 
 ### Impact draft (working, <=40 words)
 
-Voxel-grounded evaluation can reveal whether a 3D MRI vision-language model uses the
-contrast needed for its answer and can reduce unsupported responses when sequences are
-missing, enabling more transparent assessment before clinical translation.
+The current 35-word statement focuses on the decision enabled for MR researchers: whether
+grounding adds reliability beyond segmentation or adds unjustified complexity. It avoids
+promising patient benefit, diagnostic performance, or clinical readiness.
 
 ### Introduction
 
@@ -155,16 +154,17 @@ contrast dependencies, and subject-level paired bootstrap.
 
 ### Results
 
-Lead with the primary matched difference and confidence interval, then the hallucination
-difference and complete-input non-inferiority check. Next report the contrast-dependence
-matrix. Finish with one failure-analysis result. Never use “significant” without a stated
-test and uncertainty interval.
+Lead with the modular-dropout-minus-grounded missing-condition effect and hierarchical
+interval. Then report balanced accuracy, full-input Dice, dropout/no-dropout tradeoff, and
+the failed confidence/abstention proxy. Retain all 15 conditions and negative results.
+Never use “significant” without a stated test and uncertainty interval.
 
 ### Discussion and conclusion
 
-Interpret improved grounding as controlled evidence of more robust, inspectable model
-behavior—not clinical readiness. Discuss mask-derived task circularity, single-dataset
-scope, synthetic language, inherited segmentation ontology, and lack of reader study.
+Interpret the result as a test of whether grounding complexity is justified, not as a
+diagnostic comparison. Discuss compact non-foundation VLMs, mask-derived task circularity,
+single-dataset scope, synthetic language, inherited segmentation ontology, calibration
+failure, prior aggregate test-label audit, and lack of reader study.
 
 ## What would make the story publishable
 

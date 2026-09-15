@@ -4,164 +4,142 @@ Reliability of Voxel-Grounded 3D Vision-Language Models across Missing Brain MRI
 ## Synopsis
 
 ### Motivation
-Retrospective and heterogeneous brain MRI datasets often lack contrasts, while current
-missing-modality methods do not verify whether language answers have spatial support.
+Missing MRI contrasts can destabilize automated tumor measurements while vision-language
+answers remain plausible without spatial support.
 
 ### Goal(s)
-Test whether voxel evidence improves interpretation reliability and abstention across
-incomplete multi-contrast MRI.
+Determine whether voxel-grounded 3D VLMs improve quantitative reasoning beyond a modular
+MR pipeline under missing contrasts.
 
 ### Approach
-Compare answer-only, voxel-grounded, and segmentation-to-symbolic methods on mask-verifiable
-questions across all 15 subsets of FLAIR, T1, T1-Gd, and T2.
+We compare matched small VLMs with residual 3D segmentation-to-symbolic reasoning across
+all 15 subsets of four co-registered brain MRI contrasts.
 
 ### Results
-[HELD-OUT — locked, pending explicit one-shot authorization. Replace only from the frozen
-result export with: modular-dropout minus grounded-VLM mean raw incomplete-condition
-accuracy and hierarchical 95% CI; dropout minus no-dropout effect and CI; incomplete and
-full-input balanced accuracy; full-input WT/TC/ET Dice; confidence-proxy calibration,
-coverage, and selective accuracy. Preserve negative and boundary findings.]
+On development data, grounding had no reliable benefit; modular reasoning was stronger,
+and modality dropout traded complete-input performance for raw missing-contrast accuracy.
+[HELD-OUT — insert the frozen primary effect and 95% interval after one authorized run.]
 
 ## Impact
-[PLANNED — state whether MR scientists can use voxel evidence and abstention to identify
-unsupported interpretations in incomplete multi-contrast datasets, or whether the simpler
-modular MR pipeline remains preferable. Make no clinical-use claim.]
+This study tests whether voxel grounding adds reliability beyond an established MR
+segmentation workflow when contrasts are missing, or whether added VLM complexity is
+unjustified, providing an auditable evaluation template rather than a clinical-use claim.
 
 ## Main Body
 
 ### Introduction
 
-Retrospective, multi-center, and protocol-heterogeneous brain MRI collections often lack
-one or more complementary contrasts. Existing missing-modality methods primarily optimize
-image synthesis or segmentation; they do not establish whether a language-level
-interpretation is spatially supported or whether a system abstains when evidence is
-insufficient. A model can therefore produce a plausible answer despite removal of the
-contrast most relevant to the question. We test whether explicit voxel-evidence supervision
-improves quantitative interpretation, calibration, and abstention across incomplete
-multi-contrast MRI, and whether it adds value beyond a modular segmentation-to-symbolic MR
-workflow.
+FLAIR, T1, post-contrast T1 (T1-Gd), and T2 provide complementary views of glioma
+subregions, but retrospective and heterogeneous MRI collections may lack one or more
+contrasts. Missing-sequence methods have primarily targeted segmentation, including
+sequence-dropout training.¹ Meanwhile, 3D medical VLMs² and spatially grounded volumetric
+MRI question answering³ are emerging, yet a plausible language answer need not be supported
+by the available contrasts. We therefore asked whether question-conditioned voxel evidence
+improves missing-contrast reasoning beyond matched answer models and a conventional
+segmentation-to-symbolic MR workflow.
 
 ### Methods
 
-The Medical Segmentation Decathlon Task01 BrainTumour dataset contains 484 labeled,
-co-registered FLAIR, T1, T1-Gd, and T2 volumes. An integrity audit verified four-channel
-shape, finite values, spacing and affine agreement, label range, subject uniqueness, and
-fingerprint isolation. A deterministic hash split (seed 20260914) assigned 337/81/66
-subjects to training/validation/test sets before generating any examples.
+The Medical Segmentation Decathlon Task01 BrainTumour dataset⁴ contains 484 co-registered
+four-contrast volumes with tumor labels. A deterministic subject split (seed 20260914)
+assigned 337/81/66 cases to training/validation/test before question generation. Labels
+produced verifiable laterality, relative edema/core, enhancing-fraction, and
+support/abstention targets; they were never model inputs. A development-only resampling
+audit removed unstable, duplicated, and single-class targets.
 
-Questions and voxel evidence are deterministically derived from labels and geometry.
-A development-only resampling audit screens unstable boundary targets, removes an
-algebraically duplicated comparison, and excludes enhancing presence from aggregate
-accuracy because stability screening makes it single-class. Primary retained families
-include laterality, enhancing fraction, and contrast-dependent support/abstention.
-Reference masks are never model inputs. The controlled MRI-VLM uses a
-shared 3D convolutional encoder, learned sequence identities, availability masking,
-masked-pooled question embeddings, question-conditioned fusion, categorical answer logits
-including abstention, and voxel-evidence logits.
-
-[PLANNED — train a question-only control, fixed-policy 2D baseline, matched answer-only 3D
-model, unconditional segmentation-auxiliary control, question-conditioned grounded model,
-and strong segmentation-to-symbolic-QA baseline using frozen preprocessing, examples,
-optimizer steps, and compute. Evaluate every one of the 15 non-empty contrast subsets. Run
-ablations without evidence loss, balanced contrast dropout, sequence identity, and question
-conditioning of the spatial head.]
-
-The primary endpoint is subject-aggregated grounded answer accuracy over missing-contrast
-conditions. Secondary endpoints are answer accuracy, evidence Dice, hallucination on
-unanswerable questions, counterfactual consistency, calibration, and complete-input
-accuracy. Question-family-by-dropped-contrast effects test preregistered contrast
-dependencies. The principal MR comparison is against a 3D missing-modality segmentation
-model followed by deterministic symbolic answers; language-only and fixed-slice controls
-diagnose shortcuts and loss of volumetric information. Report paired subject bootstrap 95%
-confidence intervals and three seeds
-where training variance is material. The held-out test set is evaluated once after model
-and threshold selection. Its aggregate label distribution was previously included in
-dataset auditing and descriptive cohort analysis; no test predictions inform selection.
+We compared a question-only prior, fixed three-slice 2D VLM, and three parameter-matched
+small 3D VLMs: answer-only, unconditional spatial auxiliary, and question-conditioned
+voxel-grounded. A residual 3D segmentation model followed by deterministic QA provided the
+MR-specialized comparator, trained either across balanced modality subsets or on complete
+inputs only. Every system was evaluated on all 15 non-empty subsets of FLAIR, T1, T1-Gd,
+and T2. Scores were aggregated by subject. Hierarchical bootstrap intervals resampled three
+training seeds and subjects within seed. Primary held-out inference is the paired difference
+in raw QA accuracy across 14 incomplete conditions between modular dropout and grounded VLM
+(10,000 draws; frozen seed). Balanced QA accuracy, WT/TC/ET Dice, calibration proxy,
+coverage, selective accuracy, and complete-input performance are mandatory secondary
+outcomes.
 
 ### Results
 
-[DEVELOPMENT EVIDENCE — not yet eligible for the submitted abstract] On a frozen
-64-training/16-validation-subject cohort over three seeds, question-conditioned grounding
-did not improve full-input raw answer accuracy over matched unconditional spatial auxiliary
-supervision (mean paired effect +0.007; hierarchical seed/subject bootstrap 95% CI
-[-0.229, 0.243]). The seed effects (-0.208, +0.229, and 0.000) showed material training
-variance. Mean balanced accuracy was 0.417 for answer-only, 0.422 for auxiliary, and 0.426
-for grounded models; the QA V1 question-only prior and fixed-slice 2D VLM both achieved
-0.417. Grounding had worse calibration (ECE 0.124 versus 0.093) and lower grounded answer
-accuracy (0.174 versus 0.222) than the auxiliary model. Test cases remained unread.
+Development experiments used 64 training and 16 validation subjects. Full-input balanced
+accuracy was 0.417 for the question-only and 2D controls, 0.417/0.422/0.426 for
+answer-only/auxiliary/grounded 3D VLMs, and 0.640/0.787 for modular dropout/no-dropout.
+Grounded-minus-auxiliary raw accuracy was +0.007 (hierarchical 95% CI −0.229 to +0.243),
+with seed effects −0.208, +0.229, and 0.000; thus question-conditioned grounding did not
+meet the frozen benefit criterion. Across incomplete inputs, modular dropout and no-dropout
+balanced accuracy was 0.570 and 0.578 versus 0.424 for the grounded VLM. Dropout improved
+raw incomplete-condition accuracy by +0.069 (95% CI +0.016 to +0.124) but reduced full-input
+WT/TC/ET Dice from 0.799/0.769/0.709 to 0.658/0.579/0.489. Its frozen 0.75 confidence rule
+had zero coverage, invalidating the proposed abstention proxy.
 
-[DEVELOPMENT PIVOT EVIDENCE — not yet eligible for the submitted abstract] On the same
-cohort and seeds, residual 3D MR segmentation followed by deterministic QA achieved 0.787
-full-input and 0.578 missing-contrast balanced accuracy with complete-input training,
-compared with 0.426 and 0.424 for the grounded VLM. Balanced modality dropout increased
-raw subject accuracy over incomplete conditions by +0.069 (hierarchical 95% CI
-[+0.016, +0.124]) but reduced full-input WT/TC/ET Dice from 0.799/0.769/0.709 to
-0.658/0.579/0.489. The preset voxel-confidence abstention rule failed calibration checks.
-
-[HELD-OUT — locked, pending explicit one-shot authorization. Lead with all 15 contrast
-conditions and the segmentation-to-symbolic MR baseline; then report the frozen primary
-effect with its 95% CI, dropout tradeoff, calibration proxy, coverage/selective accuracy,
-full-input Dice, and three-seed dispersion. Insert only values exported from the locked
-result manifest; do not substitute development values or tune the narrative branch.]
+[HELD-OUT — replace or extend only with the locked 66-subject export: primary paired effect
+and interval, both modular regimes, all 15 conditions, Dice, calibration, coverage, and
+success/boundary/failure counts. Do not tune thresholds, exclusions, or examples.]
 
 ### Discussion
 
-[PLANNED — interpret what the observed effect means for incomplete MRI analysis, including
-whether the added VLM complexity improves on the modular MR baseline. Discuss whether
-T1-Gd/enhancement and FLAIR/edema sensitivities align with the preregistration and whether
-abstention is calibrated. Report negative and boundary results. Limitations must include one public tumor dataset,
-mask-derived synthetic language, historical acquisition protocols, inherited segmentation
-ontology, no reader study, and no evidence of clinical utility.]
+These development results show that spatial supervision alone does not establish reliable
+vision-language reasoning: the controlled VLMs largely matched a strong question prior,
+and grounding showed substantial training-seed variance. The modular pathway better
+preserved mask-verifiable quantitative answers, but balanced dropout was not uniformly
+beneficial and confidence was not calibrated. The study therefore evaluates when added
+VLM complexity is justified rather than assuming that it is. Limitations include one
+historical public tumor dataset, compact non-foundation VLMs, synthetic mask-derived
+language, label-derived evidence, no external cohort or reader study, and no clinical-use
+evaluation. Aggregate label properties of the frozen test split were audited previously,
+although no test predictions informed selection.
 
 ### Conclusion
 
-[PLANNED — answer whether voxel evidence makes incomplete multi-contrast MRI interpretation
-more reliable than answer-only and modular MR alternatives. If thresholds are not met,
-state that the added VLM complexity is not justified by this study.]
+On development data, modular MR perception outperformed the tested small grounded VLMs
+under missing contrasts, while grounding and modality dropout showed important failure
+modes. The final claim remains contingent on the single authorized held-out evaluation.
 
 ### References
 
-1. Simpson AL, et al. A large annotated medical image dataset for the development and
-   evaluation of segmentation algorithms. arXiv:1902.09063, 2019.
-2. [PLANNED — add the final 3D medical VLM baseline citation after implementation review.]
-3. [PLANNED — add directly relevant missing-sequence and grounded MRI references in citation
-   order; verify bibliographic fields before submission.]
+1. Feng X, Ghimire K, Kim DD, et al. Brain tumor segmentation for multi-modal MRI with
+   missing information. J Digit Imaging. 2023;36:2075-2087.
+2. Bai F, Du Y, Huang T, Meng MQH, Zhao B. M3D: advancing 3D medical image analysis with
+   multi-modal large language models. arXiv:2404.00578, 2024.
+3. Moukheiber L, Yeung CM, Xue H, et al. Beyond a single frame: multi-frame spatially
+   grounded reasoning across volumetric MRI. arXiv:2604.15808, 2026.
+4. Antonelli M, Reinke A, Bakas S, et al. The Medical Segmentation Decathlon. Nat Commun.
+   2022;13:4128.
 
 ## Figure Captions
 
 ### Figure 1
-Framework for voxel-grounded 3D MRI reasoning. A real, preselected validation case shows
-co-registered FLAIR, T1, T1-Gd, T2 and the non-input evidence target. The implemented model
-combines available contrasts and question tokens to predict answer and evidence logits.
-Evaluation covers all 15 contrast subsets; a small pilot runner is implemented while
-full-scale training remains pending.
+Comparative framework. (A) Co-registered FLAIR, T1, T1-Gd, and T2 from a validation case
+selected by median tumor burden; the label-derived overlay is not a model input. (B)
+Matched end-to-end VLM and modular segmentation-to-symbolic pathways enter the same frozen
+15-subset, subject-level evaluation.
 
 ### Figure 2
-Audited MSD Task01 cohort (n=484). Panels show the locked 337/81/66 subject split, physical
-tumor-subregion volumes, and enhancing-to-whole-tumor fraction. Reference masks define
-supervision and evaluation targets but are not model inputs. This is descriptive and makes
-no performance or clinical claim.
+Audited MSD cohort (n=484). The deterministic 337/81/66 split, physical tumor-subregion
+volumes, and enhancing-to-whole-tumor fraction define the study population and
+mask-verifiable targets. This descriptive analysis included aggregate test-label
+properties but no model predictions.
 
 ### Figure 3
-Resolution sensitivity of mask-derived QA targets in 418 training/validation subjects;
-test cases were unread. Categorical stability increased from 85.6% at 16³ to 97.8% at 48³.
-At 32³, train-derived margins made retained validation targets stable but enhancing
-presence became single-class; duplicated comparison targets were removed. No model
-performance is shown.
+Development-only target audit (n=418; test unread). Resolution affected categorical and
+continuous mask-derived answers. Train-derived ambiguity margins stabilized retained
+validation targets; single-class and algebraically duplicated targets were excluded before
+the final protocol.
 
 ### Figure 4
-[HELD-OUT — pending authorization. Preserve the frozen three-panel matched-system schema;
-replace only development values with the locked export and label split, n, all 15
-conditions, and hierarchical intervals.]
+Three-seed development comparison (n=16 validation subjects; test unread). Grounding did
+not improve raw answer accuracy over unconditional auxiliary supervision (+0.007, 95% CI
+−0.229 to +0.243), and all small VLMs remained near the 0.417 balanced-accuracy language
+prior across 15 contrast subsets.
 
 ### Figure 5
-[HELD-OUT — pending authorization. Preserve the frozen four-panel modular schema and
-report aggregate success (>=0.80), boundary (>0.40 and <0.80), and failure (<=0.40) counts
-over incomplete conditions. Do not select or publish test-subject images.]
+Modular development comparison (n=16; test unread). Balanced modality dropout increased
+raw incomplete-condition accuracy (+0.069, 95% CI +0.016 to +0.124) but reduced full-input
+WT/TC/ET Dice and balanced QA. Panels show Dice, all 15 subsets, frozen subject profiles,
+and the hierarchical effect.
 
 ## Preview Figure
 
-[PLANNED — produce a simple no-caption preview derived from Figure 1 at 1200×1200 pixels.
-It may contain only large labels for multi-contrast MRI, voxel-grounded VLM, and
-answer/evidence/abstain. Verify readability at 360-pixel width and do not include results
-until the result is frozen.]
+The completed no-caption 1200×1200 preview shows the four co-registered MRI contrasts,
+“Grounded 3D VLM,” “Modular 3D MR,” and their shared “15-subset reliability” endpoint. It
+contains no result values and remains legible when displayed at smartphone width.

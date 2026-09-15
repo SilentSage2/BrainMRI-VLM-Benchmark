@@ -153,9 +153,12 @@ def main() -> None:
         bootstrap_seed=config["bootstrap_seed_primary"],
         bootstrap_samples=config["bootstrap_samples"],
     )
+    if aggregate["test_cases_read"] != len(subjects):
+        raise ValueError("held-out aggregate subject count mismatch")
     output = {
         "status": "complete-one-shot-heldout-v1",
         "protocol": config["protocol"],
+        "result_schema": config["result_schema"],
         "test_cases_read": len(subjects),
         "subject_count": len(subjects),
         "aggregate": aggregate,
@@ -183,6 +186,8 @@ def validate_frozen_inputs(
 ) -> None:
     if config.get("status") != "locked-awaiting-explicit-user-authorization":
         raise ValueError("held-out config is not locked")
+    if config.get("result_schema") != "heldout-v1-complete-aggregate-20260914":
+        raise ValueError("held-out result schema changed")
     subjects = manifest.get("subjects")
     if not isinstance(subjects, list) or len(subjects) != config.get("test_subject_count"):
         raise ValueError("held-out subject manifest count mismatch")
@@ -225,32 +230,205 @@ def aggregate_heldout(
     bootstrap_samples: int,
 ) -> dict[str, Any]:
     full_id = condition_id(frozenset(Modality))
-    missing = [
-        condition_id(item) for item in modality_conditions() if condition_id(item) != full_id
-    ]
+    conditions = [condition_id(item) for item in modality_conditions()]
+    missing = [item for item in conditions if item != full_id]
+    _validate_subject_alignment(evaluations, conditions)
     comparisons: dict[str, Any] = {}
     grounded = evaluations["question_grounded"]
     for system in ("modular_dropout", "modular_no_dropout"):
-        paired_by_seed: list[list[float]] = []
-        for modular_result, grounded_result in zip(evaluations[system], grounded, strict=True):
-            modular_scores = _mean_subject_scores(
-                modular_result, missing, key="subject_symbolic_scores"
-            )
-            grounded_scores = _mean_subject_scores(
-                grounded_result, missing, key="subject_answer_scores"
-            )
-            paired_by_seed.append(
-                [a - b for a, b in zip(modular_scores, grounded_scores, strict=True)]
-            )
-        seed_means = [sum(values) / len(values) for values in paired_by_seed]
-        comparisons[f"{system}_minus_question_grounded_missing_accuracy"] = {
-            "mean": sum(seed_means) / len(seed_means),
-            "seed_means": seed_means,
-            "hierarchical_subject_bootstrap_95ci": hierarchical_bootstrap_ci(
-                paired_by_seed, seed=bootstrap_seed, samples=bootstrap_samples
+        comparisons[f"{system}_minus_question_grounded_missing_accuracy"] = _paired_effect(
+            evaluations[system],
+            grounded,
+            conditions=missing,
+            left_key="subject_symbolic_scores",
+            right_key="subject_answer_scores",
+            bootstrap_seed=bootstrap_seed,
+            bootstrap_samples=bootstrap_samples,
+        )
+    comparisons["modular_dropout_minus_no_dropout_missing_accuracy"] = _paired_effect(
+        evaluations["modular_dropout"],
+        evaluations["modular_no_dropout"],
+        conditions=missing,
+        left_key="subject_symbolic_scores",
+        right_key="subject_symbolic_scores",
+        bootstrap_seed=bootstrap_seed,
+        bootstrap_samples=bootstrap_samples,
+    )
+    systems = {
+        "question_grounded": _system_summary(
+            grounded,
+            conditions,
+            missing,
+            scalar_keys=(
+                "answer_accuracy",
+                "balanced_answer_accuracy",
+                "ece_5bin",
+                "grounded_answer_accuracy",
             ),
+            mapping_key="mean_evidence_dice_by_type",
+        ),
+        **{
+            system: _system_summary(
+                evaluations[system],
+                conditions,
+                missing,
+                scalar_keys=(
+                    "symbolic_answer_accuracy",
+                    "symbolic_balanced_accuracy",
+                    "enhancing_fraction_mae",
+                    "segmentation_confidence_proxy_ece_5bin",
+                    "selective_coverage",
+                    "selective_answer_accuracy",
+                ),
+                mapping_key="mean_region_dice",
+            )
+            for system in ("modular_dropout", "modular_no_dropout")
+        },
+    }
+    dropout_profiles = _mean_profiles(
+        evaluations["modular_dropout"], missing, key="subject_symbolic_scores"
+    )
+    bins = {
+        "success_ge_0.80": sum(value >= 0.80 for value in dropout_profiles),
+        "boundary_gt_0.40_lt_0.80": sum(0.40 < value < 0.80 for value in dropout_profiles),
+        "failure_le_0.40": sum(value <= 0.40 for value in dropout_profiles),
+    }
+    return {
+        "test_cases_read": len(dropout_profiles),
+        "conditions": conditions,
+        "incomplete_conditions": missing,
+        "systems": systems,
+        "primary_and_secondary_comparisons": comparisons,
+        "modular_dropout_subject_profile_bins": {
+            "denominator": len(dropout_profiles),
+            "counts": bins,
+            "subject_identifiers_published": False,
+        },
+    }
+
+
+def _paired_effect(
+    left: list[dict[str, Any]],
+    right: list[dict[str, Any]],
+    *,
+    conditions: list[str],
+    left_key: str,
+    right_key: str,
+    bootstrap_seed: int,
+    bootstrap_samples: int,
+) -> dict[str, Any]:
+    paired_by_seed: list[list[float]] = []
+    for left_result, right_result in zip(left, right, strict=True):
+        left_scores = _mean_subject_scores(left_result, conditions, key=left_key)
+        right_scores = _mean_subject_scores(right_result, conditions, key=right_key)
+        paired_by_seed.append(
+            [a - b for a, b in zip(left_scores, right_scores, strict=True)]
+        )
+    seed_means = [sum(values) / len(values) for values in paired_by_seed]
+    return {
+        "mean": sum(seed_means) / len(seed_means),
+        "seed_means": seed_means,
+        "hierarchical_subject_bootstrap_95ci": hierarchical_bootstrap_ci(
+            paired_by_seed, seed=bootstrap_seed, samples=bootstrap_samples
+        ),
+    }
+
+
+def _system_summary(
+    results: list[dict[str, Any]],
+    conditions: list[str],
+    missing: list[str],
+    *,
+    scalar_keys: tuple[str, ...],
+    mapping_key: str,
+) -> dict[str, Any]:
+    by_condition: dict[str, Any] = {}
+    for condition in conditions:
+        by_condition[condition] = {
+            **{
+                key: _metric_summary(results, (condition,), key=key)
+                for key in scalar_keys
+            },
+            mapping_key: _mapping_summary(results, (condition,), key=mapping_key),
         }
-    return {"test_cases_read": 66, "primary_and_secondary_comparisons": comparisons}
+    return {
+        "by_condition": by_condition,
+        "full_input": by_condition[condition_id(frozenset(Modality))],
+        "mean_across_incomplete_conditions": {
+            **{key: _metric_summary(results, tuple(missing), key=key) for key in scalar_keys},
+            mapping_key: _mapping_summary(results, tuple(missing), key=mapping_key),
+        },
+    }
+
+
+def _metric_summary(
+    results: list[dict[str, Any]], conditions: tuple[str, ...], *, key: str
+) -> dict[str, Any]:
+    raw = [result[condition].get(key) for result in results for condition in conditions]
+    values = [float(value) for value in raw if _is_number(value)]
+    return {
+        "mean": sum(values) / len(values) if values else None,
+        "values": raw,
+        "defined_value_count": len(values),
+    }
+
+
+def _mapping_summary(
+    results: list[dict[str, Any]], conditions: tuple[str, ...], *, key: str
+) -> dict[str, Any]:
+    names = sorted(
+        {
+            name
+            for result in results
+            for condition in conditions
+            for name in cast(dict[str, Any], result[condition].get(key, {}))
+        }
+    )
+    output: dict[str, Any] = {}
+    for name in names:
+        raw = [
+            cast(dict[str, Any], result[condition].get(key, {})).get(name)
+            for result in results
+            for condition in conditions
+        ]
+        values = [float(cast(float, value)) for value in raw if _is_number(value)]
+        output[name] = {
+            "mean": sum(values) / len(values) if values else None,
+            "values": raw,
+            "defined_value_count": len(values),
+        }
+    return output
+
+
+def _is_number(value: object) -> bool:
+    return isinstance(value, int | float) and not isinstance(value, bool)
+
+
+def _validate_subject_alignment(
+    evaluations: dict[str, list[dict[str, Any]]], conditions: list[str]
+) -> None:
+    if not evaluations["modular_dropout"]:
+        raise ValueError("held-out aggregate requires completed seed evaluations")
+    reference = evaluations["modular_dropout"][0][conditions[0]].get("subject_ids")
+    if not isinstance(reference, list) or not reference:
+        raise ValueError("held-out evaluation is missing ordered subject identifiers")
+    for system, results in evaluations.items():
+        if len(results) != len(evaluations["modular_dropout"]):
+            raise ValueError(f"held-out seed count mismatch for {system}")
+        for result in results:
+            for condition in conditions:
+                if result[condition].get("subject_ids") != reference:
+                    raise ValueError(f"held-out subject order mismatch for {system}/{condition}")
+
+
+def _mean_profiles(
+    results: list[dict[str, Any]], conditions: list[str], *, key: str
+) -> list[float]:
+    by_seed = [_mean_subject_scores(result, conditions, key=key) for result in results]
+    return [
+        sum(values) / len(values)
+        for values in zip(*by_seed, strict=True)
+    ]
 
 
 def _mean_subject_scores(
