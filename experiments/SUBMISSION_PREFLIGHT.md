@@ -53,4 +53,5 @@ state that the test set was unread.
 - Status: pass.
 - Tracked file count: 105.
 - Report SHA-256: `2c0a0f71d9fd5625a41905d5ed7c784df3dc4f90eb4008ed0d57e6d209e56559`.
-- Remote CI: pending push.
+- Remote CI: pass for release-candidate commit `bfb1dbb` (GitHub Actions run 9; editable
+  install, Ruff, strict mypy, 84 tests, and V0 audit all succeeded).
