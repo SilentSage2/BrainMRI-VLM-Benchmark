@@ -41,6 +41,34 @@ that the system is clinically useful.
 No threshold, question family, contrast subset, seed, or subject may be removed after test
 evaluation except for a documented execution failure defined before viewing outcomes.
 
+## Frozen figure and case schemas
+
+Figure 4 retains three panels in this order: (A) full-input balanced QA accuracy for the
+question-only, fixed-slice, answer-only, auxiliary, and grounded systems; (B) the 3-by-15
+balanced-accuracy condition matrix for the matched 3D systems; and (C) grounded-minus-
+comparator raw answer effects with hierarchical 95% intervals. The held-out version may
+replace development values only; it may not add, remove, or reorder systems or conditions.
+
+Figure 5 retains four panels in this order: (A) full-input WT/TC/ET Dice for modular
+dropout and no-dropout systems; (B) their 2-by-15 balanced-accuracy condition matrix; (C)
+predefined subject-level reliability categories; and (D) dropout-minus-no-dropout raw
+incomplete-condition accuracy with its hierarchical 95% interval. The development panel-C
+subjects remain the three lowest and three highest performers selected before visual
+review. Held-out panel C is aggregate-only: no test image or subject-specific example will
+be published or selected after outcomes are viewed.
+
+For held-out aggregate subject profiles, **success** means mean raw QA accuracy of at least
+0.80 across the 14 incomplete conditions, **failure** means at most 0.40, and **boundary**
+means strictly between 0.40 and 0.80. These are descriptive bins, not exclusions or primary
+endpoints. Counts and denominators for all three bins must be reported, including zero
+counts. Subjects may not be relabeled or omitted to improve the narrative.
+
+An execution failure is limited to a missing frozen subject, unreadable required file,
+checkpoint hash mismatch, non-finite tensor, or process interruption. A process interruption
+must resume under the same one-shot lock. Model errors, poor performance, calibration
+failure, or inconvenient confidence intervals are scientific outcomes, not execution
+failures.
+
 ## Explicit limitation
 
 The comparison covers the repository's 14,962-parameter controlled VLM and 4,901-parameter

@@ -7,7 +7,7 @@ from mri_vlm.schema import Modality
 
 def modality_conditions() -> tuple[frozenset[Modality], ...]:
     """Return all 15 non-empty subsets in stable size/name order."""
-    ordered = tuple(Modality)
+    ordered: tuple[Modality, ...] = tuple(Modality)
     return tuple(
         frozenset(condition)
         for size in range(1, len(ordered) + 1)

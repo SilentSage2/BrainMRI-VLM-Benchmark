@@ -64,7 +64,7 @@ def main() -> None:
         spatial_size=args.spatial_size,
         cache_root=args.cache_dir.resolve(),
     )[0]
-    condition = (frozenset(Modality),)
+    condition: tuple[frozenset[Modality], ...] = (frozenset(Modality),)
     reference_consistency = sum(
         _symbolic_answer(case.label, item.example.question_type)
         == (item.example.answer or "abstain")

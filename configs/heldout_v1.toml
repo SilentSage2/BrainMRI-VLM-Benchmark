@@ -36,6 +36,17 @@ exclusions = [
 ]
 
 case_selection = "Figure 5 failure/success cases are the three lowest and three highest development missing-contrast performers under dropout, ties broken by subject ID; no test case may be selected qualitatively before aggregate evaluation"
+heldout_success_definition = "subject mean raw QA accuracy across 14 incomplete conditions >= 0.80"
+heldout_boundary_definition = "subject mean raw QA accuracy across 14 incomplete conditions > 0.40 and < 0.80"
+heldout_failure_definition = "subject mean raw QA accuracy across 14 incomplete conditions <= 0.40"
+heldout_qualitative_policy = "aggregate category counts only; no test-subject image selection or publication"
+execution_failures = [
+  "missing frozen subject",
+  "unreadable required file",
+  "checkpoint hash mismatch",
+  "non-finite tensor",
+  "process interruption resumed under the same one-shot lock"
+]
 
 [[checkpoints]]
 system = "question_grounded"

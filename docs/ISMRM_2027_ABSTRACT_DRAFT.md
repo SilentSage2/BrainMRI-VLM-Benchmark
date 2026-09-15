@@ -16,8 +16,11 @@ Compare answer-only, voxel-grounded, and segmentation-to-symbolic methods on mas
 questions across all 15 subsets of FLAIR, T1, T1-Gd, and T2.
 
 ### Results
-[PLANNED — replace with the primary effect, 95% confidence interval, hallucination result,
-and complete-input non-inferiority result from the locked table.]
+[HELD-OUT — locked, pending explicit one-shot authorization. Replace only from the frozen
+result export with: modular-dropout minus grounded-VLM mean raw incomplete-condition
+accuracy and hierarchical 95% CI; dropout minus no-dropout effect and CI; incomplete and
+full-input balanced accuracy; full-input WT/TC/ET Dice; confidence-proxy calibration,
+coverage, and selective accuracy. Preserve negative and boundary findings.]
 
 ## Impact
 [PLANNED — state whether MR scientists can use voxel evidence and abstention to identify
@@ -95,11 +98,11 @@ raw subject accuracy over incomplete conditions by +0.069 (hierarchical 95% CI
 [+0.016, +0.124]) but reduced full-input WT/TC/ET Dice from 0.799/0.769/0.709 to
 0.658/0.579/0.489. The preset voxel-confidence abstention rule failed calibration checks.
 
-[PLANNED — lead with all 15 contrast conditions and the segmentation-to-symbolic MR
-baseline; then report the matched grounded effect with 95% CI, calibration and abstention,
-evidence Dice, complete-input non-inferiority, question-only and 2D diagnostics, ablation
-effects, three-seed dispersion, and the preregistered contrast-dependence test.
-Insert only values exported from the locked results manifest.]
+[HELD-OUT — locked, pending explicit one-shot authorization. Lead with all 15 contrast
+conditions and the segmentation-to-symbolic MR baseline; then report the frozen primary
+effect with its 95% CI, dropout tradeoff, calibration proxy, coverage/selective accuracy,
+full-input Dice, and three-seed dispersion. Insert only values exported from the locked
+result manifest; do not substitute development values or tune the narrative branch.]
 
 ### Discussion
 
@@ -147,13 +150,14 @@ presence became single-class; duplicated comparison targets were removed. No mod
 performance is shown.
 
 ### Figure 4
-[PLANNED — 15-condition robustness, calibration, abstention, and
-question-by-removed-contrast sensitivity caption with support definition, split, n,
-intervals, modular baseline, and complete-input non-inferiority result.]
+[HELD-OUT — pending authorization. Preserve the frozen three-panel matched-system schema;
+replace only development values with the locked export and label split, n, all 15
+conditions, and hierarchical intervals.]
 
 ### Figure 5
-[PLANNED — paired VLM/modular evidence and failure-analysis caption with frozen
-success/boundary/failure selection rules and aggregate context.]
+[HELD-OUT — pending authorization. Preserve the frozen four-panel modular schema and
+report aggregate success (>=0.80), boundary (>0.40 and <0.80), and failure (<=0.40) counts
+over incomplete conditions. Do not select or publish test-subject images.]
 
 ## Preview Figure
 

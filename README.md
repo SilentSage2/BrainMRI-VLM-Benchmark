@@ -2,12 +2,12 @@
 
 **Robust 3D Vision-Language Reasoning over Multi-Sequence Brain MRI**
 
-> **Status: research-preview candidate, not publish-ready.** A residual 3D MR baseline and
-> three matched hierarchical MRI-VLM paths now run on real data. The first 32/8-subject
-> validation experiment is a small negative diagnostic, not a performance or novelty claim.
-> A three-seed 64/16 development experiment rejects a reliable grounding benefit and finds
-> the MR-specialized modular pathway substantially stronger. The ISMRM evidence gate remains
-> closed pending an external VLM baseline and frozen test evaluation.
+> **Status: public research preview; held-out evaluation remains sealed.** A three-seed
+> 64/16-subject development experiment rejects a reliable grounding benefit in the tested
+> small VLMs and finds the MR-specialized modular pathway substantially stronger. The
+> external M3D-LaMed baseline has been audited but not executed. Claims, checkpoints,
+> metrics, and the single-use 66-subject test protocol are frozen pending explicit
+> authorization.
 
 ## Research question
 
@@ -20,6 +20,12 @@ Inputs are FLAIR, T1-weighted, post-contrast T1-weighted, and T2-weighted brain 
 Questions test verifiable properties such as affected region, relative lesion volume,
 enhancing-component presence, and changes after a controlled counterfactual. The model
 must return both an answer and the voxel region supporting it.
+
+`Grounding` in the repository name means that an answer is tied to an explicit spatial MRI
+region rather than evaluated as text classification alone. The current reliability study
+also tests whether that additional grounding machinery is justified against a simpler
+segmentation-to-symbolic workflow; the name identifies the hypothesis under audit, not a
+promise that grounding will win.
 
 ## Why this is a VLM project
 

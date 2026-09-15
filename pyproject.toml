@@ -11,18 +11,17 @@ requires-python = ">=3.12,<3.13"
 license = { text = "MIT" }
 authors = [{ name = "Ziyang Xu" }]
 dependencies = [
+  "numpy==2.5.3",
   "torch>=2.4,<3",
 ]
 
 [project.optional-dependencies]
 data = [
   "nibabel==5.4.2",
-  "numpy==2.5.3",
 ]
 figures = [
   "matplotlib==3.10.6",
   "nibabel==5.4.2",
-  "numpy==2.5.3",
 ]
 dev = [
   "mypy==1.15.0",
