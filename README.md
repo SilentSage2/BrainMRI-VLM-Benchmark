@@ -2,12 +2,12 @@
 
 **Robust 3D Vision-Language Reasoning over Multi-Sequence Brain MRI**
 
-> **Status: public research preview; held-out evaluation remains sealed.** A three-seed
-> 64/16-subject development experiment rejects a reliable grounding benefit in the tested
-> small VLMs and finds the MR-specialized modular pathway substantially stronger. The
-> external M3D-LaMed baseline has been audited but not executed. Claims, checkpoints,
-> metrics, and the single-use 66-subject test protocol are frozen pending explicit
-> authorization.
+> **Status: held-out V1 complete; public research benchmark.** The explicitly authorized
+> one-shot evaluation read all 66 frozen test subjects once. Modular dropout exceeded the
+> tested small grounded VLM by +0.187 raw missing-contrast accuracy (hierarchical 95% CI
+> [+0.131, +0.257]), while sacrificing complete-input QA and segmentation quality. The
+> external M3D-LaMed baseline was audited but not executed; this is not a foundation-model
+> or clinical-use claim.
 
 ## Research question
 
@@ -70,8 +70,8 @@ single-volume external baseline and defines `MRI-VLM-Small` for the matched mult
 answer-only versus grounded comparison.
 The [ISMRM 2027 abstract plan](docs/ISMRM_2027_ABSTRACT_PLAN.md) freezes the MR-specific
 storyline, primary endpoint, figure plan, and submission decision gate.
-The [submission-readiness checklist](docs/ISMRM_SUBMISSION_CHECKLIST.md) records completed
-paper-level deliverables and the sole remaining scientific blocker without opening test.
+The [submission-readiness checklist](docs/ISMRM_SUBMISSION_CHECKLIST.md) records the
+completed paper-level and held-out evidence gates.
 The [figure contract](docs/FIGURE_PLAN.md) assigns each submission figure a claim, required
 inputs, delivery date, and negative-result-safe fallback.
 Working [standalone captions](docs/FIGURE_CAPTIONS.md) explicitly separate completed
@@ -118,20 +118,27 @@ to make the current negative evidence auditable, not to claim generalization.
 | Question-conditioned grounding | 0.542 | 0.472 | 0.167 | 0.486 |
 
 Grounded-minus-auxiliary paired answer effect was 0.000 for every subject. Grounded-minus-
-answer-only was +0.167, bootstrap 95% CI [-0.042, 0.375]. Test cases remain sealed.
+answer-only was +0.167, bootstrap 95% CI [-0.042, 0.375]. Test cases were sealed during
+this diagnostic.
 
 The larger frozen V3 development run used 64/16 subjects and three seeds. Its
 grounded-minus-auxiliary answer effect was +0.007 with hierarchical 95% CI
 [-0.229, 0.243]; seed effects were -0.208, +0.229, and 0.000. This fails the predefined
-grounding-benefit gate and exposes substantial training variance. The test split remains
-sealed, so this is not a generalization claim.
+grounding-benefit gate and exposes substantial training variance. The test split was
+sealed at that development stage, so this is not itself a generalization claim.
 
-The modular V4 experiment used the same subjects and seeds. Complete-input-only residual
-3D segmentation followed by symbolic QA reached 0.787 full-input and 0.578 missing-contrast
-balanced accuracy, versus 0.426 and 0.424 for the grounded VLM. Balanced modality dropout
+The modular V4 development experiment used the same subjects and seeds. A complete-input-
+only residual 3D segmentation model followed by symbolic QA reached 0.787 full-input and
+0.578 missing-contrast balanced accuracy, versus 0.426 and 0.424 for the grounded VLM.
+Balanced modality dropout
 improved missing-contrast raw subject accuracy by +0.069, hierarchical 95% CI
 [+0.016, +0.124], while sacrificing complete-input performance. These remain development
-results, not held-out claims.
+results, not held-out claims. The subsequent authorized one-shot test confirmed the narrow
+comparison: modular dropout minus grounded VLM was +0.187 [+0.131, +0.257] raw accuracy
+across incomplete conditions. Dropout minus no-dropout was +0.055 [+0.025, +0.085], but
+full-input balanced QA fell from 0.701 to 0.610 and WT/TC/ET Dice fell from
+0.818/0.717/0.653 to 0.718/0.607/0.486. See the
+[held-out result ledger](experiments/HELDOUT_V1_RESULT.md).
 
 ## Planned systems
 
@@ -160,7 +167,8 @@ size, custom-code, license-chain, data-overlap, and four-contrast compatibility 
 The [frozen narrow claim](docs/FINAL_CLAIM.md) and
 [one-shot held-out runbook](docs/HELD_OUT_EXECUTION.md) lock the 66-subject test manifest,
 checkpoint hashes, metrics, exclusions, bootstrap, interpretation branches, and anti-rerun
-guard. Held-out execution still requires new explicit user authorization.
+guard. The authorized one-shot execution completed on 15 September 2026 with 66/66 test
+cases read and no rerun.
 
 ## Quick start
 

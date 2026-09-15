@@ -121,7 +121,8 @@ for the grounded VLM. Balanced modality dropout improved raw incomplete-input su
 accuracy by +0.069 [0.016, 0.124] but harmed complete-input perception. These results
 support a development benchmark/pivot, not a held-out performance claim.
 
-A defensible ISMRM result package still requires:
+A defensible ISMRM result package required the following; the held-out V1 ledger now records
+their completion or the corresponding negative limitation:
 
 - real validation and single-use held-out test results;
 - primary paired effect size with subject-bootstrap 95% confidence interval;
@@ -144,8 +145,8 @@ conclusion.
 
 The public research-preview gate is complete: the repository contains real-data runs,
 named controls, reproducible commands, honest negative tables, and no tracked data or
-weights. The MVP/submission tag remains withheld until held-out evaluation and final claim
-branching are complete.
+weights. Held-out evaluation and final claim branching are complete; the MVP/submission
+tag remains withheld until final reproduction and co-author review.
 
 ### Standard-abstract gate on 10 October
 

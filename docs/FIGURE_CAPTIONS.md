@@ -1,7 +1,7 @@
 # Working Figure Captions
 
-These captions describe only generated evidence. Figures 4–5 are development results and
-must not be described as held-out test performance.
+These captions describe only generated evidence. Figure 4 is development-only; Figure 5
+is the frozen held-out aggregate and contains no subject identifiers or selected cases.
 
 ## Figure 1 — complete overall comparative framework
 
@@ -50,15 +50,12 @@ within seed; the dotted line marks the predefined +0.05 development threshold. T
 grounded-minus-auxiliary effect was +0.007 [-0.229, 0.243], failing the positive grounding
 gate. All results are development-only; test cases were unread.
 
-## Figure 5 — complete modular robustness and failure profiles
+## Figure 5 — complete held-out modular robustness comparison
 
-**MR-specialized modular reasoning and modality-dropout tradeoffs.** (A) Full-input
-whole-tumor (WT), tumor-core (TC), and enhancing-tumor (ET) Dice for residual 3D models
-trained with balanced modality dropout or complete inputs only, averaged over three seeds.
-(B) QA V1 balanced symbolic accuracy across all 15 non-empty FLAIR (F), T1, post-contrast
-T1 (G), and T2 subsets. (C) Six subjects selected deterministically as the three lowest and
-three highest missing-contrast performers under dropout, before visual review; points show
-mean accuracy over 14 incomplete conditions and three seeds. (D) Dropout-minus-no-dropout
-raw subject accuracy over incomplete conditions with a hierarchical seed/subject 95% CI.
-The effect was +0.069 [+0.016, +0.124], but dropout reduced full-input Dice and balanced QA.
-All results use 16 development subjects; test cases were unread.
+**Held-out reliability across missing brain MRI contrasts.** On 66 frozen subjects and
+three seeds, (A) full-input and mean 14-incomplete-condition balanced QA compare the tested
+grounded VLM with modular dropout/no-dropout; (B) shows all 15 FLAIR (F), T1, post-contrast
+T1 (G), and T2 subsets; (C) shows full-input modular WT/TC/ET Dice; and (D) reports every
+prespecified raw incomplete-condition paired effect with hierarchical seed/subject 95% CI.
+Dropout exceeded grounded by +0.187 [+0.131, +0.257] and no-dropout by +0.055 [+0.025,
++0.085], but reduced full-input QA and Dice.

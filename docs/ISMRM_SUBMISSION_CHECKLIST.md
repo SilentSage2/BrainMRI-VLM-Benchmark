@@ -1,6 +1,6 @@
 # ISMRM 2027 Submission Readiness
 
-Checked: 2026-09-14. Official deadline: 28 October 2026. Internal content freeze:
+Checked: 2026-09-15. Official deadline: 28 October 2026. Internal content freeze:
 22 October 2026.
 
 ## Complete before held-out access
@@ -18,7 +18,9 @@ Checked: 2026-09-14. Official deadline: 28 October 2026. Internal content freeze
 | Preview figure | Pass | no-caption 1200×1200 PNG; no result values; smartphone-readable text |
 | Reproducibility | Pass | versioned commands, frozen configs/checkpoint hashes, clean-install tests |
 | Claim discipline | Pass | compact VLM and single-dataset limits; no foundation-model or clinical-use claim |
-| Held-out protocol | Pass and sealed | 66 identifiers, exact authorization gate, pre-read lock, no rerun, complete result schema |
+| Held-out protocol | Pass and complete | One authorized run; 66/66 read; immutable lock complete; frozen schema verified |
+| Final held-out figure | Pass | Frozen four-panel Figure 5 rendered to PNG/PDF/CSV and visually inspected |
+| Abstract result fields | Pass | No unresolved held-out markers; locked positive branch with mandatory tradeoffs |
 
 ## Frozen post-unseal sequence
 
@@ -30,12 +32,13 @@ Checked: 2026-09-14. Official deadline: 28 October 2026. Internal content freeze
 5. Keep Figure 4 as the development mechanism/ablation result. Generate the frozen held-out
    Figure 5 replacement without changing panels, thresholds, exclusions, or publication
    policy.
-6. Rerun abstract lint, repository preflight, clean-install quality gates, visual QA, and
+6. Rerun abstract lint, post-unseal repository audit, clean-install quality gates, visual QA, and
    co-author review before submission.
 
-## Sole scientific blocker
+## Current status
 
-The remaining scientific blocker is explicit authorization for the single 66-subject
-held-out evaluation. Until then, the package is a complete pre-unseal draft, not a
-submission-ready abstract. No additional development experiment is required to manufacture
-a more favorable story.
+The single 66-subject held-out evaluation is complete. Its positive primary interval
+supports the frozen narrow workflow claim, while lower full-input QA/Dice and negligible
+confidence-rule coverage remain mandatory limitations. Automated gates and co-author review
+remain before portal submission; no additional experiment is required to manufacture a
+more favorable story.

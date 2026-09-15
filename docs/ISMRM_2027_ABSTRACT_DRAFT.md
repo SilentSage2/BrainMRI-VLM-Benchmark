@@ -18,7 +18,8 @@ all 15 subsets of four co-registered brain MRI contrasts.
 ### Results
 On development data, grounding had no reliable benefit; modular reasoning was stronger,
 and modality dropout traded complete-input performance for raw missing-contrast accuracy.
-[HELD-OUT — insert the frozen primary effect and 95% interval after one authorized run.]
+On held-out subjects, modular dropout exceeded the grounded VLM by +0.187 raw
+missing-contrast accuracy (95% CI +0.131 to +0.257), while reducing full-input performance.
 
 ## Impact
 This study tests whether voxel grounding adds reliability beyond an established MR
@@ -72,17 +73,24 @@ raw incomplete-condition accuracy by +0.069 (95% CI +0.016 to +0.124) but reduce
 WT/TC/ET Dice from 0.799/0.769/0.709 to 0.658/0.579/0.489. Its frozen 0.75 confidence rule
 had zero coverage, invalidating the proposed abstention proxy.
 
-[HELD-OUT — replace or extend only with the locked 66-subject export: primary paired effect
-and interval, both modular regimes, all 15 conditions, Dice, calibration, coverage, and
-success/boundary/failure counts. Do not tune thresholds, exclusions, or examples.]
+On 66 held-out subjects, modular dropout, no-dropout, and grounded VLM achieved raw
+incomplete-condition accuracy of 0.635, 0.581, and 0.449 and balanced accuracy of 0.577,
+0.561, and 0.418. The primary dropout-minus-grounded effect was +0.187 (95% CI +0.131 to
++0.257); no-dropout-minus-grounded was +0.132 (+0.059 to +0.224), and dropout-minus-no-
+dropout was +0.055 (+0.025 to +0.085). Full-input dropout/no-dropout balanced accuracy was
+0.610/0.701 and WT/TC/ET Dice was 0.718/0.607/0.486 versus 0.818/0.717/0.653. Dropout
+calibration-proxy ECE was 0.083 with full and 0.081 with incomplete input, but frozen-rule
+coverage was only 0.005 and 0.003; selective accuracy was therefore not interpretable.
+Profiles comprised 10 success, 51 boundary, and 5 failure subjects.
 
 ### Discussion
 
-These development results show that spatial supervision alone does not establish reliable
-vision-language reasoning: the controlled VLMs largely matched a strong question prior,
-and grounding showed substantial training-seed variance. The modular pathway better
-preserved mask-verifiable quantitative answers, but balanced dropout was not uniformly
-beneficial and confidence was not calibrated. The study therefore evaluates when added
+The development and held-out results show that spatial supervision alone does not
+establish reliable vision-language reasoning: the controlled VLMs largely matched a strong
+question prior, and grounding showed substantial training-seed variance. The modular pathway better
+preserved mask-verifiable quantitative answers. Modality dropout improved missing-contrast
+raw accuracy, but sacrificed complete-input QA and segmentation quality, and its confidence
+rule had negligible coverage. The study therefore evaluates when added
 VLM complexity is justified rather than assuming that it is. Limitations include one
 historical public tumor dataset, compact non-foundation VLMs, synthetic mask-derived
 language, label-derived evidence, no external cohort or reader study, and no clinical-use
@@ -91,9 +99,10 @@ although no test predictions informed selection.
 
 ### Conclusion
 
-On development data, modular MR perception outperformed the tested small grounded VLMs
-under missing contrasts, while grounding and modality dropout showed important failure
-modes. The final claim remains contingent on the single authorized held-out evaluation.
+On held-out data, modular MR perception outperformed the tested small grounded VLMs under
+missing contrasts, and modality dropout improved raw robustness at a substantial
+complete-input cost. This supports the narrow workflow claim, not superiority to medical
+foundation VLMs or clinical utility.
 
 ### References
 
@@ -133,10 +142,9 @@ not improve raw answer accuracy over unconditional auxiliary supervision (+0.007
 prior across 15 contrast subsets.
 
 ### Figure 5
-Modular development comparison (n=16; test unread). Balanced modality dropout increased
-raw incomplete-condition accuracy (+0.069, 95% CI +0.016 to +0.124) but reduced full-input
-WT/TC/ET Dice and balanced QA. Panels show Dice, all 15 subsets, frozen subject profiles,
-and the hierarchical effect.
+Frozen held-out comparison (n=66; three seeds). Modular dropout exceeded the grounded VLM
+in raw incomplete-condition accuracy by +0.187 (95% CI +0.131 to +0.257) and no-dropout by
++0.055 (+0.025 to +0.085), but reduced full-input balanced QA and WT/TC/ET Dice.
 
 ## Preview Figure
 

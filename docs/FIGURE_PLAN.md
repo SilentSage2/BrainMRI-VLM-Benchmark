@@ -10,14 +10,16 @@ result. Every plot must be regenerated from a versioned command and retain its s
 | 2. Cohort and targets | The audited cohort supports varied physical-volume and enhancing-fraction questions without subject leakage. | 484 reference masks and locked split | 18 Sep | Move to supplement if four figures tell the story better |
 | 3. QA target validity | Show how spatial resolution changes mask-derived answers and why ambiguity controls are required. | 418 development masks × four resolutions; test unread | 20 Sep | Retain as a real negative-methods result |
 | 4. Fifteen-condition MR robustness and reliability | Compare grounded, answer-only, and modular segmentation-to-symbolic interpretation, calibration, and abstention across all contrast subsets. | Models × 15 contrast subsets, subject bootstrap, seeds | 10 Oct | Report the locked matrix even if the modular baseline wins |
-| 5. Evidence and failure boundaries | Show where voxel evidence supports interpretation and where missing contrasts cause abstention or failure. | Frozen success/boundary/failure selection | 15 Oct | Include the same cases for VLM and modular MR baseline |
+| 5. Held-out robustness and tradeoffs | Test the frozen modular-versus-grounded reliability claim and quantify dropout's full-input cost. | 66 subjects × three systems × 15 subsets; paired hierarchical intervals | 15 Oct | Retain every system, subset, and paired effect regardless of direction |
 
-Status on 14 September: all five development figures are complete in high-resolution PNG
-and vector PDF form. Figure 1 now shows both the matched end-to-end VLMs and the modular MR
+Status on 15 September: all five development figures and the frozen held-out Figure 5
+replacement are complete in high-resolution PNG and vector PDF form. Figure 1 now shows
+both the matched end-to-end VLMs and the modular MR
 pathway using a validation case selected by the frozen median-burden rule. Figure 2 is a
 descriptive 484-case cohort audit; Figure 3 uses 418 development masks with test unread;
-Figures 4–5 contain only completed 64/16-subject, three-seed development results. Final
-held-out values may enter only through the frozen result schema after authorization.
+Figure 4 retains the 64/16-subject, three-seed development mechanism comparison. Figure 5
+now contains only the authorized 66-subject held-out aggregate from the frozen result
+schema.
 
 ## Milestones
 
@@ -54,8 +56,7 @@ held-out values may enter only through the frozen result schema after authorizat
 - Export high-resolution PNG and vector PDF; visually inspect both before release.
 - Captions must be independently understandable and distinguish observation from inference.
 - Negative results keep their planned panel; the interpretation changes, not the endpoint.
-- Development Figures 1–5 are complete. Any held-out replacement remains explicitly
-  unresolved until the one-shot result export exists.
+- Development Figures 1–5 and the final held-out Figure 5 replacement are complete.
 
 ## Figure contracts
 
@@ -92,11 +93,12 @@ held-out values may enter only through the frozen result schema after authorizat
 
 ### Figure 5 — modular robustness and frozen failure profiles, complete
 
-- Supports the development conclusion that MR-specialized modular reasoning exceeds the
-  tested small VLMs and that modality dropout trades full-input quality for higher raw
-  incomplete-contrast accuracy. Frozen failure/success subject IDs prevent visual cherry
-  picking. Spatial overlays remain a later enhancement, not evidence in this figure.
-- Cannot support held-out prevalence, clinical calibration, or external-model superiority.
+- Supports the held-out conclusion that MR-specialized modular reasoning exceeds the
+  tested small grounded VLM under incomplete contrasts and that modality dropout trades
+  full-input quality for higher raw incomplete-contrast accuracy. The fixed panels show all
+  systems, all 15 subsets, both modular Dice profiles, and all paired intervals.
+- Cannot support clinical calibration, external-dataset generalization, or external-model
+  superiority.
 
 ## Reproduction
 
@@ -150,8 +152,8 @@ mri-vlm-preview-figure /absolute/path/to/Task01_BrainTumour \
   --output-prefix artifacts/figures/preview_figure
 ```
 
-The frozen final held-out Figure 5 generator is present but must not be run before the
-one-shot summary exists. It accepts only a completed 66-subject result with schema
+The final held-out Figure 5 was generated after the authorized one-shot summary completed.
+The renderer accepts only a completed 66-subject result with schema
 `heldout-v1-complete-aggregate-20260914` and displays the three systems, all 15 subsets,
 full-input modular Dice, and all three paired effects.
 

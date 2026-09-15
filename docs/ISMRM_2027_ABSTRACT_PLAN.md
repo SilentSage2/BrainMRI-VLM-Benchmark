@@ -7,7 +7,8 @@
 - Primary plan: submit a standard scientific abstract with completed results.
 - Go/no-go date: 10 October 2026. The development gate is complete: matched VLM controls,
   modular MR baselines, all 15 contrast subsets, three-seed uncertainty, and five audited
-  figures exist. Standard submission still requires the single frozen held-out evaluation.
+  figures exist. The single frozen held-out evaluation also completed on 15 September;
+  the standard-submission evidence gate is now open subject to final review.
 - Fallback: use the registered-abstract route only if the 2027 call explicitly offers it
   and the study meets that route's requirements. Do not submit aspirational results in a
   standard abstract.

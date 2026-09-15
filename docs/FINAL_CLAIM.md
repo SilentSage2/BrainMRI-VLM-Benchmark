@@ -83,3 +83,18 @@ The comparison covers the repository's 14,962-parameter controlled VLM and 4,901
 fixed-slice baseline. It does **not** compare against a large pretrained medical foundation
 model. M3D-LaMed was audited but not executed because of compute, custom-code, data-overlap,
 license-chain, and four-contrast interface constraints.
+
+## Post-unseal outcome — 15 September 2026
+
+The authorized one-shot evaluation completed without interruption on all 66 frozen test
+subjects. The result selected locked interpretation branch 1: modular dropout minus the
+question-grounded small VLM was +0.187 raw accuracy across the 14 incomplete conditions,
+with hierarchical 95% CI [+0.131, +0.257]. The dropout robustness subclaim was also
+supported: dropout minus no-dropout was +0.055 [+0.025, +0.085].
+
+Mandatory secondary outcomes qualify that result. Dropout versus no-dropout full-input
+balanced QA was 0.610 versus 0.701, and WT/TC/ET Dice was 0.718/0.607/0.486 versus
+0.818/0.717/0.653. Coverage at the frozen confidence rule was 0.005 on full input and 0.003
+across incomplete conditions, so selective accuracy is not interpretable. The narrow
+workflow reliability claim is supported, with a material full-input cost and no claim
+about medical foundation VLMs or clinical use. No frozen text above was revised.
