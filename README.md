@@ -146,6 +146,9 @@ bootstrap uncertainty, and predefines a negative-result interpretation before ag
 The frozen [modular V4 protocol](experiments/MODULAR_V4_PROTOCOL.md) now evaluates whether
 MR-specialized 3D segmentation followed by symbolic QA is more reliable, including a
 matched modality-dropout ablation and all 15 missing-contrast conditions.
+The [external foundation baseline audit](docs/EXTERNAL_BASELINE_AUDIT.md) records why
+M3D-LaMed-Phi-3-4B is not responsibly runnable on the current CPU host, including model
+size, custom-code, license-chain, data-overlap, and four-contrast compatibility constraints.
 
 ## Quick start
 
