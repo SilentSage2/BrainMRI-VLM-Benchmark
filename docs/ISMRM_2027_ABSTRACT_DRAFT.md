@@ -87,6 +87,14 @@ for grounded models; the QA V1 question-only prior and fixed-slice 2D VLM both a
 0.417. Grounding had worse calibration (ECE 0.124 versus 0.093) and lower grounded answer
 accuracy (0.174 versus 0.222) than the auxiliary model. Test cases remained unread.
 
+[DEVELOPMENT PIVOT EVIDENCE — not yet eligible for the submitted abstract] On the same
+cohort and seeds, residual 3D MR segmentation followed by deterministic QA achieved 0.787
+full-input and 0.578 missing-contrast balanced accuracy with complete-input training,
+compared with 0.426 and 0.424 for the grounded VLM. Balanced modality dropout increased
+raw subject accuracy over incomplete conditions by +0.069 (hierarchical 95% CI
+[+0.016, +0.124]) but reduced full-input WT/TC/ET Dice from 0.799/0.769/0.709 to
+0.658/0.579/0.489. The preset voxel-confidence abstention rule failed calibration checks.
+
 [PLANNED — lead with all 15 contrast conditions and the segmentation-to-symbolic MR
 baseline; then report the matched grounded effect with 95% CI, calibration and abstention,
 evidence Dice, complete-input non-inferiority, question-only and 2D diagnostics, ablation

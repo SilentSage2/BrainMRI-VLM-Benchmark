@@ -90,12 +90,13 @@ instability. Figures 4–5 require model outputs and must not contain simulated 
   little evidence of contrast-sensitive visual reasoning. It does not support test
   generalization, clinical utility, or superiority to an external foundation model.
 
-### Figure 5 — qualitative plus empirical, planned
+### Figure 5 — modular robustness and frozen failure profiles, complete
 
-- Supports only after frozen case selection: how correct grounding, calibrated abstention,
-  boundary behavior, and shared failure compare with the modular MR pipeline spatially.
-- Cannot support prevalence or comparative performance without the corresponding aggregate
-  result and uncertainty.
+- Supports the development conclusion that MR-specialized modular reasoning exceeds the
+  tested small VLMs and that modality dropout trades full-input quality for higher raw
+  incomplete-contrast accuracy. Frozen failure/success subject IDs prevent visual cherry
+  picking. Spatial overlays remain a later enhancement, not evidence in this figure.
+- Cannot support held-out prevalence, clinical calibration, or external-model superiority.
 
 ## Reproduction
 
@@ -131,4 +132,11 @@ mri-vlm-matched-figure artifacts/results/matched_v3/summary.json \
   --question-only artifacts/results/qa_v1_control_v3.json \
   --slice-baseline artifacts/results/slice_vlm_v3.json \
   --output-prefix artifacts/figures/figure4_matched_v3
+```
+
+Figure 5 reads the six test-sealed V4 seed/ablation results and emits PNG, PDF, and CSV.
+
+```bash
+mri-vlm-modular-figure artifacts/results/modular_v4/summary.json \
+  --output-prefix artifacts/figures/figure5_modular_v4
 ```

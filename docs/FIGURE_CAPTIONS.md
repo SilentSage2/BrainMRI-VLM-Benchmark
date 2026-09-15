@@ -1,7 +1,7 @@
 # Working Figure Captions
 
-These captions describe only generated evidence. Figure 5 remains planned and must not be
-written as an observed result before its locked source table exists.
+These captions describe only generated evidence. Figures 4–5 are development results and
+must not be described as held-out test performance.
 
 ## Figure 1 — provisional overall framework
 
@@ -53,9 +53,15 @@ within seed; the dotted line marks the predefined +0.05 development threshold. T
 grounded-minus-auxiliary effect was +0.007 [-0.229, 0.243], failing the positive grounding
 gate. All results are development-only; test cases were unread.
 
-## Figure 5 — planned
+## Figure 5 — complete modular robustness and failure profiles
 
-Captions will be generated only from frozen real-data result tables. Each will state the
-model versions, evaluation split, subject and question counts, missing-contrast conditions,
-baseline or ablation, seed count, interval construction, and the result-supported claim.
-Figure 5 uses frozen success, boundary, and failure cases for learned and modular methods.
+**MR-specialized modular reasoning and modality-dropout tradeoffs.** (A) Full-input
+whole-tumor (WT), tumor-core (TC), and enhancing-tumor (ET) Dice for residual 3D models
+trained with balanced modality dropout or complete inputs only, averaged over three seeds.
+(B) QA V1 balanced symbolic accuracy across all 15 non-empty FLAIR (F), T1, post-contrast
+T1 (G), and T2 subsets. (C) Six subjects selected deterministically as the three lowest and
+three highest missing-contrast performers under dropout, before visual review; points show
+mean accuracy over 14 incomplete conditions and three seeds. (D) Dropout-minus-no-dropout
+raw subject accuracy over incomplete conditions with a hierarchical seed/subject 95% CI.
+The effect was +0.069 [+0.016, +0.124], but dropout reduced full-input Dice and balanced QA.
+All results use 16 development subjects; test cases were unread.

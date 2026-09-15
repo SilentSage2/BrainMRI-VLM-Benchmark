@@ -104,8 +104,17 @@ baseline and a corrected matched comparison of answer-only, unconditional spatia
 auxiliary, and question-conditioned grounding paths. In the matched V2 run, grounded and
 unconditional-auxiliary answer accuracy were identical for every validation subject, while
 question-conditioned evidence Dice was lower. This is honest negative direction evidence,
-not a generalization result: the cohort is eight subjects and one seed. A defensible ISMRM
-result package still requires:
+not a generalization result: the cohort is eight subjects and one seed.
+
+A subsequent frozen 64-train/16-validation, three-seed experiment strengthened the negative
+finding: grounded-minus-unconditional-auxiliary answer accuracy was +0.007 with hierarchical
+95% CI [-0.229, 0.243]. On the same cohort, residual 3D segmentation followed by QA reached
+0.787 full-input and 0.578 missing-contrast balanced accuracy, compared with 0.426 and 0.424
+for the grounded VLM. Balanced modality dropout improved raw incomplete-input subject
+accuracy by +0.069 [0.016, 0.124] but harmed complete-input perception. These results
+support a development benchmark/pivot, not a held-out performance claim.
+
+A defensible ISMRM result package still requires:
 
 - real validation and single-use held-out test results;
 - primary paired effect size with subject-bootstrap 95% confidence interval;

@@ -1,6 +1,6 @@
 # Modular MR V4 Multi-Seed Protocol
 
-Freeze date: 2026-09-14. Status: **running; test split sealed**.
+Freeze date: 2026-09-14. Status: **completed development experiment; test split sealed**.
 
 ## Question
 
@@ -37,3 +37,39 @@ failure modes rather than a reliable modular alternative.
 No public or private clinical images are transmitted to external APIs. Any future external
 foundation model must have locally runnable weights, a documented license and version, and
 a disclosed overlap/leakage audit before comparison.
+
+## Completed result
+
+| Training regime | Full balanced QA | Missing balanced QA | Full WT/TC/ET Dice |
+|---|---:|---:|---:|
+| Balanced modality dropout | 0.640 | 0.570 | 0.658 / 0.579 / 0.489 |
+| Complete-input only | 0.787 | 0.578 | 0.799 / 0.769 / 0.709 |
+
+The modular paths substantially exceeded the QA V1 question-only and fixed-slice controls
+(both 0.417 balanced accuracy) and the matched grounded VLM (0.426 full-input; 0.424 across
+missing conditions). This supports the narrow conclusion that MR-specialized perception
+provides more reliable symbolic reasoning than the tested small end-to-end VLMs.
+
+Balanced modality dropout improved raw subject answer accuracy averaged across the 14
+incomplete-contrast conditions by `+0.069`; seed effects were `+0.019`, `+0.074`, and
+`+0.115`, with hierarchical seed/subject bootstrap 95% CI `[+0.016, +0.124]`. However,
+balanced accuracy was slightly lower than no-dropout (0.570 versus 0.578), and dropout
+substantially reduced full-input segmentation and QA performance. The supported
+interpretation is a raw-accuracy/worst-case robustness tradeoff, not uniform superiority.
+
+The predefined 0.75 voxel-confidence abstention threshold had zero coverage for the dropout
+model and 0.771 full-input coverage for no-dropout. This confirms that segmentation
+softmax confidence is not a calibrated answer-confidence mechanism and should not be used
+as such without a separate validation protocol.
+
+Summary SHA-256:
+`3c30b91131ee77015e858fc793d78301e662734aae5f62d4f2436bc42bd063db`.
+Figure 5 PNG/PDF/CSV SHA-256:
+`9a61c180735170db9969da76b627e196fa9201ae5e62c1f6682dce45bcfa3c26`,
+`0439606ff474a4da58d9fa2ce4e50f349c19fcf77da045593b27e1fc51f2921e`, and
+`5b54b49b390923e2b84da5e7825ddc68d1433e03ef488758381d4d83dc6d3ece`.
+
+**Decision:** promote the modular pathway to the primary MR-specialized baseline and frame
+the end-to-end grounding result as a controlled negative comparison. Keep the held-out test
+closed until external/local-weight baseline selection and Figure 5 case-level review are
+frozen.

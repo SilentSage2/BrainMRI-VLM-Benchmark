@@ -5,8 +5,9 @@
 > **Status: research-preview candidate, not publish-ready.** A residual 3D MR baseline and
 > three matched hierarchical MRI-VLM paths now run on real data. The first 32/8-subject
 > validation experiment is a small negative diagnostic, not a performance or novelty claim.
-> The ISMRM evidence gate remains closed pending larger multi-seed validation, an external
-> VLM baseline, and frozen failure analysis.
+> A three-seed 64/16 development experiment rejects a reliable grounding benefit and finds
+> the MR-specialized modular pathway substantially stronger. The ISMRM evidence gate remains
+> closed pending an external VLM baseline and frozen test evaluation.
 
 ## Research question
 
@@ -117,13 +118,20 @@ grounded-minus-auxiliary answer effect was +0.007 with hierarchical 95% CI
 grounding-benefit gate and exposes substantial training variance. The test split remains
 sealed, so this is not a generalization claim.
 
+The modular V4 experiment used the same subjects and seeds. Complete-input-only residual
+3D segmentation followed by symbolic QA reached 0.787 full-input and 0.578 missing-contrast
+balanced accuracy, versus 0.426 and 0.424 for the grounded VLM. Balanced modality dropout
+improved missing-contrast raw subject accuracy by +0.069, hierarchical 95% CI
+[+0.016, +0.124], while sacrificing complete-input performance. These remain development
+results, not held-out claims.
+
 ## Planned systems
 
 | System | Visual representation | Training target | Status |
 |---|---|---|---|
 | Question-only prior | none | answer | QA V1: 0.521 raw / 0.417 balanced validation accuracy |
 | Slice-based VLM | fixed axial quartile slices | answer | 0.542 raw / 0.417 balanced; no gain over question-only |
-| Residual 3D MR segmenter | four registered contrasts | WT/TC/ET masks → symbolic QA | Small direction gate passed |
+| Residual 3D MR segmenter | four registered contrasts | WT/TC/ET masks → symbolic QA | Three-seed V4 complete; primary MR baseline |
 | 3D MRI-VLM | coordinate-aware hierarchical 3D tokens | answer | Small real-data run completed |
 | Auxiliary 3D MRI-VLM | same | answer + unconditional whole tumor | Small real-data run completed |
 | Grounded 3D MRI-VLM | same + GRU question tokens | answer + question-specific evidence | Small real-data run completed; no benefit observed |
