@@ -149,6 +149,10 @@ matched modality-dropout ablation and all 15 missing-contrast conditions.
 The [external foundation baseline audit](docs/EXTERNAL_BASELINE_AUDIT.md) records why
 M3D-LaMed-Phi-3-4B is not responsibly runnable on the current CPU host, including model
 size, custom-code, license-chain, data-overlap, and four-contrast compatibility constraints.
+The [frozen narrow claim](docs/FINAL_CLAIM.md) and
+[one-shot held-out runbook](docs/HELD_OUT_EXECUTION.md) lock the 66-subject test manifest,
+checkpoint hashes, metrics, exclusions, bootstrap, interpretation branches, and anti-rerun
+guard. Held-out execution still requires new explicit user authorization.
 
 ## Quick start
 

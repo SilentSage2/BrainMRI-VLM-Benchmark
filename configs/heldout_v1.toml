@@ -1,0 +1,92 @@
+protocol = "heldout-v1-frozen-20260914"
+status = "locked-awaiting-explicit-user-authorization"
+split_seed = 20260914
+test_subject_count = 66
+test_manifest = "configs/test_subject_manifest.json"
+test_manifest_sha256 = "8051ac22bb1513e0618f02da12c6de1292ab4055cafc6fd98318cffad52b4b32"
+spatial_size = 48
+preprocessing = "brain-crop-zero-background-zscore-v2"
+training_seeds = [20260914, 20260915, 20260916]
+bootstrap_seed_primary = 20260914
+bootstrap_samples = 10000
+contrast_conditions = 15
+rerun_allowed = false
+
+primary_claim = "MR-specialized segmentation-to-symbolic QA is more reliable than the tested small end-to-end grounded VLM under missing MRI contrasts"
+foundation_model_claim_allowed = false
+
+primary_metric = "subject-averaged raw QA accuracy across 14 incomplete-contrast conditions"
+secondary_metrics = [
+  "balanced QA accuracy across 14 incomplete-contrast conditions",
+  "full-input balanced QA accuracy",
+  "WT Dice",
+  "TC Dice",
+  "ET Dice",
+  "enhancing-fraction MAE",
+  "five-bin segmentation-confidence proxy ECE",
+  "coverage and selective accuracy at frozen confidence threshold 0.75"
+]
+
+exclusions = [
+  "enhancing-presence QA because development screening made it single-class",
+  "cross-region comparison because it was algebraically redundant",
+  "continuous enhancing-fraction accuracy as a primary endpoint",
+  "hosted foundation-model inference",
+  "clinical utility or diagnostic claims"
+]
+
+case_selection = "Figure 5 failure/success cases are the three lowest and three highest development missing-contrast performers under dropout, ties broken by subject ID; no test case may be selected qualitatively before aggregate evaluation"
+
+[[checkpoints]]
+system = "question_grounded"
+seed = 20260914
+path = "artifacts/results/matched_v3/checkpoints/seed-20260914/question_grounded.pt"
+sha256 = "715190508dd30639630906c9cd73b1917ac7c181518276c381f23e790cac12bb"
+
+[[checkpoints]]
+system = "question_grounded"
+seed = 20260915
+path = "artifacts/results/matched_v3/checkpoints/seed-20260915/question_grounded.pt"
+sha256 = "00077d5153949555b7e389348c02d0e306723c114b0a80619b36bf975c5cf943"
+
+[[checkpoints]]
+system = "question_grounded"
+seed = 20260916
+path = "artifacts/results/matched_v3/checkpoints/seed-20260916/question_grounded.pt"
+sha256 = "f3516d287d79d397887bc8ade6a115d5c6dbc79ad6e3d9d3ee2e1062c8bda9ee"
+
+[[checkpoints]]
+system = "modular_dropout"
+seed = 20260914
+path = "artifacts/results/modular_v4/checkpoints/seed-20260914-dropout.pt"
+sha256 = "3b615ed89263d9d87ae15c74a2671a9e8aed3ee68ecce90231edfeb8e25fcf8c"
+
+[[checkpoints]]
+system = "modular_dropout"
+seed = 20260915
+path = "artifacts/results/modular_v4/checkpoints/seed-20260915-dropout.pt"
+sha256 = "4cb2f24d5240457d4c4c1a55ea15a41bd2dd8def008cef49207f2ea57bf5a1fb"
+
+[[checkpoints]]
+system = "modular_dropout"
+seed = 20260916
+path = "artifacts/results/modular_v4/checkpoints/seed-20260916-dropout.pt"
+sha256 = "f43f4a4a784501d22168216b4f876c7f19dac84e7e0ed5c678b57099e67bf10c"
+
+[[checkpoints]]
+system = "modular_no_dropout"
+seed = 20260914
+path = "artifacts/results/modular_v4/checkpoints/seed-20260914-no_dropout.pt"
+sha256 = "72a515709b11ba97ba36c00a7310539950a0e8c367653a5609ff738a7c48fa44"
+
+[[checkpoints]]
+system = "modular_no_dropout"
+seed = 20260915
+path = "artifacts/results/modular_v4/checkpoints/seed-20260915-no_dropout.pt"
+sha256 = "f3776732466d661058b438746754279e0d140005aa698ca4561613bbb7108a34"
+
+[[checkpoints]]
+system = "modular_no_dropout"
+seed = 20260916
+path = "artifacts/results/modular_v4/checkpoints/seed-20260916-no_dropout.pt"
+sha256 = "e51cd3b4e08d2692e21e43444ce84bebd7310b71d0d267307898829e136d8998"
