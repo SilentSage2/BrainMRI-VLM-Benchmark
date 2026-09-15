@@ -1,0 +1,48 @@
+protocol = "phase2-credible-baselines-20260915"
+status = "design-only-no-phase2-outcomes"
+split_seed = 20260914
+development_train_subjects = 337
+development_validation_subjects = 81
+retired_phase1_test_subjects = 66
+retired_manifest = "configs/test_subject_manifest.json"
+retired_subjects_allowed_for_training = false
+retired_subjects_allowed_for_validation = false
+retired_subjects_allowed_for_phase2_test = false
+
+[segmentation]
+framework = "nnUNetv2"
+dataset_name = "Dataset501_MSDTask01Phase2Dev"
+channels = ["flair", "t1", "t1gd", "t2"]
+regions = ["whole_tumor", "tumor_core", "enhancing_tumor"]
+configurations_to_benchmark = ["2d", "3d_fullres"]
+benchmark_epochs = 5
+development_fold_first = true
+primary_metrics = ["subject_wt_dice", "subject_tc_dice", "subject_et_dice"]
+secondary_metrics = ["hd95", "enhancing_lesion_sensitivity", "lesion_false_positives"]
+
+[vlm]
+pretrained_required = true
+candidate_families = ["M3D-LaMed", "M3D-CLIP", "Med3DVLM"]
+four_contrast_input_required = true
+primary_metric = "balanced_answer_accuracy"
+required_controls = [
+  "question_only",
+  "answer_only",
+  "unconditional_spatial_auxiliary",
+  "question_conditioned_grounding",
+]
+mask_deterministic_qa_primary_allowed = false
+
+[compute]
+local_device = "cpu"
+local_memory_gb = 24
+local_full_nnunet_training_allowed = false
+gpu_minimum_vram_gb = 10
+gpu_target_vram_gb = 24
+measure_one_fold_before_scaling = true
+
+[release]
+new_external_or_blind_test_required = true
+phase1_test_reuse_as_untouched_allowed = false
+clinical_claim_allowed = false
+general_vlm_superiority_claim_allowed = false

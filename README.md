@@ -9,6 +9,11 @@
 > external M3D-LaMed baseline was audited but not executed; this is not a foundation-model
 > or clinical-use claim.
 
+The [Phase II protocol](docs/PHASE2_PROTOCOL.md) now treats that result as a compact-baseline
+pilot. It requires nnU-Net v2, an actually executed pretrained medical VLM/encoder, a
+non-mask-deterministic language track, and a new external or blind test set before any
+broader comparison claim.
+
 ## Research question
 
 When one or more complementary brain MRI contrasts are unavailable, does explicit

@@ -52,6 +52,7 @@ mri-vlm-preview-figure = "mri_vlm.preview_figure_cli:main"
 mri-vlm-submission-preflight = "mri_vlm.submission_preflight_cli:main"
 mri-vlm-heldout-once = "mri_vlm.heldout_once_cli:main"
 mri-vlm-heldout-figure = "mri_vlm.heldout_figure_cli:main"
+mri-vlm-nnunet-export = "mri_vlm.nnunet_export_cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/mri_vlm"]
